@@ -20,6 +20,20 @@ rag = [
 datagen = [
     "anthropic",
 ]
+# GPU inference / fine-tuning stack for Colab (Phase 2+). torch is deliberately
+# NOT pinned here: Colab ships a CUDA-matched torch build and these packages use
+# it. The `sys_platform == 'linux'` marker keeps the universal uv lock resolvable
+# on non-Linux dev machines (unsloth pulls triton, which has no Windows wheels)
+# while still installing on the Linux Colab runtime.
+colab = [
+    "unsloth==2026.10.3 ; sys_platform == 'linux'",
+    # unsloth 2026.10.3 caps transformers at <=5.17.0; 5.17.0 is the newest it
+    # allows and already supports Qwen3.5.
+    "transformers==5.17.0 ; sys_platform == 'linux'",
+    "peft==0.21.2 ; sys_platform == 'linux'",
+    "trl==0.29.1 ; sys_platform == 'linux'",
+    "accelerate==1.15.0 ; sys_platform == 'linux'",
+]
 
 [dependency-groups]
 dev = [

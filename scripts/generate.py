@@ -30,8 +30,10 @@ from polars_llm.prompts import build_messages  # noqa: E402
 
 
 def _lib_versions() -> dict:
+    """Actual installed versions of the key libraries, resolved at runtime."""
+
     versions = {}
-    for lib in ("polars", "transformers", "torch", "unsloth", "peft"):
+    for lib in ("polars", "torch", "transformers", "unsloth", "peft", "trl", "accelerate"):
         try:
             versions[lib] = __import__(lib).__version__
         except Exception:

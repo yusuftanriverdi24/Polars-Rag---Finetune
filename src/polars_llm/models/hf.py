@@ -57,10 +57,15 @@ class HFModel:
 
         FastLanguageModel.for_inference(model)
 
-        # Left-pad for decoder-only batched generation.
+        # Left-pad for decoder-only batched generation: with left padding every
+        # sequence's real tokens end at the same position, so the generated
+        # continuation is identical whether a prompt is run alone or in a batch
+        # (greedy decoding is unaffected by batching), and `out[:, prompt_len:]`
+        # cleanly slices the new tokens for every row.
         tokenizer.padding_side = "left"
         if tokenizer.pad_token_id is None:
             tokenizer.pad_token = tokenizer.eos_token
+        assert tokenizer.padding_side == "left", "batched generation requires left padding"
 
         self.model = model
         self.tokenizer = tokenizer
