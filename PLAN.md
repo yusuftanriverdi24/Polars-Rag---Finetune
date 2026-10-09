@@ -16,7 +16,7 @@ The project pins **Polars 2.0.0**, a newly released *major* version that predate
 
 ## 2. Constraints
 
-- **Compute:** Google Colab (free/standard tier, assume a T4 16 GB GPU). Training and open-model inference run on Colab; everything else runs locally on CPU.
+- **Compute:** Google Colab **Pro**, target an **L4 GPU (24 GB, bf16 supported)**, fallback **A100 (40 GB)**. Training and open-model inference run on Colab; everything else (benchmark validation, data generation, scoring) runs locally on CPU.
 - **Timeline:** As fast as possible (~1 week target). Portfolio/CV project → prioritize a clean repo, reproducible results and a strong README over exhaustive experiments.
 - **Language:** All tasks, prompts, code and docs in English.
 
@@ -87,10 +87,10 @@ Each benchmark task is one JSON object in `benchmark/tasks.jsonl`:
 ## 6. Tech stack
 
 - Environment: Python, `uv`, Polars **pinned to one exact version** (recorded in `pyproject.toml` and in this file)
-- Base model: small code model (~1.5B–3B for speed on T4; 7B only if time allows) — chosen in Phase 0
+- Base model: **`Qwen/Qwen3.5-4B`** (post-trained instruct), loaded in **bf16, no 4-bit quantization**, with **reasoning/thinking disabled** (`enable_thinking=False`) — chosen in Phase 0
 - Fine-tuning: Unsloth (QLoRA), fallback TRL + PEFT
 - RAG: sentence-transformers embedding model + LanceDB
-- Inference: Hugging Face transformers / Unsloth on Colab; Anthropic API for arm E and data generation
+- Inference: Hugging Face transformers / Unsloth on Colab; Anthropic API for arm E and data generation. All arms: **greedy decoding**, **`max_new_tokens=768`**, single shared prompt template.
 - Tracking: results as JSON in `results/`, plots generated from them
 
 ## 7. Repository structure
@@ -138,13 +138,15 @@ polars-rag-vs-ft/
 
 | Decision | Choice |
 |----------|--------|
-| Compute | Google Colab (T4) |
+| Compute | Google Colab **Pro**, target **L4 (24 GB, bf16)**, fallback **A100 (40 GB)** |
 | Task | Natural language → Polars code |
 | Language | English |
 | Data generation model | Claude, grounded in pinned-version docs, execution-filtered |
 | Polars version | **2.0.0** — pinned exactly in `pyproject.toml`; latest stable on PyPI as of 2026-10-09. NB: APIs deprecated in Polars 1.x (`groupby`, `apply`, `with_row_count`, …) are now *removed* in 2.0 and raise `AttributeRemovedError`/`ArgumentRemovedError` rather than emitting deprecation warnings. The error classifier treats those as `deprecated_api`. |
 | Environment manager | `uv` (0.12.x); exact deps locked in `uv.lock` |
-| Base model | _TBD in Phase 0_ |
+| Base model | **`Qwen/Qwen3.5-4B`** — the post-trained *instruct* model (base = `Qwen/Qwen3.5-4B-Base`; Unsloth mirror = `unsloth/Qwen3.5-4B`). Loaded in **bf16, no 4-bit**. It is a hybrid reasoning model with thinking **on by default**; we disable it via `enable_thinking=False` in the tokenizer chat template (Qwen3.5 removed the `/no_think` soft-switch). Unsloth supports it: `FastLanguageModel.from_pretrained(..., load_in_4bit=False, load_in_16bit=True)`. |
+| Decoding | Greedy (`do_sample=False`), `max_new_tokens=768`, one shared prompt template across all arms (A–E) |
+| Generation vs scoring | Split: `scripts/generate.py` (GPU, writes `results/<arm>/generations.jsonl`) then `scripts/score.py` (CPU, runs the benchmark runner → `results/<arm>/scores.json`) |
 
 ## 11. Polars 2.0 — key breaking changes
 
