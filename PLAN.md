@@ -145,3 +145,34 @@ polars-rag-vs-ft/
 | Polars version | **2.0.0** — pinned exactly in `pyproject.toml`; latest stable on PyPI as of 2026-10-09. NB: APIs deprecated in Polars 1.x (`groupby`, `apply`, `with_row_count`, …) are now *removed* in 2.0 and raise `AttributeRemovedError`/`ArgumentRemovedError` rather than emitting deprecation warnings. The error classifier treats those as `deprecated_api`. |
 | Environment manager | `uv` (0.12.x); exact deps locked in `uv.lock` |
 | Base model | _TBD in Phase 0_ |
+
+## 11. Polars 2.0 — key breaking changes
+
+Summarized from the official upgrade guide (`docs/source/releases/upgrade/2.md` in the Polars repo at tag `py-2.0.0`, downloaded into `data/raw/` by `src/polars_llm/rag/ingest.py`). These are the changes most likely to trip a model relying on memorized pre-2.0 Polars or on pandas habits — the benchmark deliberately exercises them.
+
+**Removed APIs (now raise `AttributeRemovedError` / `ArgumentRemovedError`, each hinting at the replacement):**
+- `melt()` → `unpivot()` (`id_vars`→`index`, `value_vars`→`on`)
+- `with_row_count()` → `with_row_index()` — **default column name changed `"row_nr"` → `"index"`**
+- `group_by(...).count()` → `group_by(...).len()`
+- `DataFrame.pivot(columns=...)` → `on=...`
+- `join(join_nulls=...)` → `nulls_equal=...`; `join(how="outer")` → `how="full"` (`outer_coalesce` → `how="full", coalesce=True`)
+- `top_k` / `bottom_k(descending=...)` → `reverse=...`
+- `str.concat()` → `str.join()` — **default delimiter changed `"-"` → `""`**
+- `str.explode()` → `str.split("").explode()` (empty strings now become `null`)
+- `replace(default=…/return_dtype=…)` → `replace_strict()`
+- `rolling`/`group_by_dynamic(by=...)` → `group_by=...`; `rolling_*(min_periods=...)` → `min_samples=...`
+- `dt.datetime()` → `dt.replace_time_zone(None)`; `Series.dt.mean()/median()` → `Series.mean()/median()`
+- `approx_n_unique()` method, `LazyFrame.fetch()` → `collect()`+`head()`, `Expr.where()` → `filter()`
+- `read_csv(dtypes=...)` → `schema_overrides=...`; `row_count_name/offset` → `row_index_name/offset`
+- `assert_frame_equal(check_dtype=...)` → `check_dtypes=...`
+- `pl.threadpool_size()` → `pl.thread_pool_size()`; `Array.width` → `size`
+- `list.to_struct(n_field_strategy=…, upper_bound=…)` → `fields=…`
+
+**Behavioral changes (silent — no error, but different results):**
+- **Lazy API defaults to the streaming engine**, which does **not** guarantee row order for `group_by` / `join` / `unpivot`. Sort explicitly or pass `maintain_order` if you depend on order. (Benchmark: set `ignore_row_order` wherever order is undefined.)
+- `pl.concat()` strictness tightened; `explode()` now uses `empty_as_null=False` by default.
+- `is_in()` coercion is now strict (no lossy int/float coercion; time-unit conversion; naive-vs-tz datetimes raise).
+- Supertype of signed ints and `UInt64` changed `Float64` → `Int128` (affects sum/supertype results).
+- `read_csv`/`read_ipc` now dispatch through the lazy `scan_*(...).collect()` path.
+
+**Still-common pandas habits that fail or mislead in Polars:** `df.groupby(...)` / `.apply(...)` / `.loc[...]` / `.iloc[...]` / `inplace=` / `.merge(...)` / `.sort_values(...)` / `.reset_index(...)` have no Polars equivalent (use `group_by`, `map_elements`/expressions, `filter`/`select`, `join`, `sort`); `value_counts()` returns a struct/two-column frame, not a Series.
