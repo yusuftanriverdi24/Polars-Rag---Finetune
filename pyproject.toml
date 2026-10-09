@@ -1,0 +1,38 @@
+[project]
+name = "polars-rag-vs-ft"
+version = "0.1.0"
+description = "A controlled comparison of RAG and QLoRA fine-tuning for Polars code generation."
+readme = "README.md"
+requires-python = ">=3.10"
+# Polars is pinned to one exact version for everything (benchmark, data
+# generation, evaluation). See PLAN.md Section 6 / Decisions log.
+dependencies = [
+    "polars==2.0.0",
+]
+
+[project.optional-dependencies]
+# Installed only where needed; kept out of the base env so the benchmark
+# tooling stays lightweight and reproducible.
+rag = [
+    "sentence-transformers",
+    "lancedb",
+]
+datagen = [
+    "anthropic",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/polars_llm"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

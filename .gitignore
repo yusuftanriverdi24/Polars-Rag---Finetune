@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment / secrets
+.env
+.env.*
+
+# Data: raw docs corpus (gitignored per PLAN.md Section 7); keep sft dataset
+data/raw/
+data/raw/**
+
+# Large model / checkpoint artifacts
+*.safetensors
+*.bin
+*.gguf
+*.pt
+*.ckpt
+checkpoints/
+models/**/*.safetensors
+adapters/
+*.lance
+
+# Results plots (keep JSON results, ignore generated images if large)
+# results/*.png
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
