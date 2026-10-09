@@ -61,8 +61,15 @@ def test_load_tasks_skips_blank_and_comment_lines(tmp_path):
     assert len(load_tasks(p)) == 1
 
 
-def test_seed_tasks_file_loads():
-    # The committed benchmark set must always load and validate.
+def test_benchmark_tasks_file_loads():
+    # The committed benchmark set must always load, be unique, and hit the
+    # planned 40/50/30 difficulty split across 120 tasks.
+    from collections import Counter
+
     tasks = load_tasks("benchmark/tasks.jsonl")
-    assert len(tasks) == 10
-    assert len({t.id for t in tasks}) == 10
+    assert len(tasks) == 120
+    assert len({t.id for t in tasks}) == 120
+    by_diff = Counter(t.difficulty for t in tasks)
+    assert by_diff == {"easy": 40, "medium": 50, "hard": 30}
+    # Every category present.
+    assert len({t.category for t in tasks}) == 9
