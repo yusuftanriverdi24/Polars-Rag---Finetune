@@ -170,3 +170,159 @@ def test_timeout():
         comparison=None,
     )
     assert c.status == TIMEOUT
+
+
+# --- error messages that point to a replacement API -> deprecated_api --------
+
+
+def test_should_be_replaced_message_is_deprecated_api():
+    c = classify(
+        code="def solve(a, b): return a.join(b, on='k', how='outer')",
+        exec_result=make_exec(
+            error=err("ValueError", "use of `how='outer'` should be replaced with `how='full'`.")
+        ),
+        comparison=None,
+    )
+    assert c.status == DEPRECATED_API
+    assert c.deprecated_api
+
+
+def test_please_use_instead_message_is_deprecated_api():
+    msg = (
+        "`pl.count()` takes at least one argument. If you want to count the "
+        "number of rows, please use `pl.len()` instead."
+    )
+    c = classify(
+        code="def solve(df): return df.group_by('s').agg(pl.count())",
+        exec_result=make_exec(error=err("TypeError", msg)),
+        comparison=None,
+    )
+    assert c.status == DEPRECATED_API
+
+
+def test_unrelated_runtime_errors_stay_runtime_error():
+    for type_, msg in [
+        ("ColumnNotFoundError", 'unable to find column "id"; valid columns: ["order_id"]'),
+        (
+            "InvalidOperationError",
+            "arithmetic on dtypes f64 and str is not allowed; try an explicit cast first",
+        ),
+        (
+            "DuplicateError",
+            "column with name 'count_right' already exists. You may want to try "
+            "using the `suffix` parameter to specify a suffix different to the default",
+        ),
+    ]:
+        c = classify(code="def solve(df): ...", exec_result=make_exec(error=err(type_, msg)), comparison=None)
+        assert c.status == RUNTIME_ERROR, msg
+
+
+def test_did_you_mean_hint_is_not_a_replacement_api():
+    # A spelling hint for a hallucinated name is not a deprecation.
+    c = classify(
+        code="def solve(a, b): return a.join(b, on='k', suffixes=('_l', '_r'))",
+        exec_result=make_exec(
+            error=err(
+                "TypeError",
+                "DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?",
+            )
+        ),
+        comparison=None,
+    )
+    assert c.status == HALLUCINATED_API
+
+
+# --- pandas_style_name secondary tag -----------------------------------------
+
+
+def _hallucinated(code, type_, msg):
+    return classify(code=code, exec_result=make_exec(error=err(type_, msg)), comparison=None)
+
+
+def test_pandas_style_name_tags_pandas_accessor_methods():
+    cases = [
+        ("strip", "'ExprStringNameSpace' object has no attribute 'strip'. Did you mean: 'strip_chars'?", "str.strip"),
+        ("pad", "'ExprStringNameSpace' object has no attribute 'pad'. Did you mean: 'pad_end'?", "str.pad"),
+        ("count", "'ExprStringNameSpace' object has no attribute 'count'. Did you mean: 'contains'?", "str.count"),
+        ("len", "'ExprStringNameSpace' object has no attribute 'len'", "str.len"),
+        ("day_name", "'ExprDateTimeNameSpace' object has no attribute 'day_name'", "dt.day_name"),
+        ("days", "'ExprDateTimeNameSpace' object has no attribute 'days'. Did you mean: 'day'?", "dt.days"),
+        ("rename", "'Expr' object has no attribute 'rename'", "rename"),
+    ]
+    for _, msg, expected in cases:
+        c = _hallucinated("def solve(df): ...", "AttributeError", msg)
+        assert c.status == HALLUCINATED_API  # primary status unchanged
+        assert c.pandas_style_name == expected, msg
+
+
+def test_pandas_style_name_tags_pandas_keyword():
+    c = _hallucinated(
+        "def solve(a, b): return a.join(b, on='k', suffixes=('_a', '_b'))",
+        "TypeError",
+        "DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?",
+    )
+    assert c.status == HALLUCINATED_API
+    assert c.pandas_style_name == "suffixes="
+
+
+def test_pandas_style_name_tags_property_style_access():
+    c = _hallucinated(
+        'def solve(df): return df.with_columns(pl.col("d").dt.year.alias("year"))',
+        "AttributeError",
+        "'function' object has no attribute 'alias'",
+    )
+    assert c.status == HALLUCINATED_API
+    assert c.pandas_style_name == "dt.year"
+
+
+def test_pandas_style_name_ignores_called_methods_and_non_pandas_names():
+    # `.dt.year()` is called correctly; the failure is elsewhere.
+    c = _hallucinated(
+        'def solve(df): return df.with_columns(pl.list.first("p").alias("x"), pl.col("d").dt.year())',
+        "AttributeError",
+        "'function' object has no attribute 'first'",
+    )
+    assert c.pandas_style_name is None
+    # Hallucinated, but not a pandas name.
+    for msg in [
+        "'ExprStringNameSpace' object has no attribute 'to_upper'. Did you mean: 'to_uppercase'?",
+        "'ExprDateTimeNameSpace' object has no attribute 'add_days'",
+        "'Expr' object has no attribute 'contains'",
+    ]:
+        assert _hallucinated("def solve(df): ...", "AttributeError", msg).pandas_style_name is None
+    c = _hallucinated(
+        "def solve(df): ...", "TypeError", "Expr.rank() got an unexpected keyword argument 'dense'"
+    )
+    assert c.pandas_style_name is None
+
+
+def test_pandas_style_name_only_on_hallucinated_api():
+    # Same pandas-ish name but a different primary status -> no tag.
+    c = classify(
+        code='def solve(df): return df.filter(df["d"].dt.year == 2023)',
+        exec_result=make_exec(
+            error=err("TypeError", "'==' not supported between instances of 'method' and 'int'")
+        ),
+        comparison=None,
+    )
+    assert c.status == RUNTIME_ERROR
+    assert c.pandas_style_name is None
+
+
+def test_pandas_name_lists_are_absent_from_polars():
+    # Guard: a name that exists in Polars 2.0 must not be tagged as pandas-only.
+    import polars as pl
+
+    from polars_llm.bench.classify import (
+        PANDAS_DT_NAMES,
+        PANDAS_OBJECT_NAMES,
+        PANDAS_PROPERTY_NAMES,
+        PANDAS_STR_NAMES,
+    )
+
+    e = pl.col("x")
+    assert not [n for n in PANDAS_STR_NAMES if hasattr(e.str, n)]
+    assert not [n for n in PANDAS_DT_NAMES if hasattr(e.dt, n)]
+    assert not [n for n in PANDAS_OBJECT_NAMES if hasattr(e, n)]
+    # ...while the property-style names are real Polars methods.
+    assert all(callable(getattr(e.dt, n)) for n in PANDAS_PROPERTY_NAMES)

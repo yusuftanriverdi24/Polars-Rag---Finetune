@@ -46,6 +46,14 @@ def test_generate_then_score_end_to_end(tmp_path):
     assert meta["seed"] == 123
     assert (out_dir / "mock" / "generation_meta.json").exists()
 
+    # meta records the prompt template hash + text.
+    from polars_llm.prompts import SYSTEM_PROMPT, prompt_fingerprint
+
+    saved = json.loads((out_dir / "mock" / "generation_meta.json").read_text(encoding="utf-8"))
+    assert saved["prompt"] == prompt_fingerprint()
+    assert saved["prompt"]["system_prompt"] == SYSTEM_PROMPT
+    assert len(saved["prompt"]["system_prompt_sha256"]) == 64
+
     # Score the generations and check the expected mix of outcomes.
     results = score_script.run_scoring("mock", out_dir, "benchmark/tasks.jsonl", seed=123)
     m = results["metrics"]

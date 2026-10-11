@@ -46,16 +46,18 @@ Each benchmark task is one JSON object in `benchmark/tasks.jsonl`:
   "setup_code": "Python code that builds the input DataFrames (named inputs).",
   "signature": "def solve(df: pl.DataFrame) -> pl.DataFrame:",
   "reference_solution": "Reference implementation of solve().",
-  "check": {"ignore_row_order": false, "ignore_column_order": false}
+  "check": {"ignore_row_order": false, "ignore_column_order": false, "ignore_numeric_width": true}
 }
 ```
+
+- `check` flags: `ignore_row_order` / `ignore_column_order` (default off) and `ignore_numeric_width` (default **on**: integer width/sign differences such as `Int32` vs `UInt32` vs `Int64`, and float width differences `Float32` vs `Float64`, are not failures, including inside `List`/`Array`/`Struct`; int vs float and numeric vs string stay strict).
 
 - Expected output is **computed by running the reference solution** under the pinned Polars version (never stored by hand).
 - Target size: **~120 tasks** (≈40 easy / 50 medium / 30 hard), spread across categories.
 
 ### 4.2 Execution
 - Model output → extract code → run `solve(**inputs)` in a **subprocess sandbox** with a timeout.
-- Compare to expected output with `polars.testing.assert_frame_equal` (respecting `check` flags).
+- Compare to expected output with `polars.testing.assert_frame_equal` (respecting `check` flags). With `ignore_numeric_width` both frames are first cast losslessly (ints -> `Int128`, floats -> `Float64`) so only the numeric *kind* is compared, not its width.
 - Deprecation warnings are captured and recorded.
 
 ### 4.3 Metrics
@@ -64,12 +66,13 @@ Each benchmark task is one JSON object in `benchmark/tasks.jsonl`:
   - `syntax_error`
   - `pandas_leak` (e.g. `pd.`, `.loc`, `.iloc`, `inplace=`, `.groupby(`)
   - `hallucinated_api` (AttributeError / nonexistent function or argument)
-  - `deprecated_api` (deprecation warning raised — recorded even when the result is correct)
+  - `deprecated_api` (removed API: `AttributeRemovedError`/`ArgumentRemovedError`, a "was removed" message, or an error message that points to a replacement API such as "should be replaced with `how='full'`" / "please use `pl.len()` instead"; also any deprecation warning raised — recorded even when the result is correct)
   - `runtime_error`, `wrong_result`, `timeout`
+- **Secondary tag `pandas_style_name`** (does not change the primary status): a `hallucinated_api` failure whose attempted name is a pandas idiom — pandas accessor methods Polars lacks (`.str.strip`, `.str.len`, `.str.pad`, `.str.count`, `.dt.day_name`, `.dt.days`), pandas keywords (`suffixes=`), pandas Series methods (`.rename`, `.astype`, …), or property-style access of a Polars method (`.dt.year` without parentheses). Reported as `pandas_style_name_count` + per-name breakdown in metrics.
 - **Cost:** latency per task, training time, peak VRAM, data-generation API cost
 
 ### 4.4 Leakage control
-- Benchmark tasks are created and frozen **before** fine-tuning data is generated.
+- Benchmark tasks are created and frozen **before** fine-tuning data is generated. **Frozen as git tag `benchmark-v1.0`** after the ambiguity audit in `benchmark/AUDIT.md`; any later change to tasks, comparator or classifier needs a new benchmark version and re-scoring of every arm.
 - Fine-tuning examples are deduplicated against the benchmark (embedding similarity threshold + exact-match checks).
 
 ## 5. Data
@@ -147,6 +150,11 @@ polars-rag-vs-ft/
 | Base model | **`Qwen/Qwen3.5-4B`** — the post-trained *instruct* model (base = `Qwen/Qwen3.5-4B-Base`; Unsloth mirror = `unsloth/Qwen3.5-4B`). Loaded in **bf16, no 4-bit**. It is a hybrid reasoning model with thinking **on by default**; we disable it via `enable_thinking=False` in the tokenizer chat template (Qwen3.5 removed the `/no_think` soft-switch). Unsloth supports it: `FastLanguageModel.from_pretrained(..., load_in_4bit=False, load_in_16bit=True)`. |
 | Decoding | Greedy (`do_sample=False`), `max_new_tokens=768`, one shared prompt template across all arms (A–E) |
 | Generation vs scoring | Split: `scripts/generate.py` (GPU, writes `results/<arm>/generations.jsonl`) then `scripts/score.py` (CPU, runs the benchmark runner → `results/<arm>/scores.json`) |
+| Numeric dtype tolerance | `check.ignore_numeric_width`, **default on**: int width/sign (`Int32`/`UInt32`/`Int64`…) and float width (`Float32`/`Float64`) differences are not failures; int vs float, numeric vs string stay strict. Reason: e.g. a boolean `.sum()` yields `UInt32` and a `when/then(1).sum()` yields `Int32` for identical values — an incidental detail, not wrong Polars (Arm A `group_by_013`). |
+| Replacement-API errors | Errors whose message points to a replacement API ("should be replaced with …", "use … instead") are `deprecated_api`, not `runtime_error` (Arm A `join_006` `how='outer'`, `group_by_003` `pl.count()`). |
+| `pandas_style_name` tag | Secondary tag on `hallucinated_api` for pandas-idiom names; primary status unchanged; counted in metrics. |
+| Prompt traceability | `generation_meta.json` records `prompt.system_prompt_sha256`, `prompt.template_sha256` and the full template text (system prompt, user template, context template). |
+| Benchmark freeze | **`benchmark-v1.0`** (git tag), 2026-10-11, after the ambiguity audit of all 20 Arm A `wrong_result` cases (`benchmark/AUDIT.md`): 18 model-wrong (unchanged), 1 comparator (`group_by_013`), 1 genuinely ambiguous instruction clarified (`reshape_012`: missing pivot cells are 0). No reference solution changed. |
 | System prompt | **Generic, no API hints.** It says only: write correct Polars 2.0 code, do not use pandas, reply with exactly one ```python block defining `solve()` with the given signature, no prose. It must **not** list specific removed APIs, their 2.0 replacements (e.g. `group_by`, `unpivot`, `with_row_index`, `pivot(on=...)`) or specific pandas idioms: that leaks the answers to exactly what the benchmark tests and inflates the Arm A baseline (and every other arm sharing the template). Guarded by `tests/test_prompts.py`. Decided 2026-10-11, before any scored baseline run. |
 | Multimodal processor | Qwen3.5-4B is multimodal, so Unsloth returns a processor, not a tokenizer. `HFModel` does all text work (chat template, encoding with `text=` by keyword, left padding, pad token, decoding) through `getattr(processor, "tokenizer", processor)`; passing prompts positionally to the processor sends them as `images`. |
 

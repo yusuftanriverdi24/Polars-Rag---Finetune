@@ -15,6 +15,8 @@ names, columns and dtypes), and the required signature; it asks for a single
 
 from __future__ import annotations
 
+import hashlib
+
 from ..bench.schema import Task
 
 # Deliberately generic: it names no specific Polars/pandas APIs, because listing
@@ -61,6 +63,28 @@ def build_user_prompt(task: Task, context: str | None = None) -> str:
         setup_code=task.setup_code.strip(),
         signature=task.signature.strip(),
     )
+
+
+def _sha256(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def prompt_fingerprint() -> dict:
+    """Hashes + full text of the prompt template, recorded with every run.
+
+    ``system_prompt_sha256`` identifies the system prompt alone;
+    ``template_sha256`` covers the system prompt, user template and context
+    template together (any change to what the model is shown changes it).
+    """
+
+    template_text = "\n\x1e\n".join([SYSTEM_PROMPT, _USER_TEMPLATE, _CONTEXT_TEMPLATE])
+    return {
+        "system_prompt_sha256": _sha256(SYSTEM_PROMPT),
+        "template_sha256": _sha256(template_text),
+        "system_prompt": SYSTEM_PROMPT,
+        "user_template": _USER_TEMPLATE,
+        "context_template": _CONTEXT_TEMPLATE,
+    }
 
 
 def build_messages(task: Task, context: str | None = None) -> list[dict]:

@@ -53,3 +53,21 @@ def test_system_prompt_does_not_leak_specific_apis():
     ]
     for name in leaky:
         assert name not in SYSTEM_PROMPT, name
+
+
+def test_prompt_fingerprint_is_stable_and_tracks_the_template(monkeypatch):
+    import hashlib
+
+    from polars_llm.prompts import prompt_fingerprint
+    from polars_llm.prompts import template as tmpl
+
+    fp = prompt_fingerprint()
+    assert fp == prompt_fingerprint()  # deterministic
+    assert fp["system_prompt"] == SYSTEM_PROMPT
+    assert fp["system_prompt_sha256"] == hashlib.sha256(SYSTEM_PROMPT.encode()).hexdigest()
+
+    # Changing any part of the template changes template_sha256.
+    monkeypatch.setattr(tmpl, "_USER_TEMPLATE", tmpl._USER_TEMPLATE + " ")
+    changed = prompt_fingerprint()
+    assert changed["template_sha256"] != fp["template_sha256"]
+    assert changed["system_prompt_sha256"] == fp["system_prompt_sha256"]

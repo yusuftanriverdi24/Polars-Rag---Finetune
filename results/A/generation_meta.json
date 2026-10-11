@@ -1,0 +1,21 @@
+{
+  "arm": "A",
+  "model": "Qwen/Qwen3.5-4B",
+  "adapter": null,
+  "seed": 0,
+  "max_new_tokens": 768,
+  "batch_size": 8,
+  "enable_thinking": false,
+  "n_tasks": 120,
+  "total_latency_s": 179.942,
+  "timestamp_utc": "2026-10-11T20:00:29.993536+00:00",
+  "lib_versions": {
+    "polars": "2.0.0",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.17.0",
+    "unsloth": "2026.10.3",
+    "peft": "0.21.2",
+    "trl": "0.29.1",
+    "accelerate": "1.15.0"
+  }
+}

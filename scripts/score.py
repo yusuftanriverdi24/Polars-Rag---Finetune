@@ -69,6 +69,7 @@ def run_scoring(
     print(f"[{arm}] pass@1: {m['pass']}/{m['total']} = {m['pass_at_1']:.1%}")
     print(f"[{arm}] status counts: {m['status_counts']}")
     print(f"[{arm}] deprecated_api flagged: {m['deprecated_api_count']}")
+    print(f"[{arm}] pandas_style_name tagged: {m['pandas_style_name_count']}")
     return results
 
 

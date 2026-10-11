@@ -26,7 +26,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from polars_llm.bench.schema import Task, load_tasks  # noqa: E402
-from polars_llm.prompts import build_messages  # noqa: E402
+from polars_llm.prompts import build_messages, prompt_fingerprint  # noqa: E402
 
 
 def _lib_versions() -> dict:
@@ -95,6 +95,8 @@ def run_generation(
         "total_latency_s": total_latency,
         "timestamp_utc": _dt.datetime.now(_dt.timezone.utc).isoformat(),
         "lib_versions": _lib_versions(),
+        # Ties the run to the exact prompt it was generated with.
+        "prompt": prompt_fingerprint(),
     }
     if extra_meta:
         meta.update(extra_meta)

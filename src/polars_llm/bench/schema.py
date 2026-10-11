@@ -10,7 +10,8 @@ A benchmark task is one JSON object per line in ``benchmark/tasks.jsonl``::
       "setup_code": "inputs = {\\"df\\": pl.DataFrame({...})}",
       "signature": "def solve(df: pl.DataFrame) -> pl.DataFrame:",
       "reference_solution": "def solve(df): ...",
-      "check": {"ignore_row_order": false, "ignore_column_order": false}
+      "check": {"ignore_row_order": false, "ignore_column_order": false,
+                "ignore_numeric_width": true}
     }
 
 Conventions used by the executor:
@@ -47,26 +48,36 @@ VALID_CATEGORIES = frozenset(
 
 @dataclass(frozen=True)
 class CheckFlags:
-    """Comparison tolerances honored by the output comparator."""
+    """Comparison tolerances honored by the output comparator.
+
+    ``ignore_numeric_width`` (default **on**) treats integer types of any
+    width/signedness as equal to each other (``Int32`` == ``UInt32`` ==
+    ``Int64``) and float types of any width as equal to each other (``Float32``
+    == ``Float64``), including inside ``List``/``Array``/``Struct``. Integer vs
+    float, and numeric vs string, stay strict.
+    """
 
     ignore_row_order: bool = False
     ignore_column_order: bool = False
+    ignore_numeric_width: bool = True
 
     @classmethod
     def from_dict(cls, d: dict | None) -> "CheckFlags":
         d = d or {}
-        unknown = set(d) - {"ignore_row_order", "ignore_column_order"}
+        unknown = set(d) - {"ignore_row_order", "ignore_column_order", "ignore_numeric_width"}
         if unknown:
             raise ValueError(f"unknown check flags: {sorted(unknown)}")
         return cls(
             ignore_row_order=bool(d.get("ignore_row_order", False)),
             ignore_column_order=bool(d.get("ignore_column_order", False)),
+            ignore_numeric_width=bool(d.get("ignore_numeric_width", True)),
         )
 
     def to_dict(self) -> dict:
         return {
             "ignore_row_order": self.ignore_row_order,
             "ignore_column_order": self.ignore_column_order,
+            "ignore_numeric_width": self.ignore_numeric_width,
         }
 
 

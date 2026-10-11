@@ -1,8 +1,10 @@
 """Aggregate metrics over per-task results (PLAN.md Section 4.3).
 
 Computes pass@1 overall and broken down by difficulty and category, a histogram
-of statuses, and the ``deprecated_api`` count (tasks that raised a deprecation
-warning, recorded even when the result was correct).
+of statuses, the ``deprecated_api`` count (tasks that raised a deprecation
+warning, recorded even when the result was correct), and the count of the
+``pandas_style_name`` secondary tag (``hallucinated_api`` failures whose
+attempted name is a pandas idiom), with a per-name breakdown.
 """
 
 from __future__ import annotations
@@ -42,6 +44,9 @@ def aggregate(records: list[dict]) -> dict:
     status_counts = Counter(r["status"] for r in records)
     deprecated = sum(1 for r in records if r.get("deprecated_api"))
     pandas_leaks = sum(1 for r in records if r.get("pandas_leak_detected"))
+    pandas_style_names = Counter(
+        r["pandas_style_name"] for r in records if r.get("pandas_style_name")
+    )
 
     # Per-category error histograms are handy for the error analysis in Phase 5.
     errors_by_category: dict[str, Counter] = defaultdict(Counter)
@@ -58,5 +63,7 @@ def aggregate(records: list[dict]) -> dict:
         "status_counts": dict(sorted(status_counts.items())),
         "deprecated_api_count": deprecated,
         "pandas_leak_count": pandas_leaks,
+        "pandas_style_name_count": sum(pandas_style_names.values()),
+        "pandas_style_names": dict(sorted(pandas_style_names.items())),
         "errors_by_category": {k: dict(sorted(v.items())) for k, v in sorted(errors_by_category.items())},
     }

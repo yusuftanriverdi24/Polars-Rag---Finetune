@@ -119,6 +119,7 @@ def score(
                 "status": classified.status,
                 "deprecated_api": classified.deprecated_api,
                 "pandas_leak_detected": classified.pandas_leak_detected,
+                "pandas_style_name": classified.pandas_style_name,
                 "reason": classified.reason,
                 "warnings": classified.warnings,
                 "error": _error_summary(exec_result),
@@ -193,6 +194,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"pass@1: {m['pass']}/{m['total']} = {m['pass_at_1']:.1%}")
     print(f"status counts: {m['status_counts']}")
     print(f"deprecated_api flagged: {m['deprecated_api_count']}")
+    print(f"pandas_style_name tagged: {m['pandas_style_name_count']}")
     return 0
 
 

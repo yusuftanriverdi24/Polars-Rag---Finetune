@@ -359,7 +359,8 @@ def solve(df):
         "instruction": (
             "Build a table keyed by both `region` and `segment` (one row per "
             "combination), with one column per `product` holding the total "
-            "`units` sold. Sort the result by `region` then `segment`."
+            "`units` sold (0 where that combination sold none of the product). "
+            "Sort the result by `region` then `segment`."
         ),
         "signature": "def solve(df: pl.DataFrame) -> pl.DataFrame:",
         "setup_code": '''
