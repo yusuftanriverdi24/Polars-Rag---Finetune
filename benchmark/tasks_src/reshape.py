@@ -98,7 +98,7 @@ inputs = {
 def solve(df):
     return df.pivot(on="subject", index="id", values="score").sort("id")
 ''',
-        "check": {"ignore_row_order": False, "ignore_column_order": False},
+        "check": {"ignore_row_order": False, "ignore_column_order": True},  # pivoted column order unspecified
     },
     {
         "id": "reshape_004",
@@ -188,7 +188,7 @@ def solve(df):
         on="day", index="store", values="sales", aggregate_function="sum"
     ).sort("store")
 ''',
-        "check": {"ignore_row_order": False, "ignore_column_order": False},
+        "check": {"ignore_row_order": False, "ignore_column_order": True},  # pivoted column order unspecified
     },
     {
         "id": "reshape_007",
@@ -250,7 +250,7 @@ def solve(df):
     wide = df.pivot(on="action", index="user", values="action", aggregate_function="len")
     return wide.with_columns(pl.col(pl.UInt32).fill_null(0)).sort("user")
 ''',
-        "check": {"ignore_row_order": False, "ignore_column_order": False},
+        "check": {"ignore_row_order": False, "ignore_column_order": True},  # pivoted column order unspecified
     },
     {
         "id": "reshape_009",
@@ -316,7 +316,7 @@ def solve(df):
         (pl.col("feb") - pl.col("jan")).alias("growth")
     ).sort("product")
 ''',
-        "check": {"ignore_row_order": False, "ignore_column_order": False},
+        "check": {"ignore_row_order": False, "ignore_column_order": True},  # pivoted column order unspecified
     },
     {
         "id": "reshape_011",
@@ -381,7 +381,7 @@ def solve(df):
         on="product", index=["region", "segment"], values="units", aggregate_function="sum"
     ).sort("region", "segment")
 ''',
-        "check": {"ignore_row_order": False, "ignore_column_order": False},
+        "check": {"ignore_row_order": False, "ignore_column_order": True},  # pivoted column order unspecified
     },
     {
         "id": "reshape_013",

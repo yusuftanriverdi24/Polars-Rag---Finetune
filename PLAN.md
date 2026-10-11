@@ -59,6 +59,7 @@ Each benchmark task is one JSON object in `benchmark/tasks.jsonl`:
 - Model output → extract code → run `solve(**inputs)` in a **subprocess sandbox** with a timeout.
 - Compare to expected output with `polars.testing.assert_frame_equal` (respecting `check` flags). With `ignore_numeric_width` both frames are first cast losslessly (ints -> `Int128`, floats -> `Float64`) so only the numeric *kind* is compared, not its width.
 - Deprecation warnings are captured and recorded.
+- **Order determinism:** `validate_tasks` runs every reference 50x and fails if its row/column order or content varies beyond the task's `check` flags, and fails any `pivot` task without `ignore_column_order` (a correct candidate's pivoted column order is not stable). `benchmark/determinism_audit.py` additionally re-runs an arm's generations 50x to find pass/fail flips.
 
 ### 4.3 Metrics
 - **pass@1** (execution accuracy), overall and per difficulty/category
@@ -72,7 +73,7 @@ Each benchmark task is one JSON object in `benchmark/tasks.jsonl`:
 - **Cost:** latency per task, training time, peak VRAM, data-generation API cost
 
 ### 4.4 Leakage control
-- Benchmark tasks are created and frozen **before** fine-tuning data is generated. **Frozen as git tag `benchmark-v1.0`** after the ambiguity audit in `benchmark/AUDIT.md`; any later change to tasks, comparator or classifier needs a new benchmark version and re-scoring of every arm.
+- Benchmark tasks are created and frozen **before** fine-tuning data is generated. **Frozen as git tag `benchmark-v1.0`** after the ambiguity audit, then **`benchmark-v1.1`** (current) after the determinism audit, both in `benchmark/AUDIT.md`; any later change to tasks, comparator or classifier needs a new benchmark version and re-scoring of every arm.
 - Fine-tuning examples are deduplicated against the benchmark (embedding similarity threshold + exact-match checks).
 
 ## 5. Data
@@ -155,6 +156,7 @@ polars-rag-vs-ft/
 | `pandas_style_name` tag | Secondary tag on `hallucinated_api` for pandas-idiom names; primary status unchanged; counted in metrics. |
 | Prompt traceability | `generation_meta.json` records `prompt.system_prompt_sha256`, `prompt.template_sha256` and the full template text (system prompt, user template, context template). |
 | Benchmark freeze | **`benchmark-v1.0`** (git tag), 2026-10-11, after the ambiguity audit of all 20 Arm A `wrong_result` cases (`benchmark/AUDIT.md`): 18 model-wrong (unchanged), 1 comparator (`group_by_013`), 1 genuinely ambiguous instruction clarified (`reshape_012`: missing pivot cells are 0). No reference solution changed. |
+| Benchmark v1.1 (determinism) | **`benchmark-v1.1`** (git tag), 2026-10-12. Polars 2.0's streaming engine doesn't guarantee `group_by`/`join`/`unique`/`pivot`/`unpivot` order, and Arm A `reshape_012` passed 39/50 runs on identical code. Audit: 120 references x 50 runs (22 vary in row order, all already `ignore_row_order`) and 46 Arm A generations x 50 runs (only `reshape_012` flipped). Fix by **check flags only**: `ignore_column_order` on all 5 pivot tasks (`reshape_003/006/008/010/012`), whose instructions don't specify pivoted column order. No instruction or reference changed, so Arm A was re-scored, not regenerated: pass@1 = 49/120 = 0.408, identical statuses for all 120 tasks across two local re-scores and the Colab scores. `validate_tasks` now enforces order determinism + the pivot rule. |
 | System prompt | **Generic, no API hints.** It says only: write correct Polars 2.0 code, do not use pandas, reply with exactly one ```python block defining `solve()` with the given signature, no prose. It must **not** list specific removed APIs, their 2.0 replacements (e.g. `group_by`, `unpivot`, `with_row_index`, `pivot(on=...)`) or specific pandas idioms: that leaks the answers to exactly what the benchmark tests and inflates the Arm A baseline (and every other arm sharing the template). Guarded by `tests/test_prompts.py`. Decided 2026-10-11, before any scored baseline run. |
 | Multimodal processor | Qwen3.5-4B is multimodal, so Unsloth returns a processor, not a tokenizer. `HFModel` does all text work (chat template, encoding with `text=` by keyword, left padding, pad token, decoding) through `getattr(processor, "tokenizer", processor)`; passing prompts positionally to the processor sends them as `images`. |
 

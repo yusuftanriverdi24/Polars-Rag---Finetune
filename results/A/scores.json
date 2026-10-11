@@ -1,14 +1,14 @@
 {
   "meta": {
     "polars_version": "2.0.0",
-    "python_version": "3.13.15",
-    "timestamp_utc": "2026-10-11T20:31:55.517387+00:00",
+    "python_version": "3.13.5",
+    "timestamp_utc": "2026-10-11T21:03:38.806429+00:00",
     "seed": 0,
     "timeout_s": 15.0,
     "n_outputs": 120,
     "n_tasks": 120,
     "arm": "A",
-    "generations_file": "results/A/generations.jsonl",
+    "generations_file": "results\\A\\generations.jsonl",
     "generation_meta": {
       "arm": "A",
       "model": "Qwen/Qwen3.5-4B",
@@ -187,7 +187,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.232,
+      "duration_s": 0.4864,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"age\") >= 30).select(\"name\", \"age\")"
@@ -203,7 +203,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2233,
+      "duration_s": 0.4614,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"status\") == \"shipped\")"
@@ -219,7 +219,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2355,
+      "duration_s": 0.514,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select([\"product\", \"price\"])"
@@ -235,7 +235,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2279,
+      "duration_s": 0.4603,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter((df[\"score\"] >= 50) & (df[\"score\"] <= 80))"
@@ -251,7 +251,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2425,
+      "duration_s": 0.4649,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.drop_nulls(subset=[\"email\"])"
@@ -267,7 +267,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2251,
+      "duration_s": 0.4562,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"country\").is_in([\"US\", \"UK\", \"DE\"]))"
@@ -283,7 +283,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2257,
+      "duration_s": 0.4616,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter((df[\"dept\"] == \"eng\") | (df[\"pay\"] > 100))"
@@ -299,7 +299,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2335,
+      "duration_s": 0.4658,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.sort(\"salary\", descending=True).slice(0, 3).select(\"name\", \"salary\")"
@@ -315,7 +315,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2294,
+      "duration_s": 0.4879,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    avg_value = df[\"value\"].mean()\n    return df.filter(pl.col(\"value\") > avg_value)"
@@ -333,9 +333,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprStringNameSpace' object has no attribute 'len'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'len'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'len'\n"
       },
-      "duration_s": 0.2248,
+      "duration_s": 0.5024,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"code\").str.len() > 3)"
@@ -351,7 +351,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2276,
+      "duration_s": 0.4549,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"sales\") > pl.col(\"target\"))"
@@ -367,7 +367,7 @@
       "reason": "DataFrames are different (columns mismatch: [\"count\"] in left, but not in right)\n[left]: [\"id\", \"val\", \"count\"]\n[right]: [\"id\", \"val\"]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2288,
+      "duration_s": 0.4645,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    id_counts = df.group_by(\"id\").agg(pl.len().alias(\"count\"))\n    mask = id_counts[\"count\"] > 1\n    return df.join(\n        id_counts.filter(mask),\n        on=\"id\",\n        how=\"inner\"\n    )"
@@ -385,9 +385,9 @@
       "error": {
         "type": "TypeError",
         "message": "Expr.gt() missing 1 required positional argument: 'other'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\nTypeError: Expr.gt() missing 1 required positional argument: 'other'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\nTypeError: Expr.gt() missing 1 required positional argument: 'other'\n"
       },
-      "duration_s": 0.2203,
+      "duration_s": 0.4538,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"reading\").gt().over(\"t\").shift(1))"
@@ -405,9 +405,9 @@
       "error": {
         "type": "TypeError",
         "message": "DataFrame.join() got an unexpected keyword argument 'strategy'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\nTypeError: DataFrame.join() got an unexpected keyword argument 'strategy'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\nTypeError: DataFrame.join() got an unexpected keyword argument 'strategy'\n"
       },
-      "duration_s": 0.2239,
+      "duration_s": 0.4551,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    category_avg = df.group_by(\"category\").agg(pl.col(\"amount\").mean())\n    result = df.join(\n        category_avg,\n        on=\"category\",\n        how=\"left\",\n        strategy=\"semi\"\n    ).filter(pl.col(\"amount\") > pl.col(\"category_avg\"))\n    return result"
@@ -423,7 +423,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2267,
+      "duration_s": 0.5075,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"category\").agg(pl.col(\"amount\").sum())"
@@ -439,7 +439,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2267,
+      "duration_s": 0.4626,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .group_by(\"category\")\n        .agg(\n            n=pl.len(),\n            avg=pl.col(\"value\").mean()\n        )\n        .sort(\"avg\", descending=True)\n    )"
@@ -457,9 +457,9 @@
       "error": {
         "type": "TypeError",
         "message": "`pl.count()` takes at least one argument. If you want to count the number of rows, please use `pl.len()` instead.",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/functions/lazy.py\", line 226, in count\n    raise TypeError(msg)\nTypeError: `pl.count()` takes at least one argument. If you want to count the number of rows, please use `pl.len()` instead.\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\functions\\lazy.py\", line 226, in count\n    raise TypeError(msg)\nTypeError: `pl.count()` takes at least one argument. If you want to count the number of rows, please use `pl.len()` instead.\n"
       },
-      "duration_s": 0.2213,
+      "duration_s": 0.4727,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"status\").agg(pl.count().alias(\"n\"))"
@@ -475,7 +475,7 @@
       "reason": "DataFrames are different (height (row count) mismatch)\n[left]: 5\n[right]: 2",
       "warnings": [],
       "error": null,
-      "duration_s": 0.228,
+      "duration_s": 0.4574,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"category\"), pl.col(\"price\").max().alias(\"price\")).sort(\"category\")"
@@ -493,9 +493,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'DataFrame' object has no attribute 'alias'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 13430, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'DataFrame' object has no attribute 'alias'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 13430, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'DataFrame' object has no attribute 'alias'\n"
       },
-      "duration_s": 0.2293,
+      "duration_s": 0.5017,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"product\").agg(pl.col(\"qty\").sum(), pl.col(\"revenue\").sum()).alias(\"qty\", \"revenue\")"
@@ -511,7 +511,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2247,
+      "duration_s": 0.4558,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"movie\").agg(pl.col(\"rating\").mean().alias(\"rating\"))"
@@ -527,7 +527,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2279,
+      "duration_s": 0.466,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .group_by(\"customer\")\n        .agg(pl.col(\"amount\").sum().alias(\"amount\"))\n        .filter(pl.col(\"amount\") >= 100)\n        .select(\"customer\", \"amount\")\n    )"
@@ -543,7 +543,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2278,
+      "duration_s": 0.4632,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"city\").agg(pl.col(\"customer\").n_unique().alias(\"customers\"))"
@@ -559,7 +559,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2336,
+      "duration_s": 0.4674,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by([\"region\", \"product\"]).agg(pl.col(\"units\").sum()).sort([\"region\", \"product\"])"
@@ -575,7 +575,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2271,
+      "duration_s": 0.4966,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"team\").agg(\n        lo=pl.col(\"score\").min(),\n        hi=pl.col(\"score\").max()\n    )"
@@ -591,7 +591,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2308,
+      "duration_s": 0.5101,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"delta\") > 0).group_by(\"account\").agg(pl.col(\"delta\").sum().alias(\"inflow\"))"
@@ -607,7 +607,7 @@
       "reason": "DataFrames are different (height (row count) mismatch)\n[left]: 4\n[right]: 3",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2315,
+      "duration_s": 0.4662,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    total = df[\"amount\"].sum()\n    result = df.with_columns(\n        share=(pl.col(\"amount\") / total).alias(\"share\")\n    ).select([\"category\", \"share\"])\n    return result"
@@ -623,7 +623,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2234,
+      "duration_s": 0.4687,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .with_columns(\n            big=pl.when(pl.col(\"sale\") > 100).then(1).otherwise(0),\n            small=pl.when(pl.col(\"sale\") <= 100).then(1).otherwise(0),\n        )\n        .group_by(\"region\")\n        .agg(\n            big=pl.col(\"big\").sum(),\n            small=pl.col(\"small\").sum(),\n        )\n    )"
@@ -639,7 +639,7 @@
       "reason": "DataFrames are different (value mismatch for column \"wavg\")\n[left]: shape: (2,)\nSeries: 'wavg' [f64]\n[\n\t7.5\n\t20.0\n]\n[right]: shape: (2,)\nSeries: 'wavg' [f64]\n[\n\t17.5\n\t40.0\n]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2226,
+      "duration_s": 0.4961,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"product\").agg(\n        wavg=pl.col(\"price\").sum() / pl.col(\"qty\").sum()\n    )"
@@ -655,7 +655,7 @@
       "reason": "DataFrames are different (columns mismatch: [\"customer_id\"] in left, but not in right)\n[left]: [\"order_id\", \"customer_id\", \"amount\", \"customer_name\"]\n[right]: [\"order_id\", \"customer_name\", \"amount\"]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2242,
+      "duration_s": 0.4636,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(orders: pl.DataFrame, customers: pl.DataFrame) -> pl.DataFrame:\n    return orders.join(customers, on=\"customer_id\", how=\"inner\")"
@@ -673,9 +673,9 @@
       "error": {
         "type": "TypeError",
         "message": "DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\nTypeError: DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\nTypeError: DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?\n"
       },
-      "duration_s": 0.2166,
+      "duration_s": 0.4989,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(sales: pl.DataFrame, products: pl.DataFrame) -> pl.DataFrame:\n    return sales.join(\n        products,\n        on=\"product\",\n        how=\"inner\",\n        suffixes=(\"\", \"_prod\")\n    ).select(\"sale_id\", \"product\", \"price\")"
@@ -691,7 +691,7 @@
       "reason": "DataFrames are different (columns mismatch: [\"dept_id\"] in left, but not in right)\n[left]: [\"name\", \"dept_id\", \"dept_name\"]\n[right]: [\"name\", \"dept_name\"]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2228,
+      "duration_s": 0.4547,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(employees: pl.DataFrame, depts: pl.DataFrame) -> pl.DataFrame:\n    return employees.join(depts, on=\"dept_id\", how=\"left\")"
@@ -709,9 +709,9 @@
       "error": {
         "type": "ColumnNotFoundError",
         "message": "unable to find column \"id\"; valid columns: [\"order_id\", \"cust\"]",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 8505, in join\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.ColumnNotFoundError: unable to find column \"id\"; valid columns: [\"order_id\", \"cust\"]\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 8505, in join\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.ColumnNotFoundError: unable to find column \"id\"; valid columns: [\"order_id\", \"cust\"]\n"
       },
-      "duration_s": 0.2244,
+      "duration_s": 0.4655,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(orders: pl.DataFrame, customers: pl.DataFrame) -> pl.DataFrame:\n    return orders.join(customers, on=[\"cust\", \"id\"], how=\"inner\").select([\"order_id\", \"name\"])"
@@ -732,7 +732,7 @@
         }
       ],
       "error": null,
-      "duration_s": 0.222,
+      "duration_s": 0.4993,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(customers: pl.DataFrame, orders: pl.DataFrame) -> pl.DataFrame:\n    return customers.filter(~customers[\"id\"].is_in(orders[\"customer_id\"]))"
@@ -750,9 +750,9 @@
       "error": {
         "type": "ValueError",
         "message": "use of `how='outer'` should be replaced with `how='full'`.",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 8492, in join\n    .join(\n     ~~~~^\n        other=other.lazy(),\n        ^^^^^^^^^^^^^^^^^^^\n    ...<9 lines>...\n        build_side=build_side,\n        ^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 6233, in join\n    raise ValueError(msg)\nValueError: use of `how='outer'` should be replaced with `how='full'`.\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 8492, in join\n    .join(\n     ~~~~^\n        other=other.lazy(),\n        ^^^^^^^^^^^^^^^^^^^\n    ...<9 lines>...\n        build_side=build_side,\n        ^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 6233, in join\n    raise ValueError(msg)\nValueError: use of `how='outer'` should be replaced with `how='full'`.\n"
       },
-      "duration_s": 0.2276,
+      "duration_s": 0.4672,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(jan: pl.DataFrame, feb: pl.DataFrame) -> pl.DataFrame:\n    return (\n        jan\n        .join(feb, on=\"product\", how=\"outer\")\n        .select([\"product\", \"jan\", \"feb\"])\n    )"
@@ -768,7 +768,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2265,
+      "duration_s": 0.4582,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(items: pl.DataFrame, prices: pl.DataFrame) -> pl.DataFrame:\n    joined = items.join(prices, on=\"product\", how=\"inner\")\n    return joined.with_columns(revenue=(pl.col(\"qty\") * pl.col(\"price\")).alias(\"revenue\")).select([\"product\", \"revenue\"])"
@@ -789,7 +789,7 @@
         }
       ],
       "error": null,
-      "duration_s": 0.223,
+      "duration_s": 0.456,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(catalog: pl.DataFrame, orders: pl.DataFrame) -> pl.DataFrame:\n    return catalog.filter(pl.col(\"product\").is_in(orders[\"product\"]))"
@@ -805,7 +805,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2243,
+      "duration_s": 0.4578,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(sales: pl.DataFrame, targets: pl.DataFrame) -> pl.DataFrame:\n    return (\n        sales\n        .join(\n            targets,\n            on=[\"region\", \"product\"],\n            how=\"inner\"\n        )\n        .select([\"region\", \"product\", \"units\", \"target\"])\n    )"
@@ -823,9 +823,9 @@
       "error": {
         "type": "TypeError",
         "message": "DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\nTypeError: DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\nTypeError: DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?\n"
       },
-      "duration_s": 0.2205,
+      "duration_s": 0.4935,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(left: pl.DataFrame, right: pl.DataFrame) -> pl.DataFrame:\n    return left.join(right, on=\"id\", how=\"inner\", suffixes=(\"\", \"_right\")).select(\"id\", \"value\", \"value_right\")"
@@ -841,7 +841,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2259,
+      "duration_s": 0.4532,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(orders: pl.DataFrame, customers: pl.DataFrame) -> pl.DataFrame:\n    return (\n        orders\n        .join(customers, on=\"customer_id\", how=\"left\")\n        .group_by(\"city\")\n        .agg(pl.col(\"amount\").sum().alias(\"amount\"))\n    )"
@@ -859,9 +859,9 @@
       "error": {
         "type": "ValueError",
         "message": "must specify either a fill `value` or `strategy`",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/expr.py\", line 3425, in fill_null\n    raise ValueError(msg)\nValueError: must specify either a fill `value` or `strategy`\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\expr.py\", line 3425, in fill_null\n    raise ValueError(msg)\nValueError: must specify either a fill `value` or `strategy`\n"
       },
-      "duration_s": 0.2225,
+      "duration_s": 0.4623,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(emp: pl.DataFrame) -> pl.DataFrame:\n    emp = emp.with_columns(pl.col(\"manager_id\").fill_null(None))\n    emp = emp.join(emp, on=\"manager_id\", how=\"left\", suffixes=(\"\", \"_mgr\"))\n    return emp.select(pl.col(\"name\"), pl.col(\"name\").alias(\"manager\")).drop(\"manager_id\")"
@@ -879,9 +879,9 @@
       "error": {
         "type": "TypeError",
         "message": "DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\nTypeError: DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\nTypeError: DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?\n"
       },
-      "duration_s": 0.2191,
+      "duration_s": 0.4554,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(items: pl.DataFrame, prices: pl.DataFrame) -> pl.DataFrame:\n    return items.join(prices, on=\"item\", how=\"left\", suffixes=(\"\", \"_p\"))"
@@ -899,9 +899,9 @@
       "error": {
         "type": "TypeError",
         "message": "Expr.rank() got an unexpected keyword argument 'partition_by'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\nTypeError: Expr.rank() got an unexpected keyword argument 'partition_by'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\nTypeError: Expr.rank() got an unexpected keyword argument 'partition_by'\n"
       },
-      "duration_s": 0.2188,
+      "duration_s": 0.4545,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"salary\").rank(\n            descending=True,\n            method=\"dense\",\n            partition_by=\"dept\"\n        ).alias(\"rank_in_dept\")\n    )"
@@ -917,7 +917,7 @@
       "reason": "DataFrames are different (value mismatch for column \"dept_max\")\n[left]: shape: (4,)\nSeries: 'dept_max' [i128]\n[\n\t140\n\t140\n\t140\n\t140\n]\n[right]: shape: (4,)\nSeries: 'dept_max' [i128]\n[\n\t140\n\t140\n\t90\n\t90\n]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2227,
+      "duration_s": 0.4598,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"salary\").over(\"dept\").max().alias(\"dept_max\")\n    )"
@@ -935,9 +935,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'Expr' object has no attribute 'agg'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/expr.py\", line 12992, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'Expr' object has no attribute 'agg'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\expr.py\", line 12992, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'Expr' object has no attribute 'agg'\n"
       },
-      "duration_s": 0.2235,
+      "duration_s": 0.4658,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"team\").alias(\"team\").over(\"team\").agg(pl.col(\"score\").mean()).alias(\"team_avg\")\n    )"
@@ -955,9 +955,9 @@
       "error": {
         "type": "ShapeError",
         "message": "the length of the window expression did not match that of the group\n\nError originated in expression: 'col(\"category\").value_counts().over([col(\"category\")])'\n\nThis error occurred in the following expression:\n\tcol(\"category\").value_counts().over([col(\"category\")])\n",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.ShapeError: the length of the window expression did not match that of the group\n\nError originated in expression: 'col(\"category\").value_counts().over([col(\"category\")])'\n\nThis error occurred in the following expression:\n\tcol(\"category\").value_counts().over([col(\"category\")])\n\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.ShapeError: the length of the window expression did not match that of the group\n\nError originated in expression: 'col(\"category\").value_counts().over([col(\"category\")])'\n\nThis error occurred in the following expression:\n\tcol(\"category\").value_counts().over([col(\"category\")])\n\n"
       },
-      "duration_s": 0.2295,
+      "duration_s": 0.4753,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"category\").value_counts().over(\"category\").alias(\"n_in_category\")\n    )"
@@ -973,7 +973,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2248,
+      "duration_s": 0.4504,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"amount\").cum_sum().over(\"account\").alias(\"running\"))"
@@ -991,9 +991,9 @@
       "error": {
         "type": "TypeError",
         "message": "DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\nTypeError: DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\nTypeError: DataFrame.join() got an unexpected keyword argument 'suffixes'. Did you mean 'suffix'?\n"
       },
-      "duration_s": 0.2243,
+      "duration_s": 0.4522,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    total = df.group_by(\"group\").agg(pl.col(\"amount\").sum())\n    result = df.join(\n        total,\n        on=\"group\",\n        how=\"left\",\n        suffixes=(\"\", \"_total\")\n    )\n    result = result.with_columns(\n        (pl.col(\"amount\") / pl.col(\"amount_total\")).alias(\"pct_of_group\")\n    )\n    return result"
@@ -1009,7 +1009,7 @@
       "reason": "DataFrames are different (value mismatch for column \"first_page\")\n[left]: shape: (5,)\nSeries: 'first_page' [str]\n[\n\t\"home\"\n\t\"cart\"\n\t\"pay\"\n\t\"home\"\n\t\"faq\"\n]\n[right]: shape: (5,)\nSeries: 'first_page' [str]\n[\n\t\"home\"\n\t\"home\"\n\t\"home\"\n\t\"home\"\n\t\"home\"\n]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.223,
+      "duration_s": 0.4554,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"page\").over(\"session\").alias(\"first_page\")\n    )"
@@ -1027,9 +1027,9 @@
       "error": {
         "type": "InvalidOperationError",
         "message": "arithmetic on dtypes f64 and str is not allowed (lhs: column 'value', rhs: expression `col(\"group\").mean()`); try an explicit cast first",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.InvalidOperationError: arithmetic on dtypes f64 and str is not allowed (lhs: column 'value', rhs: expression `col(\"group\").mean()`); try an explicit cast first\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.InvalidOperationError: arithmetic on dtypes f64 and str is not allowed (lhs: column 'value', rhs: expression `col(\"group\").mean()`); try an explicit cast first\n"
       },
-      "duration_s": 0.2315,
+      "duration_s": 0.4961,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        (pl.col(\"value\") - pl.col(\"group\").mean()).alias(\"diff_from_avg\")\n    )"
@@ -1045,7 +1045,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2227,
+      "duration_s": 0.4799,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"amount\").shift(1).over(\"account\").alias(\"prev_amount\")\n    )"
@@ -1063,9 +1063,9 @@
       "error": {
         "type": "ColumnNotFoundError",
         "message": "unable to find column \"max_sales\"; valid columns: [\"region\", \"sales\", \"sales_right\"]",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.ColumnNotFoundError: unable to find column \"max_sales\"; valid columns: [\"region\", \"sales\", \"sales_right\"]\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.ColumnNotFoundError: unable to find column \"max_sales\"; valid columns: [\"region\", \"sales\", \"sales_right\"]\n"
       },
-      "duration_s": 0.2325,
+      "duration_s": 0.5449,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    max_sales = df.group_by(\"region\").agg(pl.col(\"sales\").max())\n    df = df.join(max_sales, on=\"region\", how=\"left\")\n    df = df.with_columns(\n        (pl.col(\"sales\") / pl.col(\"max_sales\")).alias(\"vs_best\")\n    )\n    return df"
@@ -1081,7 +1081,7 @@
       "reason": "DataFrames are different (dtypes do not match, differences only)\n[left]: [(\"value\", List(Int128))]\n[right]: [(\"value\", Int128)]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2295,
+      "duration_s": 0.5361,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.sort([\"category\", \"value\"], descending=[True, True]).slice(0, 2).group_by(\"category\").agg(pl.all().alias(\"value\"))"
@@ -1097,7 +1097,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2241,
+      "duration_s": 0.5037,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(peak=pl.col(\"price\").cum_max().over(\"stock\"))"
@@ -1115,9 +1115,9 @@
       "error": {
         "type": "TypeError",
         "message": "Expr.rank() got an unexpected keyword argument 'dense'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\nTypeError: Expr.rank() got an unexpected keyword argument 'dense'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\nTypeError: Expr.rank() got an unexpected keyword argument 'dense'\n"
       },
-      "duration_s": 0.2199,
+      "duration_s": 0.4739,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    result = df.clone()\n    result = result.with_columns(\n        pl.col(\"value\").rank(dense=True, method=\"min\").over(\"group\").alias(\"rnk\"),\n        (pl.col(\"value\") == pl.col(\"value\").max().over(\"group\")).alias(\"is_top\"),\n    )\n    return result"
@@ -1133,7 +1133,7 @@
       "reason": "DataFrames are different (height (row count) mismatch)\n[left]: 3\n[right]: 2",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2265,
+      "duration_s": 0.517,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        lf\n        .filter(pl.col(\"value\") > 0)\n        .select(pl.col(\"grp\"), pl.col(\"value\").sum().alias(\"value\"))\n        .collect()\n    )"
@@ -1149,7 +1149,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2253,
+      "duration_s": 0.5352,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        lf\n        .filter(pl.col(\"value\") > 0)\n        .select(\"id\", \"value\")\n        .collect()\n    )"
@@ -1165,7 +1165,7 @@
       "reason": "DataFrames are different (columns mismatch: [\"doubled\"] in right, but not in left)\n[left]: [\"value\"]\n[right]: [\"value\", \"doubled\"]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2267,
+      "duration_s": 0.4539,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.with_columns(pl.col(\"value\") * 2).collect()"
@@ -1181,7 +1181,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2237,
+      "duration_s": 0.4874,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.sort(\"score\", descending=True).collect()"
@@ -1199,9 +1199,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'LazyFrame' object has no attribute 'alias'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 9652, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'LazyFrame' object has no attribute 'alias'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 9652, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'LazyFrame' object has no attribute 'alias'\n"
       },
-      "duration_s": 0.2231,
+      "duration_s": 0.4753,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.select(\"temp\").alias(\"temperature\").collect()"
@@ -1217,7 +1217,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2242,
+      "duration_s": 0.4671,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        lf\n        .filter(pl.col(\"qty\") >= 2)\n        .group_by(\"product\")\n        .agg(pl.col(\"qty\").sum())\n        .collect()\n    )"
@@ -1233,7 +1233,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2259,
+      "duration_s": 0.4895,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(orders: pl.LazyFrame, products: pl.LazyFrame) -> pl.DataFrame:\n    return (orders.join(products, on=\"product\", how=\"inner\")\n            .select(\"order_id\", \"price\")\n            .collect())"
@@ -1249,7 +1249,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2271,
+      "duration_s": 0.4698,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        lf\n        .group_by(\"city\")\n        .agg(\n            n=pl.len(),\n            avg=pl.col(\"temp\").mean()\n        )\n        .sort(\"city\")\n        .collect()\n    )"
@@ -1265,7 +1265,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2273,
+      "duration_s": 0.4579,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        lf\n        .filter(pl.col(\"kind\") == \"debit\")\n        .with_columns(abs_amount=pl.col(\"amount\").abs())\n        .filter(pl.col(\"abs_amount\") > 50)\n        .collect()\n    )"
@@ -1281,7 +1281,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2268,
+      "duration_s": 0.4994,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        lf\n        .sort(\"value\", descending=True)\n        .limit(2)\n        .collect()\n    )"
@@ -1297,7 +1297,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2295,
+      "duration_s": 0.4619,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(sales: pl.LazyFrame, regions: pl.LazyFrame) -> pl.DataFrame:\n    result = (\n        sales.join(regions, on=\"store\", how=\"left\")\n        .group_by(\"region\")\n        .agg(pl.col(\"amount\").sum())\n        .sort(\"region\")\n        .collect()\n    )\n    return result"
@@ -1313,7 +1313,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.223,
+      "duration_s": 0.4598,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        lf\n        .group_by(\"customer\")\n        .agg(pl.col(\"amount\").sum().alias(\"amount\"))\n        .filter(pl.col(\"amount\") > 100)\n        .sort(\"amount\", descending=True)\n        .collect()\n    )"
@@ -1329,7 +1329,7 @@
       "reason": "DataFrames are different (columns mismatch: [\"amount\"] in right, but not in left)\n[left]: [\"group\", \"group_total\"]\n[right]: [\"group\", \"amount\", \"group_total\"]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2246,
+      "duration_s": 0.5051,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        lf\n        .group_by(\"group\")\n        .agg(pl.col(\"amount\").sum().alias(\"group_total\"))\n        .with_columns(pl.col(\"group_total\").over(\"group\").alias(\"group_total\"))\n        .collect()\n    )"
@@ -1347,9 +1347,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprStringNameSpace' object has no attribute 'to_upper'. Did you mean: 'to_uppercase'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'to_upper'. Did you mean: 'to_uppercase'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'to_upper'. Did you mean: 'to_uppercase'?\n"
       },
-      "duration_s": 0.2187,
+      "duration_s": 0.4567,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"name\").str.to_upper().alias(\"upper\")\n    ).filter(pl.col(\"name\").str.contains(\"a\", case_insensitive=True))"
@@ -1365,7 +1365,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2187,
+      "duration_s": 0.4664,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"city\").str.to_lowercase())"
@@ -1381,7 +1381,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2241,
+      "duration_s": 0.4604,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"word\").str.len_chars().alias(\"n\"))"
@@ -1397,7 +1397,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2237,
+      "duration_s": 0.471,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"sku\").str.starts_with(\"AB\"))"
@@ -1413,7 +1413,7 @@
       "reason": "DataFrames are different (value mismatch for column \"path\")\n[left]: shape: (3,)\nSeries: 'path' [str]\n[\n\t\"a-b/c\"\n\t\"x-y\"\n\t\"z\"\n]\n[right]: shape: (3,)\nSeries: 'path' [str]\n[\n\t\"a-b-c\"\n\t\"x-y\"\n\t\"z\"\n]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2191,
+      "duration_s": 0.4809,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"path\").str.replace(\"/\", \"-\", literal=False))"
@@ -1431,9 +1431,9 @@
       "error": {
         "type": "AttributeRemovedError",
         "message": "`concat` was removed in version 2.0; use `str.join` instead. Note also that the default `delimiter` for `str.join` is an empty string, not a hyphen.",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/string.py\", line 3179, in __getattr__\n    raise_for_removed_attributes(\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        self,\n        ^^^^^\n    ...<5 lines>...\n        version=\"2.0\",\n        ^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 62, in raise_for_removed_attributes\n    raise AttributeRemovedError(msg, name=name, obj=obj)\npolars.exceptions.AttributeRemovedError: `concat` was removed in version 2.0; use `str.join` instead. Note also that the default `delimiter` for `str.join` is an empty string, not a hyphen.\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\string.py\", line 3179, in __getattr__\n    raise_for_removed_attributes(\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        self,\n        ^^^^^\n    ...<5 lines>...\n        version=\"2.0\",\n        ^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 62, in raise_for_removed_attributes\n    raise AttributeRemovedError(msg, name=name, obj=obj)\npolars.exceptions.AttributeRemovedError: `concat` was removed in version 2.0; use `str.join` instead. Note also that the default `delimiter` for `str.join` is an empty string, not a hyphen.\n"
       },
-      "duration_s": 0.2141,
+      "duration_s": 0.4574,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"first\").str.concat(\" \", pl.col(\"last\")).alias(\"full_name\"))"
@@ -1451,9 +1451,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprStringNameSpace' object has no attribute 'strip'. Did you mean: 'strip_chars'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'strip'. Did you mean: 'strip_chars'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'strip'. Did you mean: 'strip_chars'?\n"
       },
-      "duration_s": 0.2252,
+      "duration_s": 0.4714,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"name\").str.strip())"
@@ -1471,9 +1471,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprStringNameSpace' object has no attribute 'to_string'. Did you mean: 'to_integer'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'to_string'. Did you mean: 'to_integer'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'to_string'. Did you mean: 'to_integer'?\n"
       },
-      "duration_s": 0.2264,
+      "duration_s": 0.4572,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"code\").str.slice(4, None).str.to_string()\n    )"
@@ -1489,7 +1489,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2256,
+      "duration_s": 0.4644,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"ym\").str.slice(0, 4).alias(\"year\"))"
@@ -1505,7 +1505,7 @@
       "reason": "DataFrames are different (value mismatch for column \"n_a\")\n[left]: shape: (3,)\nSeries: 'n_a' [i128]\n[\n\t1\n\t1\n\t0\n]\n[right]: shape: (3,)\nSeries: 'n_a' [i128]\n[\n\t3\n\t1\n\t0\n]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2281,
+      "duration_s": 0.4568,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"word\").str.contains(\"a\", literal=False).cast(pl.Int64).alias(\"n_a\"))"
@@ -1523,9 +1523,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprStringNameSpace' object has no attribute 'pad'. Did you mean: 'pad_end'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'pad'. Did you mean: 'pad_end'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'pad'. Did you mean: 'pad_end'?\n"
       },
-      "duration_s": 0.2241,
+      "duration_s": 0.519,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"id\").str.pad(side=\"left\", padding_value=\"0\", max_length=4).alias(\"id\"))"
@@ -1541,7 +1541,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2256,
+      "duration_s": 0.4591,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"token\").str.slice(0, 3).str.to_lowercase().alias(\"prefix\")\n    )"
@@ -1557,7 +1557,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2274,
+      "duration_s": 0.4668,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"user\").agg(\n        tags=pl.col(\"tag\").sort().str.join(\", \")\n    )"
@@ -1575,9 +1575,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'Expr' object has no attribute 'map_lengths'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/expr.py\", line 12992, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'Expr' object has no attribute 'map_lengths'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\expr.py\", line 12992, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'Expr' object has no attribute 'map_lengths'\n"
       },
-      "duration_s": 0.2232,
+      "duration_s": 0.4683,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"sentence\").str.split(\" \").map_lengths().alias(\"n_words\")\n    )"
@@ -1595,9 +1595,9 @@
       "error": {
         "type": "InvalidOperationError",
         "message": "`month` operation not supported for dtype `str`\n\nThis error occurred in the following expression:\n\tcol(\"ts\").dt.month()\n",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.InvalidOperationError: `month` operation not supported for dtype `str`\n\nThis error occurred in the following expression:\n\tcol(\"ts\").dt.month()\n\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.InvalidOperationError: `month` operation not supported for dtype `str`\n\nThis error occurred in the following expression:\n\tcol(\"ts\").dt.month()\n\n"
       },
-      "duration_s": 0.229,
+      "duration_s": 0.4666,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"ts\").str.to_date(),\n        pl.col(\"ts\").dt.month().alias(\"month\")\n    ).select(\"ts\", \"month\")"
@@ -1615,9 +1615,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'function' object has no attribute 'alias'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\nAttributeError: 'function' object has no attribute 'alias'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\nAttributeError: 'function' object has no attribute 'alias'\n"
       },
-      "duration_s": 0.2211,
+      "duration_s": 0.4686,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"d\").dt.year.alias(\"year\"))"
@@ -1633,7 +1633,7 @@
       "reason": "DataFrames are different (columns mismatch: [\"weekday\"] in right, but not in left)\n[left]: [\"d\"]\n[right]: [\"d\", \"weekday\"]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2253,
+      "duration_s": 0.4532,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"d\").dt.weekday() + 1)"
@@ -1651,9 +1651,9 @@
       "error": {
         "type": "TypeError",
         "message": "the truth value of an Expr is ambiguous\n\nYou probably got here by using a Python standard library function instead of the native expressions API.\nHere are some things you might want to try:\n- instead of `pl.col('a') and pl.col('b')`, use `pl.col('a') & pl.col('b')`\n- instead of `pl.col('a') in [y, z]`, use `pl.col('a').is_in([y, z])`\n- instead of `max(pl.col('a'), pl.col('b'))`, use `pl.max_horizontal(pl.col('a'), pl.col('b'))`\n",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/expr.py\", line 374, in __bool__\n    raise TypeError(msg)\nTypeError: the truth value of an Expr is ambiguous\n\nYou probably got here by using a Python standard library function instead of the native expressions API.\nHere are some things you might want to try:\n- instead of `pl.col('a') and pl.col('b')`, use `pl.col('a') & pl.col('b')`\n- instead of `pl.col('a') in [y, z]`, use `pl.col('a').is_in([y, z])`\n- instead of `max(pl.col('a'), pl.col('b'))`, use `pl.max_horizontal(pl.col('a'), pl.col('b'))`\n\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\expr.py\", line 374, in __bool__\n    raise TypeError(msg)\nTypeError: the truth value of an Expr is ambiguous\n\nYou probably got here by using a Python standard library function instead of the native expressions API.\nHere are some things you might want to try:\n- instead of `pl.col('a') and pl.col('b')`, use `pl.col('a') & pl.col('b')`\n- instead of `pl.col('a') in [y, z]`, use `pl.col('a').is_in([y, z])`\n- instead of `max(pl.col('a'), pl.col('b'))`, use `pl.max_horizontal(pl.col('a'), pl.col('b'))`\n\n"
       },
-      "duration_s": 0.2248,
+      "duration_s": 0.4571,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"d\").dt.year() == 2023 & pl.col(\"d\").dt.month() <= 6)"
@@ -1671,9 +1671,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprStringNameSpace' object has no attribute 'format'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'format'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\string.py\", line 3188, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprStringNameSpace' object has no attribute 'format'\n"
       },
-      "duration_s": 0.2233,
+      "duration_s": 0.4972,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"d\").str.format(\"{year}/{month}/{day}\")\n    )"
@@ -1691,9 +1691,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'function' object has no attribute 'alias'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\nAttributeError: 'function' object has no attribute 'alias'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\nAttributeError: 'function' object has no attribute 'alias'\n"
       },
-      "duration_s": 0.2197,
+      "duration_s": 0.5203,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"ts\").str.to_datetime().dt.hour.alias(\"hour\")\n    )"
@@ -1711,9 +1711,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprDateTimeNameSpace' object has no attribute 'days'. Did you mean: 'day'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/datetime.py\", line 2667, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprDateTimeNameSpace' object has no attribute 'days'. Did you mean: 'day'?. Did you mean: 'day'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\datetime.py\", line 2667, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprDateTimeNameSpace' object has no attribute 'days'. Did you mean: 'day'?. Did you mean: 'day'?\n"
       },
-      "duration_s": 0.2238,
+      "duration_s": 0.4746,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        (pl.col(\"end\") - pl.col(\"start\")).dt.days.alias(\"days\")\n    )"
@@ -1731,9 +1731,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprDateTimeNameSpace' object has no attribute 'to_date'. Did you mean: 'date'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/datetime.py\", line 2667, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprDateTimeNameSpace' object has no attribute 'to_date'. Did you mean: 'date'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\datetime.py\", line 2667, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprDateTimeNameSpace' object has no attribute 'to_date'. Did you mean: 'date'?\n"
       },
-      "duration_s": 0.2232,
+      "duration_s": 0.4721,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    df = df.with_columns(\n        pl.col(\"d\").dt.replace_time_zone(None).dt.to_date()\n    )\n    df = df.with_columns(\n        pl.col(\"d\").dt.to_date().dt.to_string(format=\"YYYY-MM\")\n    )\n    df = df.with_columns(\n        pl.col(\"d\").dt.to_date().dt.to_string(format=\"YYYY-MM\")\n    )\n    df = df.with_columns(\n        pl.col(\"d\").dt.to_date().dt.to_string(format=\"YYYY-MM\")\n    )\n    return df"
@@ -1751,9 +1751,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprDateTimeNameSpace' object has no attribute 'add_days'. Did you mean: 'total_days'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/datetime.py\", line 2667, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprDateTimeNameSpace' object has no attribute 'add_days'. Did you mean: 'total_days'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\datetime.py\", line 2667, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprDateTimeNameSpace' object has no attribute 'add_days'. Did you mean: 'total_days'?\n"
       },
-      "duration_s": 0.2219,
+      "duration_s": 0.4604,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    df = df.with_columns(\n        pl.col(\"d\").cast(pl.Date).dt.add_days(7).alias(\"due\")\n    )\n    return df"
@@ -1771,9 +1771,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprDateTimeNameSpace' object has no attribute 'day_name'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/datetime.py\", line 2667, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprDateTimeNameSpace' object has no attribute 'day_name'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\datetime.py\", line 2667, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprDateTimeNameSpace' object has no attribute 'day_name'\n"
       },
-      "duration_s": 0.2209,
+      "duration_s": 0.467,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"d\").dt.day_name().is_in([\"Saturday\", \"Sunday\"]))"
@@ -1791,9 +1791,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprDateTimeNameSpace' object has no attribute 'to_datetime'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 9, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/datetime.py\", line 2667, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprDateTimeNameSpace' object has no attribute 'to_datetime'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 9, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\datetime.py\", line 2667, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 83, in getattr_fallback\n    return super_getattr(name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprDateTimeNameSpace' object has no attribute 'to_datetime'\n"
       },
-      "duration_s": 0.2264,
+      "duration_s": 0.5105,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    df = df.with_columns(pl.col(\"d\").cast(pl.Date))\n    result = (\n        df\n        .group_by(\"d\")\n        .agg(pl.col(\"amount\").sum().alias(\"amount\"))\n        .sort(\"d\")\n        .with_columns(\n            pl.col(\"d\").dt.to_datetime().dt.truncate(\"month\").dt.strftime(\"%Y-%m\").alias(\"month\")\n        )\n        .drop(\"d\")\n    )\n    return result"
@@ -1811,9 +1811,9 @@
       "error": {
         "type": "TypeError",
         "message": "Expr.rank() got an unexpected keyword argument 'order'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\nTypeError: Expr.rank() got an unexpected keyword argument 'order'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\nTypeError: Expr.rank() got an unexpected keyword argument 'order'\n"
       },
-      "duration_s": 0.2187,
+      "duration_s": 0.4499,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    df = df.with_columns(\n        pl.col(\"d\").cast(pl.Date),\n        pl.col(\"user\").over(\"d\").rank(method=\"min\", order=\"descending\").over(\"user\").alias(\"prev_rank\"),\n        pl.col(\"d\").over(\"user\").shift(1).fill_null(None).alias(\"prev_d\"),\n    )\n    df = df.with_columns(\n        (pl.col(\"d\") - pl.col(\"prev_d\")).dt.days().alias(\"gap_days\")\n    )\n    df = df.drop(\"prev_rank\", \"prev_d\")\n    return df"
@@ -1831,9 +1831,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'Expr' object has no attribute 'with_columns'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/expr.py\", line 12992, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'Expr' object has no attribute 'with_columns'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\expr.py\", line 12992, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'Expr' object has no attribute 'with_columns'\n"
       },
-      "duration_s": 0.2254,
+      "duration_s": 0.4694,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"y\").cast(pl.Date).with_columns(\n            pl.col(\"m\").cast(pl.Date)\n        )\n    )"
@@ -1849,7 +1849,7 @@
       "reason": "DataFrames are different (columns mismatch: [\"tag\"] in left, but not in right)\n[left]: [\"user\", \"tag\"]\n[right]: [\"user\", \"tags\"]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2269,
+      "duration_s": 0.4743,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"user\").agg(pl.col(\"tag\").unique().sort())"
@@ -1867,9 +1867,9 @@
       "error": {
         "type": "InvalidOperationError",
         "message": "Series n, length 1 doesn't match the DataFrame height of 3\n\nIf you want expression: 0.int_range([1]) to be broadcasted, ensure it is a scalar (for instance by adding '.first()').",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.InvalidOperationError: Series n, length 1 doesn't match the DataFrame height of 3\n\nIf you want expression: 0.int_range([1]) to be broadcasted, ensure it is a scalar (for instance by adding '.first()').\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.InvalidOperationError: Series n, length 1 doesn't match the DataFrame height of 3\n\nIf you want expression: 0.int_range([1]) to be broadcasted, ensure it is a scalar (for instance by adding '.first()').\n"
       },
-      "duration_s": 0.2338,
+      "duration_s": 0.4736,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.int_range(0, 1).alias(\"n\"))"
@@ -1885,7 +1885,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2265,
+      "duration_s": 0.4647,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.explode(\"items\")"
@@ -1903,9 +1903,9 @@
       "error": {
         "type": "TypeError",
         "message": "'ExprListNameSpace' object is not callable",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\nTypeError: 'ExprListNameSpace' object is not callable\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\nTypeError: 'ExprListNameSpace' object is not callable\n"
       },
-      "duration_s": 0.2196,
+      "duration_s": 0.454,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"nums\").list().sum().alias(\"total\"))"
@@ -1923,9 +1923,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'Expr' object has no attribute 'contains'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/expr.py\", line 12992, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'Expr' object has no attribute 'contains'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\expr.py\", line 12992, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'Expr' object has no attribute 'contains'\n"
       },
-      "duration_s": 0.2227,
+      "duration_s": 0.463,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"tags\").contains(\"vip\"))"
@@ -1943,9 +1943,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'function' object has no attribute 'first'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\nAttributeError: 'function' object has no attribute 'first'\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\nAttributeError: 'function' object has no attribute 'first'\n"
       },
-      "duration_s": 0.2196,
+      "duration_s": 0.4554,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.list.first(\"path\").alias(\"first_step\"))"
@@ -1961,7 +1961,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2319,
+      "duration_s": 0.5106,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"point\").struct.field(\"x\").alias(\"x\"))"
@@ -1977,7 +1977,7 @@
       "reason": "DataFrames are different (columns mismatch: [\"sorted\"] in right, but not in left)\n[left]: [\"nums\"]\n[right]: [\"nums\", \"sorted\"]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2219,
+      "duration_s": 0.4672,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"nums\").sort())"
@@ -1995,9 +1995,9 @@
       "error": {
         "type": "InvalidOperationError",
         "message": "`max` operation not supported for dtype `list[i64]`\n\nThis error occurred in the following expression:\n\tcol(\"scores\").max()\n",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.InvalidOperationError: `max` operation not supported for dtype `list[i64]`\n\nThis error occurred in the following expression:\n\tcol(\"scores\").max()\n\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 10740, in with_columns\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.InvalidOperationError: `max` operation not supported for dtype `list[i64]`\n\nThis error occurred in the following expression:\n\tcol(\"scores\").max()\n\n"
       },
-      "duration_s": 0.2328,
+      "duration_s": 0.4661,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(best=pl.col(\"scores\").max())"
@@ -2013,7 +2013,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2266,
+      "duration_s": 0.5311,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"tags\").list.n_unique().alias(\"n_distinct\"))"
@@ -2031,9 +2031,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'ExprListNameSpace' object has no attribute 'map'. Did you mean: 'to_map'?",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprListNameSpace' object has no attribute 'map'. Did you mean: 'to_map'?. Did you mean: 'max'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\various.py\", line 761, in __getattr__\n    raise AttributeError(msg)\nAttributeError: 'ExprListNameSpace' object has no attribute 'map'. Did you mean: 'to_map'?. Did you mean: 'max'?\n"
       },
-      "duration_s": 0.2228,
+      "duration_s": 0.4573,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        (pl.col(\"nums\").list.map(lambda x: x * 2).list.sum().alias(\"doubled_sum\"))\n    )"
@@ -2051,9 +2051,9 @@
       "error": {
         "type": "TypeError",
         "message": "Expr.explode() takes 1 positional argument but 2 were given",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\nTypeError: Expr.explode() takes 1 positional argument but 2 were given\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\nTypeError: Expr.explode() takes 1 positional argument but 2 were given\n"
       },
-      "duration_s": 0.2202,
+      "duration_s": 0.4514,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.struct(\"point\").alias(\"point\").explode(pl.struct(\"point\")))"
@@ -2069,7 +2069,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2264,
+      "duration_s": 0.4974,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .sort([\"customer\", \"amount\"], descending=[True, True])\n        .with_columns(\n            pl.col(\"customer\").alias(\"customer\")\n        )\n        .group_by(\"customer\")\n        .agg(\n            pl.col(\"amount\").slice(0, 2).alias(\"top2\")\n        )\n    )"
@@ -2087,9 +2087,9 @@
       "error": {
         "type": "DuplicateError",
         "message": "projections contained duplicate output name 'subject'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 10574, in select\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.DuplicateError: projections contained duplicate output name 'subject'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 10574, in select\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.DuplicateError: projections contained duplicate output name 'subject'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.\n"
       },
-      "duration_s": 0.2289,
+      "duration_s": 0.4616,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .select(\n            pl.col(\"id\"),\n            pl.col(\"math\").alias(\"subject\"),\n            pl.col(\"math\").alias(\"score\"),\n            pl.col(\"science\").alias(\"subject\"),\n            pl.col(\"science\").alias(\"score\"),\n        )\n        .unpivot(\"subject\", \"score\")\n        .sort([\"id\", \"subject\"])\n    )"
@@ -2105,7 +2105,7 @@
       "reason": "DataFrames are different (dtypes do not match, differences only)\n[left]: [(\"value\", String)]\n[right]: [(\"value\", Int128)]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2271,
+      "duration_s": 0.46,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .select(\n            region=pl.col(\"region\"),\n            quarter=pl.concat_str([pl.col(\"q1\"), pl.col(\"q2\")]),\n            value=pl.concat_str([pl.col(\"q1\"), pl.col(\"q2\")])\n        )\n        .sort([\"region\", \"quarter\"])\n    )"
@@ -2121,7 +2121,7 @@
       "reason": "DataFrames are different (columns mismatch: [\"subject\", \"score\"] in left, but not in right)\n[left]: [\"id\", \"subject\", \"score\"]\n[right]: [\"id\", \"math\", \"science\"]",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2256,
+      "duration_s": 0.4923,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"id\").agg(pl.col(\"subject\").alias(\"subject\").first(), pl.col(\"score\").first())"
@@ -2137,7 +2137,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2239,
+      "duration_s": 0.451,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.rename({\"ds\": \"date\", \"y\": \"value\"})"
@@ -2155,9 +2155,9 @@
       "error": {
         "type": "DuplicateError",
         "message": "projections contained duplicate output name 'metric'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 10574, in select\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.DuplicateError: projections contained duplicate output name 'metric'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 10574, in select\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.DuplicateError: projections contained duplicate output name 'metric'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.\n"
       },
-      "duration_s": 0.2274,
+      "duration_s": 0.4663,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .select(\n            pl.col(\"day\"),\n            pl.col(\"clicks\").alias(\"metric\"),\n            pl.col(\"clicks\").alias(\"value\"),\n            pl.col(\"views\").alias(\"metric\"),\n            pl.col(\"views\").alias(\"value\"),\n            pl.col(\"signups\").alias(\"metric\"),\n            pl.col(\"signups\").alias(\"value\"),\n        )\n        .drop_duplicates([\"day\", \"metric\"])\n        .sort([\"day\", \"metric\"])\n    )"
@@ -2173,7 +2173,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.2289,
+      "duration_s": 0.4881,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .group_by([\"store\", \"day\"], maintain_order=True)\n        .agg(pl.col(\"sales\").sum().alias(\"sales\"))\n        .pivot(\n            on=\"day\",\n            index=\"store\",\n            values=\"sales\"\n        )\n        .sort(\"store\")\n    )"
@@ -2191,9 +2191,9 @@
       "error": {
         "type": "ComputeError",
         "message": "cannot compare string with numeric type (i32)\n\nThis error occurred in the following expression:\n\t[(col(\"value\")) > (dyn int: 5)]\n",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 9, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 5544, in filter\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.ComputeError: cannot compare string with numeric type (i32)\n\nThis error occurred in the following expression:\n\t[(col(\"value\")) > (dyn int: 5)]\n\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 9, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 5544, in filter\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.ComputeError: cannot compare string with numeric type (i32)\n\nThis error occurred in the following expression:\n\t[(col(\"value\")) > (dyn int: 5)]\n\n"
       },
-      "duration_s": 0.2294,
+      "duration_s": 0.4668,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .select(\n            pl.col(\"id\"),\n            pl.concat_str([pl.col(\"a\"), pl.col(\"b\"), pl.col(\"c\")]).alias(\"name\"),\n            pl.concat_str([pl.col(\"a\"), pl.col(\"b\"), pl.col(\"c\")]).alias(\"value\")\n        )\n        .filter(pl.col(\"value\") > 5)\n        .sort([\"id\", \"name\"])\n    )"
@@ -2211,9 +2211,9 @@
       "error": {
         "type": "DuplicateError",
         "message": "column with name 'count_right' already exists\n\nYou may want to try:\n- renaming the column prior to joining\n- using the `suffix` parameter to specify a suffix different to the default one ('_right')",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 10, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 8505, in join\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.DuplicateError: column with name 'count_right' already exists\n\nYou may want to try:\n- renaming the column prior to joining\n- using the `suffix` parameter to specify a suffix different to the default one ('_right')\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 10, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 114, in wrapper\n    return function(*args, **kwargs)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 8505, in join\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.DuplicateError: column with name 'count_right' already exists\n\nYou may want to try:\n- renaming the column prior to joining\n- using the `suffix` parameter to specify a suffix different to the default one ('_right')\n"
       },
-      "duration_s": 0.2353,
+      "duration_s": 0.4924,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    unique_users = df[\"user\"].unique()\n    unique_actions = df[\"action\"].unique()\n    result = df.group_by(\"user\").agg(pl.col(\"action\").count().alias(\"count\"))\n    result = result.join(\n        pl.DataFrame({\"user\": unique_users, \"count\": [0] * len(unique_users)}),\n        on=\"user\",\n        how=\"left\"\n    )\n    result = result.join(\n        pl.DataFrame({\n            \"user\": unique_users,\n            \"count\": {action: 0 for action in unique_actions}\n        }),\n        on=\"user\",\n        how=\"left\"\n    )\n    result = result.with_columns(\n        pl.struct([\"count\"]).map_elements(lambda x: x.to_dict()).alias(\"counts\")\n    )\n    result = result.with_columns(\n        pl.struct([\"count\"]).map_elements(lambda x: x.to_dict()).alias(\"counts\")\n    )\n    return result"
@@ -2231,9 +2231,9 @@
       "error": {
         "type": "DuplicateError",
         "message": "projections contained duplicate output name 'medal'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 10574, in select\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.DuplicateError: projections contained duplicate output name 'medal'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 4, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 10574, in select\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.DuplicateError: projections contained duplicate output name 'medal'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.\n"
       },
-      "duration_s": 0.2274,
+      "duration_s": 0.5058,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .select(\n            pl.col(\"country\"),\n            pl.col(\"gold\").alias(\"medal\"),\n            pl.lit(\"gold\").alias(\"medal_type\"),\n            pl.col(\"silver\").alias(\"medal\"),\n            pl.lit(\"silver\").alias(\"medal_type\"),\n            pl.col(\"bronze\").alias(\"medal\"),\n            pl.lit(\"bronze\").alias(\"medal_type\"),\n        )\n        .unpivot(\"medal\", \"medal_type\", \"count\")\n        .select(\"country\", \"medal_type\", \"count\")\n        .with_columns(\n            pl.col(\"medal_type\").alias(\"medal\"),\n        )\n        .sort([\"country\", \"medal\"])\n    )"
@@ -2251,9 +2251,9 @@
       "error": {
         "type": "ColumnNotFoundError",
         "message": "unable to find column \"jan\"; valid columns: [\"product\", \"month\", \"revenue\"]",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 5, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/group_by.py\", line 375, in agg\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.ColumnNotFoundError: unable to find column \"jan\"; valid columns: [\"product\", \"month\", \"revenue\"]\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 5, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\group_by.py\", line 375, in agg\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.ColumnNotFoundError: unable to find column \"jan\"; valid columns: [\"product\", \"month\", \"revenue\"]\n"
       },
-      "duration_s": 0.2247,
+      "duration_s": 0.4666,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .group_by(\"product\")\n        .agg(\n            jan=pl.col(\"revenue\").filter(pl.col(\"month\") == \"jan\").sum(),\n            feb=pl.col(\"revenue\").filter(pl.col(\"month\") == \"feb\").sum(),\n            growth=(pl.col(\"jan\") - pl.col(\"feb\")).alias(\"growth\")\n        )\n        .sort(\"product\")\n    )"
@@ -2271,9 +2271,9 @@
       "error": {
         "type": "DuplicateError",
         "message": "projections contained duplicate output name 'avg'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/dataframe/frame.py\", line 10574, in select\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/lib/python3.13/dist-packages/polars/lazyframe/engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.DuplicateError: projections contained duplicate output name 'avg'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 2, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\dataframe\\frame.py\", line 10574, in select\n    ._collect_eager(optimizations=QueryOptFlags._eager())\n     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\frame.py\", line 1947, in _collect_eager\n    return _eager_engine().collect(\n           ~~~~~~~~~~~~~~~~~~~~~~~^\n        self, optimizations=optimizations, background=False\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\lazyframe\\engine.py\", line 408, in collect\n    return wrap_df(ldf.collect(self.name, callback))\n                   ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\npolars.exceptions.DuplicateError: projections contained duplicate output name 'avg'. It's possible that multiple expressions are returning the same default column name. If this is the case, try renaming the columns with `.alias(\"new_name\")` to avoid duplicate column names.\n"
       },
-      "duration_s": 0.2273,
+      "duration_s": 0.461,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"math\", \"science\", \"art\").mean().alias(\"avg\"), pl.lit(\"math\").alias(\"subject\"))"
@@ -2289,7 +2289,7 @@
       "reason": "output matched the reference",
       "warnings": [],
       "error": null,
-      "duration_s": 0.228,
+      "duration_s": 0.5559,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    result = df.group_by([\"region\", \"segment\", \"product\"]).agg(pl.col(\"units\").sum()).pivot(\n        on=\"product\", values=\"units\"\n    )\n    result = result.fill_null(0)\n    return result.sort([\"region\", \"segment\"])"
@@ -2307,9 +2307,9 @@
       "error": {
         "type": "AttributeError",
         "message": "'Expr' object has no attribute 'rename'",
-        "traceback": "Traceback (most recent call last):\n  File \"/content/polars-rag-vs-ft/src/polars_llm/bench/_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"/usr/local/lib/python3.13/dist-packages/polars/expr/expr.py\", line 12992, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"/usr/local/lib/python3.13/dist-packages/polars/_utils/expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'Expr' object has no attribute 'rename'. Did you mean: 'name'?\n"
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\src\\polars_llm\\bench\\_child.py\", line 173, in main\n    out = solve(**inputs)\n  File \"<solution>\", line 3, in solve\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\expr\\expr.py\", line 12992, in __getattr__\n    return getattr_fallback(self, super(), name)\n  File \"C:\\Users\\celab\\OneDrive\\Masa\u00fcst\u00fc\\RAG-FINETUNE\\.venv\\Lib\\site-packages\\polars\\_utils\\expired.py\", line 87, in getattr_fallback\n    raise AttributeError(msg, name=name, obj=obj)\nAttributeError: 'Expr' object has no attribute 'rename'. Did you mean: 'name'?\n"
       },
-      "duration_s": 0.226,
+      "duration_s": 0.4744,
       "stdout": "",
       "stderr": "",
       "extracted_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(\n        pl.all().exclude(\"region\").rename([\"q1\", \"q2\", \"q3\", \"q4\"], [\"quarter\"]),\n        avg=pl.all().exclude(\"region\").mean(),\n    ).pivot(\n        on=\"quarter\",\n        index=\"quarter\",\n        value_name=\"avg\",\n        values=[\"q1\", \"q2\", \"q3\", \"q4\"],\n    ).select(pl.all().sort(\"quarter\"))"
