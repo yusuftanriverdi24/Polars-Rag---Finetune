@@ -41,3 +41,15 @@ def test_context_block_present_only_when_given():
     withctx = build_user_prompt(TASK, context="pl.DataFrame.group_by(...) aggregates rows.")
     assert "documentation" in withctx
     assert "group_by" in withctx
+
+
+def test_system_prompt_does_not_leak_specific_apis():
+    # Naming removed APIs / their 2.0 replacements would leak the benchmark's
+    # answers into the baseline. Keep the system prompt generic.
+    leaky = [
+        "group_by", "groupby", "unpivot", "melt", "with_row_index",
+        "with_row_count", "pivot", "map_elements", "apply", ".loc", ".iloc",
+        "inplace", ".merge", "sort_values", "replace_strict", "nulls_equal",
+    ]
+    for name in leaky:
+        assert name not in SYSTEM_PROMPT, name

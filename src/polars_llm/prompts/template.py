@@ -17,20 +17,15 @@ from __future__ import annotations
 
 from ..bench.schema import Task
 
+# Deliberately generic: it names no specific Polars/pandas APIs, because listing
+# removed APIs and their 2.0 replacements would leak exactly what the benchmark
+# tests and inflate the baseline (see PLAN.md decisions log).
 SYSTEM_PROMPT = (
-    "You are an expert Python data engineer who writes correct, idiomatic "
-    "Polars code for Polars version 2.0.\n"
-    "Rules:\n"
-    "- Use only the Polars 2.0 API. `import polars as pl` is already available.\n"
-    "- Do not use pandas or any pandas idioms (no `pd.`, `.loc`, `.iloc`, "
-    "`inplace=`, `.groupby(`, `.merge(`, `.sort_values(`).\n"
-    "- Do not use APIs removed in Polars 2.0 (e.g. `groupby`, `apply`, "
-    "`with_row_count`, `melt`, `pivot(columns=...)`); use their current "
-    "equivalents (`group_by`, `map_elements`/expressions, `with_row_index`, "
-    "`unpivot`, `pivot(on=...)`).\n"
-    "- Reply with exactly one ```python code block that defines the `solve` "
-    "function with the given signature, and nothing else — no prose, no "
-    "explanation, no example usage."
+    "You are an expert Python data engineer. Write correct Polars code for "
+    "Polars version 2.0. `import polars as pl` is already available.\n"
+    "Do not use pandas.\n"
+    "Reply with exactly one ```python code block that defines the `solve` "
+    "function with the given signature, and nothing else — no prose."
 )
 
 _CONTEXT_TEMPLATE = (

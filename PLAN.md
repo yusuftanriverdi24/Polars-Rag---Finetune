@@ -147,6 +147,8 @@ polars-rag-vs-ft/
 | Base model | **`Qwen/Qwen3.5-4B`** — the post-trained *instruct* model (base = `Qwen/Qwen3.5-4B-Base`; Unsloth mirror = `unsloth/Qwen3.5-4B`). Loaded in **bf16, no 4-bit**. It is a hybrid reasoning model with thinking **on by default**; we disable it via `enable_thinking=False` in the tokenizer chat template (Qwen3.5 removed the `/no_think` soft-switch). Unsloth supports it: `FastLanguageModel.from_pretrained(..., load_in_4bit=False, load_in_16bit=True)`. |
 | Decoding | Greedy (`do_sample=False`), `max_new_tokens=768`, one shared prompt template across all arms (A–E) |
 | Generation vs scoring | Split: `scripts/generate.py` (GPU, writes `results/<arm>/generations.jsonl`) then `scripts/score.py` (CPU, runs the benchmark runner → `results/<arm>/scores.json`) |
+| System prompt | **Generic, no API hints.** It says only: write correct Polars 2.0 code, do not use pandas, reply with exactly one ```python block defining `solve()` with the given signature, no prose. It must **not** list specific removed APIs, their 2.0 replacements (e.g. `group_by`, `unpivot`, `with_row_index`, `pivot(on=...)`) or specific pandas idioms: that leaks the answers to exactly what the benchmark tests and inflates the Arm A baseline (and every other arm sharing the template). Guarded by `tests/test_prompts.py`. Decided 2026-10-11, before any scored baseline run. |
+| Multimodal processor | Qwen3.5-4B is multimodal, so Unsloth returns a processor, not a tokenizer. `HFModel` does all text work (chat template, encoding with `text=` by keyword, left padding, pad token, decoding) through `getattr(processor, "tokenizer", processor)`; passing prompts positionally to the processor sends them as `images`. |
 
 ## 11. Polars 2.0 — key breaking changes
 

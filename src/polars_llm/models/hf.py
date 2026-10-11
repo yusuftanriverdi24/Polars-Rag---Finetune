@@ -10,6 +10,13 @@ for the mock pipeline) without pulling in the GPU stack.
 Thinking/reasoning is disabled by passing ``enable_thinking=False`` to the
 tokenizer chat template (Qwen3.5 is a hybrid reasoning model, thinking-on by
 default, and dropped the `/no_think` soft switch).
+
+Qwen3.5 is multimodal, so Unsloth returns a *processor* (text tokenizer + image
+processor) rather than a plain tokenizer. A processor's ``__call__`` takes
+``images`` as its first positional argument, so all text work (chat template,
+encoding, padding, decoding) goes through the underlying text tokenizer,
+``getattr(processor, "tokenizer", processor)``, and text is always passed by
+keyword.
 """
 
 from __future__ import annotations
@@ -43,7 +50,7 @@ class HFModel:
 
         FastLanguageModel.seed = seed  # best-effort determinism hook
 
-        model, tokenizer = FastLanguageModel.from_pretrained(
+        model, processor = FastLanguageModel.from_pretrained(
             model_name=model_id,
             max_seq_length=max_seq_length,
             dtype=torch.bfloat16,  # bf16, no quantization
@@ -57,6 +64,10 @@ class HFModel:
 
         FastLanguageModel.for_inference(model)
 
+        # Multimodal models come with a processor; use its text tokenizer.
+        # Plain-text models return the tokenizer itself (no `.tokenizer`).
+        tokenizer = getattr(processor, "tokenizer", processor)
+
         # Left-pad for decoder-only batched generation: with left padding every
         # sequence's real tokens end at the same position, so the generated
         # continuation is identical whether a prompt is run alone or in a batch
@@ -68,6 +79,7 @@ class HFModel:
         assert tokenizer.padding_side == "left", "batched generation requires left padding"
 
         self.model = model
+        self.processor = processor
         self.tokenizer = tokenizer
         self._torch = torch
 
@@ -93,7 +105,7 @@ class HFModel:
             prompts = [self._render(m) for m in batch]
 
             enc = self.tokenizer(
-                prompts,
+                text=prompts,  # by keyword: never let text land in `images`
                 return_tensors="pt",
                 padding=True,
                 truncation=True,
