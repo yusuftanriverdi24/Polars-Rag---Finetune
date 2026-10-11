@@ -16,6 +16,9 @@ venv/
 # Data: raw docs corpus (gitignored per PLAN.md Section 7); keep sft dataset
 data/raw/
 data/raw/**
+# Derived RAG artifacts (rebuilt by `python -m polars_llm.rag.chunk` / `.index`);
+# their stats + evaluation are committed under results/rag/.
+data/rag/
 
 # Large model / checkpoint artifacts
 *.safetensors

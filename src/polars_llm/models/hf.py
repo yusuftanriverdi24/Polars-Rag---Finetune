@@ -91,6 +91,11 @@ class HFModel:
             enable_thinking=self.enable_thinking,
         )
 
+    def count_prompt_tokens(self, messages: list[dict]) -> int:
+        """Length of the rendered prompt, as fed to the model (no truncation)."""
+
+        return len(self.tokenizer(text=self._render(messages), add_special_tokens=False)["input_ids"])
+
     def generate(
         self,
         messages_list: list[list[dict]],

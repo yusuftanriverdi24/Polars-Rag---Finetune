@@ -13,9 +13,13 @@ dependencies = [
 [project.optional-dependencies]
 # Installed only where needed; kept out of the base env so the benchmark
 # tooling stays lightweight and reproducible.
+# RAG (Phase 3). Exact pins so the chunker/index are reproducible. torch comes in
+# via sentence-transformers; on Colab `pip install -e ".[colab,rag]"` keeps the
+# preinstalled CUDA torch (already satisfies the requirement).
 rag = [
-    "sentence-transformers",
-    "lancedb",
+    "sentence-transformers==6.1.0",
+    "lancedb==0.40.0",
+    "pyyaml==6.0.3",
 ]
 datagen = [
     "anthropic",

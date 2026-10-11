@@ -68,3 +68,51 @@ def test_score_without_generations_raises(tmp_path):
 
     with pytest.raises(FileNotFoundError):
         score_script.run_scoring("nope", tmp_path, "benchmark/tasks.jsonl")
+
+
+def test_rag_generation_records_retrieved_chunks(tmp_path):
+    tasks = load_tasks("benchmark/tasks.jsonl")[:2]
+    model = make_reference_mock(tasks)
+    retrieved = {
+        tasks[0].id: [{"id": "api:DataFrame.filter", "title": "polars.DataFrame.filter"}],
+        tasks[1].id: [],
+    }
+    contexts = {tasks[0].id: "[1] polars.DataFrame.filter\nFilter rows.", tasks[1].id: ""}
+    generate_script.run_generation(
+        tasks, model, "B", tmp_path, context_map=contexts, retrieved_map=retrieved,
+        extra_meta={"rag": {"k": 5}},
+    )  # fmt: skip
+    lines = [json.loads(l) for l in (tmp_path / "B" / "generations.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert lines[0]["retrieved"] == retrieved[tasks[0].id]
+    assert lines[1]["retrieved"] == []
+    meta = json.loads((tmp_path / "B" / "generation_meta.json").read_text(encoding="utf-8"))
+    assert meta["rag"] == {"k": 5}
+
+
+def test_arm_a_records_have_no_retrieval_and_unchanged_prompt(tmp_path):
+    from polars_llm.prompts import build_messages
+
+    tasks = load_tasks("benchmark/tasks.jsonl")[:1]
+    generate_script.run_generation(tasks, make_reference_mock(tasks), "A", tmp_path)
+    line = json.loads((tmp_path / "A" / "generations.jsonl").read_text(encoding="utf-8").splitlines()[0])
+    assert "retrieved" not in line
+    # No context -> no documentation block in the prompt.
+    assert "documentation" not in build_messages(tasks[0], context=None)[1]["content"]
+
+
+def test_prompt_length_guard():
+    import pytest
+
+    class CountingModel:
+        max_seq_length = 100
+
+        def count_prompt_tokens(self, messages):
+            return sum(len(m["content"].split()) for m in messages)
+
+    short = [[{"role": "user", "content": "a b c"}]]
+    assert generate_script.check_prompt_lengths(CountingModel(), short, max_new_tokens=50) == 3
+    long = [[{"role": "user", "content": "w " * 60}]]
+    with pytest.raises(ValueError, match="max_seq_length"):
+        generate_script.check_prompt_lengths(CountingModel(), long, max_new_tokens=50)
+    # Models without a token counter (the CPU mock) are not checked.
+    assert generate_script.check_prompt_lengths(object(), long, max_new_tokens=50) is None

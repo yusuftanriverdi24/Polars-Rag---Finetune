@@ -1,0 +1,66 @@
+{
+  "polars_version": "2.0.0",
+  "tokenizer": "Qwen/Qwen3.5-4B@851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "chunks_sha256": "3832d3941e1a64f2327cf759b3f28cecc522d206bd169b49611eb7620babf236",
+  "params": {
+    "api_split_tokens": 1000,
+    "api_part_tokens": 700,
+    "guide_min_tokens": 300,
+    "guide_max_tokens": 500
+  },
+  "n_chunks": 2381,
+  "tokens_all": {
+    "count": 2381,
+    "total_tokens": 876913,
+    "mean": 368.3,
+    "min": 11,
+    "p10": 105,
+    "p25": 198,
+    "median": 341,
+    "p75": 505,
+    "p90": 666,
+    "p95": 725,
+    "max": 1237
+  },
+  "tokens_by_kind": {
+    "api": {
+      "count": 1864,
+      "total_tokens": 696516,
+      "mean": 373.7,
+      "min": 11,
+      "p10": 94,
+      "p25": 176,
+      "median": 338,
+      "p75": 566,
+      "p90": 685,
+      "p95": 770,
+      "max": 1237
+    },
+    "guide": {
+      "count": 517,
+      "total_tokens": 180397,
+      "mean": 348.9,
+      "min": 54,
+      "p10": 209,
+      "p25": 307,
+      "median": 346,
+      "p75": 421,
+      "p90": 479,
+      "p95": 495,
+      "max": 701
+    }
+  },
+  "n_api_names_documented": 1477,
+  "n_api_pages_split": 138,
+  "n_guide_chunks_with_api_names": 234,
+  "unresolved_api_entries": [
+    "polars:io.plugins.IOSourceScanFunction.io_source",
+    "polars:testing.parametric.dataframes",
+    "polars:testing.parametric.dtypes",
+    "polars:testing.parametric.lists",
+    "polars:testing.parametric.series",
+    "polars:testing.parametric.column",
+    "polars:testing.parametric.load_profile",
+    "polars:testing.parametric.set_profile"
+  ]
+}
