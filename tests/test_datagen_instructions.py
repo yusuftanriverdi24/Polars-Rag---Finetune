@@ -2,12 +2,18 @@
 
 import json
 
+import pytest
+
+from polars_llm.datagen import instructions as ins
 from polars_llm.datagen.instructions import (
     MockWriter,
+    initial_batch_size,
     instruction_problems,
+    load_checkpoint,
     mentions_method,
     parse_writer_output,
     solution_api_identifiers,
+    write_with_checkpoint,
     writer_messages,
 )
 
@@ -74,3 +80,112 @@ def test_writer_prompt_and_mock_writer():
     assert instruction_problems(pair["concise"], "concise", REC) == []
     assert instruction_problems(pair["descriptive"], "descriptive", REC) == []
     json.dumps(pair)
+
+
+# ---------------------------------------------------------------------------
+# adaptive batching + checkpoint/resume
+# ---------------------------------------------------------------------------
+
+SETTINGS = {"writer_model": "m", "writer_revision": "r", "writer_prompt_sha256": "h", "max_new_tokens": 400}
+RECS = [{"id": f"c{i}"} for i in range(10)]
+
+
+class OutOfMemoryError(RuntimeError):  # same class name as torch.OutOfMemoryError
+    pass
+
+
+def _reply(r):
+    return json.dumps({"concise": f"concise {r['id']}", "descriptive": f"descriptive {r['id']}"})
+
+
+def test_initial_batch_size_from_free_memory():
+    assert initial_batch_size(3.5) == 1  # L4 after loading the 9B writer: little headroom
+    assert initial_batch_size(21.0) == 16  # A100 40 GB
+    assert initial_batch_size(60.0) == 32  # capped
+    assert initial_batch_size(0.5) == 1
+
+
+def test_oom_halves_batch_and_retries_same_batch(tmp_path):
+    calls, freed = [], []
+
+    def write_batch(batch):
+        calls.append([r["id"] for r in batch])
+        if len(batch) > 2:
+            raise OutOfMemoryError("CUDA out of memory. Tried to allocate 2.00 GiB")
+        return [(_reply(r), 0.5) for r in batch]
+
+    ckpt = tmp_path / "ckpt.jsonl"
+    stats = write_with_checkpoint(RECS, write_batch, checkpoint=ckpt, settings=SETTINGS, batch_size=8,
+                                  free_memory=lambda: freed.append(1), log=lambda _: None)
+    assert calls[:3] == [[f"c{i}" for i in range(8)], [f"c{i}" for i in range(4)], ["c0", "c1"]]
+    assert [(e["from"], e["to"]) for e in stats["oom_events"]] == [(8, 4), (4, 2)] and len(freed) == 2
+    assert stats["final_batch_size"] == 2 and stats["n_written"] == 10
+    rows = load_checkpoint(ckpt, SETTINGS)
+    assert list(rows) == [r["id"] for r in RECS]  # every candidate once, in order
+    assert rows["c3"]["instructions"]["concise"] == "concise c3" and rows["c3"]["batch_size"] == 2
+
+
+def test_oom_at_batch_size_one_and_other_errors_raise(tmp_path):
+    def always_oom(batch):
+        raise OutOfMemoryError("CUDA out of memory")
+
+    with pytest.raises(RuntimeError, match="batch size 1"):
+        write_with_checkpoint(RECS, always_oom, checkpoint=tmp_path / "a.jsonl", settings=SETTINGS, batch_size=4,
+                              log=lambda _: None)
+
+    def broken(batch):
+        raise ValueError("not an OOM")
+
+    with pytest.raises(ValueError):
+        write_with_checkpoint(RECS, broken, checkpoint=tmp_path / "b.jsonl", settings=SETTINGS, batch_size=4,
+                              log=lambda _: None)
+
+
+def test_resume_skips_written_and_survives_a_truncated_line(tmp_path):
+    ckpt = tmp_path / "ckpt.jsonl"
+    seen = []
+
+    def crash_after_two_batches(batch):
+        if len(seen) == 2:
+            raise KeyboardInterrupt  # a disconnect
+        seen.append([r["id"] for r in batch])
+        return [(_reply(r), 0.1) for r in batch]
+
+    with pytest.raises(KeyboardInterrupt):
+        write_with_checkpoint(RECS, crash_after_two_batches, checkpoint=ckpt, settings=SETTINGS, batch_size=3,
+                              log=lambda _: None)
+    assert len(load_checkpoint(ckpt, SETTINGS)) == 6  # finished batches are on disk
+    with ckpt.open("a", encoding="utf-8") as fh:
+        fh.write('{"id": "c6", "raw": "half a li')  # killed mid-write
+
+    resumed = []
+
+    def write_batch(batch):
+        resumed.extend(r["id"] for r in batch)
+        return [(_reply(r), 0.1) for r in batch]
+
+    stats = write_with_checkpoint(RECS, write_batch, checkpoint=ckpt, settings=SETTINGS, batch_size=3,
+                                  log=lambda _: None)
+    assert resumed == ["c6", "c7", "c8", "c9"] and stats["n_resumed"] == 6
+    assert list(load_checkpoint(ckpt, SETTINGS)) == [r["id"] for r in RECS]
+
+
+def test_checkpoint_with_other_settings_is_refused(tmp_path):
+    ckpt = tmp_path / "ckpt.jsonl"
+    ins.append_rows(ckpt, [{"id": "c0", "raw": "", "instructions": None, **SETTINGS}])
+    with pytest.raises(SystemExit, match="other settings"):
+        load_checkpoint(ckpt, {**SETTINGS, "writer_prompt_sha256": "different"})
+
+
+def test_cli_mock_resume_writes_candidate_order(tmp_path):
+    cands = tmp_path / "cands.jsonl"
+    rec = {k: v for k, v in REC.items() if k != "id"}
+    cands.write_text("".join(json.dumps({**rec, "id": f"k{i}"}) + "\n" for i in range(5)), encoding="utf-8")
+    common = ["--candidates", str(cands), "--model", "mock", "--checkpoint", str(tmp_path / "ck.jsonl"),
+              "--out", str(tmp_path / "out.jsonl"), "--meta", str(tmp_path / "meta.json"), "--batch-size", "2"]
+    assert ins.main(common + ["--limit", "3"]) == 0  # interrupted run: only the first 3
+    assert ins.main(common) == 0
+    out = [json.loads(line) for line in (tmp_path / "out.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert [o["id"] for o in out] == [f"k{i}" for i in range(5)] and all(o["instructions"] for o in out)
+    meta = json.loads((tmp_path / "meta.json").read_text(encoding="utf-8"))
+    assert meta["this_session"]["n_resumed"] == 3 and meta["n_parsed"] == 5
