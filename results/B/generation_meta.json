@@ -1,0 +1,58 @@
+{
+  "arm": "B",
+  "model": "Qwen/Qwen3.5-4B",
+  "adapter": null,
+  "seed": 0,
+  "max_new_tokens": 768,
+  "batch_size": 8,
+  "max_seq_length": 4096,
+  "max_prompt_tokens": 2347,
+  "enable_thinking": false,
+  "n_tasks": 120,
+  "total_latency_s": 242.301,
+  "timestamp_utc": "2026-10-12T12:12:54.205532+00:00",
+  "lib_versions": {
+    "polars": "2.0.0",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.17.0",
+    "unsloth": "2026.10.3",
+    "peft": "0.21.2",
+    "trl": "0.29.1",
+    "accelerate": "1.15.0",
+    "sentence_transformers": "6.1.0",
+    "lancedb": "0.40.0"
+  },
+  "prompt": {
+    "system_prompt_sha256": "b23cee5d041d5f91d70b7c7ef08c188871d43ba8a568687e764f8aa4539f5a52",
+    "template_sha256": "220286ef6aa46ec318dbbd647dcf6aabf09bc97443df6b327d4c6d1903ea103a",
+    "system_prompt": "You are an expert Python data engineer. Write correct Polars code for Polars version 2.0. `import polars as pl` is already available.\nDo not use pandas.\nReply with exactly one ```python code block that defines the `solve` function with the given signature, and nothing else \u2014 no prose.",
+    "user_template": "{context_block}Write a Polars function for the following task.\n\nTask:\n{instruction}\n\nThe inputs are created by this setup code (your function receives these variables as arguments):\n```python\n{setup_code}\n```\n\nComplete exactly this function:\n```python\n{signature}\n    ...\n```\n\nReturn a single ```python block defining `solve` with that exact signature.",
+    "context_template": "Here is relevant Polars 2.0 documentation. Use it to write correct, up-to-date code:\n\n{context}\n\n----------------------------------------\n\n"
+  },
+  "rag": {
+    "query": "task instruction only",
+    "k": 5,
+    "context_budget_tokens": 2000,
+    "index_dir": "data/rag/index",
+    "index_meta": {
+      "built_at_utc": "2026-10-12T11:59:37.501454+00:00",
+      "chunks_file": "data/rag/chunks.jsonl",
+      "chunks_sha256": "403be6bcdbbd35be7b043edde6912dabd1724a09d8d31e37da4495a66612ebcd",
+      "n_chunks": 2381,
+      "embed_model": "ibm-granite/granite-embedding-small-english-r2",
+      "embed_revision": "2ab6fa8ea2d674564defd37171ae19079b864b33",
+      "embed_dim": 384,
+      "query_instruction": null,
+      "device": "cuda:0",
+      "vectors_fingerprint": "7d61c909d68a7dcf89c1d5909833e7858361371d5785d7e74c5e57b249b4c23c",
+      "lancedb_version": "0.40.0",
+      "fts": {
+        "column": "fts_text",
+        "engine": "lancedb-native-bm25"
+      },
+      "vector_search": "exact (flat), cosine on normalised vectors"
+    },
+    "max_context_tokens": 2000,
+    "mean_context_tokens": 1848.5
+  }
+}

@@ -1,0 +1,6430 @@
+{
+  "index_meta": {
+    "built_at_utc": "2026-10-12T11:59:37.501454+00:00",
+    "chunks_file": "data/rag/chunks.jsonl",
+    "chunks_sha256": "403be6bcdbbd35be7b043edde6912dabd1724a09d8d31e37da4495a66612ebcd",
+    "n_chunks": 2381,
+    "embed_model": "ibm-granite/granite-embedding-small-english-r2",
+    "embed_revision": "2ab6fa8ea2d674564defd37171ae19079b864b33",
+    "embed_dim": 384,
+    "query_instruction": null,
+    "device": "cuda:0",
+    "vectors_fingerprint": "7d61c909d68a7dcf89c1d5909833e7858361371d5785d7e74c5e57b249b4c23c",
+    "lancedb_version": "0.40.0",
+    "fts": {
+      "column": "fts_text",
+      "engine": "lancedb-native-bm25"
+    },
+    "vector_search": "exact (flat), cosine on normalised vectors"
+  },
+  "n_tasks": 120,
+  "n_distinct_api_names_needed": 81,
+  "needed_but_undocumented": [],
+  "default": {
+    "k": 5,
+    "budget_tokens": 2000,
+    "recall": {
+      "overall": 0.2035,
+      "n_tasks_scored": 120,
+      "by_category": {
+        "datetime": 0.1526,
+        "group_by": 0.156,
+        "join": 0.3769,
+        "lazy": 0.2065,
+        "list_struct": 0.1179,
+        "reshape": 0.222,
+        "select_filter": 0.1548,
+        "string": 0.2167,
+        "window": 0.2348
+      }
+    },
+    "recall_non_core": {
+      "overall": 0.281,
+      "n_tasks_scored": 112,
+      "by_category": {
+        "datetime": 0.3846,
+        "group_by": 0.1179,
+        "join": 0.4615,
+        "lazy": 0.27,
+        "list_struct": 0.3141,
+        "reshape": 0.1692,
+        "select_filter": 0.1111,
+        "string": 0.4107,
+        "window": 0.2372
+      }
+    },
+    "mean_chunks": 4.74,
+    "tasks": [
+      {
+        "id": "select_filter_001",
+        "category": "select_filter",
+        "recall": 0.6666666666666666,
+        "recall_non_core": null,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "DataFrame.select",
+          "col"
+        ],
+        "found": [
+          "DataFrame.filter",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.select"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#003",
+            "title": "Aggregation",
+            "section": "Filtering",
+            "n_tokens": 368
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#016",
+            "title": "Query Clauses",
+            "section": "LIMIT",
+            "n_tokens": 247
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:DataFrame.filter#p1",
+            "title": "polars.DataFrame.filter",
+            "section": "Manipulation/selection",
+            "n_tokens": 268
+          }
+        ],
+        "context_tokens": 1696
+      },
+      {
+        "id": "select_filter_002",
+        "category": "select_filter",
+        "recall": 0.0,
+        "recall_non_core": null,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#003",
+            "title": "Joins",
+            "section": "Quick reference table",
+            "n_tokens": 405
+          },
+          {
+            "id": "api:DataFrame.unique#p3",
+            "title": "polars.DataFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 262
+          },
+          {
+            "id": "api:DataFrame.remove#p1",
+            "title": "polars.DataFrame.remove",
+            "section": "Manipulation/selection",
+            "n_tokens": 302
+          },
+          {
+            "id": "api:DataFrame.unique#p1",
+            "title": "polars.DataFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 539
+          }
+        ],
+        "context_tokens": 1905
+      },
+      {
+        "id": "select_filter_003",
+        "category": "select_filter",
+        "recall": 0.0,
+        "recall_non_core": null,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.select"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.select"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Series.product",
+            "title": "polars.Series.product",
+            "section": "Aggregation",
+            "n_tokens": 105
+          },
+          {
+            "id": "api:DataFrame.product",
+            "title": "polars.DataFrame.product",
+            "section": "Aggregation",
+            "n_tokens": 208
+          },
+          {
+            "id": "api:Expr.product",
+            "title": "polars.Expr.product",
+            "section": "Aggregation",
+            "n_tokens": 171
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#006",
+            "title": "Joins",
+            "section": "Join strategies > Inner join",
+            "n_tokens": 331
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/expression-expansion.md#004",
+            "title": "Expression expansion",
+            "section": "Selecting all columns",
+            "n_tokens": 374
+          }
+        ],
+        "context_tokens": 1254
+      },
+      {
+        "id": "select_filter_004",
+        "category": "select_filter",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.is_between",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "Expr.is_between",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#002",
+            "title": "Window",
+            "section": "CUME_DIST",
+            "n_tokens": 533
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#001",
+            "title": "Aggregate",
+            "section": "",
+            "n_tokens": 497
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#004",
+            "title": "Window",
+            "section": "DENSE_RANK",
+            "n_tokens": 484
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#007",
+            "title": "Query Clauses",
+            "section": "JOIN",
+            "n_tokens": 431
+          }
+        ],
+        "context_tokens": 1983
+      },
+      {
+        "id": "select_filter_005",
+        "category": "select_filter",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.is_not_null",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.filter",
+          "Expr.is_not_null"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/migration/pandas.md#010",
+            "title": "Coming from Pandas",
+            "section": "Missing data",
+            "n_tokens": 349
+          },
+          {
+            "id": "api:DataFrame.drop_nulls#p1",
+            "title": "polars.DataFrame.drop_nulls",
+            "section": "Manipulation/selection",
+            "n_tokens": 128
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/missing-data.md#001",
+            "title": "Missing data",
+            "section": "",
+            "n_tokens": 313
+          },
+          {
+            "id": "api:read_csv#p8",
+            "title": "polars.read_csv",
+            "section": "Input/output > CSV",
+            "n_tokens": 669
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/missing-data.md#002",
+            "title": "Missing data",
+            "section": "Missing data metadata",
+            "n_tokens": 331
+          }
+        ],
+        "context_tokens": 1853
+      },
+      {
+        "id": "select_filter_006",
+        "category": "select_filter",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.is_in",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "Expr.is_in",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.unique#p1",
+            "title": "polars.DataFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 539
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:GroupBy.having",
+            "title": "polars.GroupBy.having",
+            "section": "GroupBy",
+            "n_tokens": 251
+          },
+          {
+            "id": "api:DataFrame.remove#p2",
+            "title": "polars.DataFrame.remove",
+            "section": "Manipulation/selection",
+            "n_tokens": 598
+          },
+          {
+            "id": "guide:docs/source/user-guide/misc/multiprocessing.md#006",
+            "title": "Multiprocessing",
+            "section": "References",
+            "n_tokens": 95
+          }
+        ],
+        "context_tokens": 1878
+      },
+      {
+        "id": "select_filter_007",
+        "category": "select_filter",
+        "recall": 0.0,
+        "recall_non_core": null,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.join_where#p3",
+            "title": "polars.DataFrame.join_where",
+            "section": "Manipulation/selection",
+            "n_tokens": 651
+          },
+          {
+            "id": "api:LazyFrame.join_where#p3",
+            "title": "polars.LazyFrame.join_where",
+            "section": "Manipulation/selection",
+            "n_tokens": 670
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          },
+          {
+            "id": "api:DataFrame.drop_nulls#p1",
+            "title": "polars.DataFrame.drop_nulls",
+            "section": "Manipulation/selection",
+            "n_tokens": 128
+          },
+          {
+            "id": "api:QueryResult.n_rows_total",
+            "title": "polars.QueryResult.n_rows_total",
+            "section": "QueryResult",
+            "n_tokens": 22
+          }
+        ],
+        "context_tokens": 1973
+      },
+      {
+        "id": "select_filter_008",
+        "category": "select_filter",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.head",
+          "DataFrame.select",
+          "DataFrame.sort"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.head",
+          "DataFrame.select",
+          "DataFrame.sort"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.rank#p1",
+            "title": "polars.Expr.rank",
+            "section": "Computation",
+            "n_tokens": 373
+          },
+          {
+            "id": "api:Expr.upper_bound",
+            "title": "polars.Expr.upper_bound",
+            "section": "Manipulation/selection",
+            "n_tokens": 165
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#005",
+            "title": "Aggregation",
+            "section": "Sorting",
+            "n_tokens": 364
+          },
+          {
+            "id": "api:LazyFrame.top_k",
+            "title": "polars.LazyFrame.top_k",
+            "section": "Manipulation/selection",
+            "n_tokens": 570
+          },
+          {
+            "id": "api:LazyFrame#p1",
+            "title": "polars.LazyFrame",
+            "section": "LazyFrame",
+            "n_tokens": 438
+          }
+        ],
+        "context_tokens": 1980
+      },
+      {
+        "id": "select_filter_009",
+        "category": "select_filter",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.mean",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.filter",
+          "Expr.mean"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#003",
+            "title": "Aggregation",
+            "section": "Filtering",
+            "n_tokens": 368
+          },
+          {
+            "id": "guide:docs/source/user-guide/sql/cte.md#002",
+            "title": "Common Table Expressions",
+            "section": "",
+            "n_tokens": 99
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/operators/index.rst#002",
+            "title": "Operators",
+            "section": "Logical",
+            "n_tokens": 460
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#002",
+            "title": "Window functions",
+            "section": "Operations per group",
+            "n_tokens": 478
+          },
+          {
+            "id": "api:DataFrame.join_asof#p1",
+            "title": "polars.DataFrame.join_asof",
+            "section": "Manipulation/selection",
+            "n_tokens": 364
+          }
+        ],
+        "context_tokens": 1826
+      },
+      {
+        "id": "select_filter_010",
+        "category": "select_filter",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.str.len_chars",
+          "col"
+        ],
+        "found": [
+          "Expr.str.len_chars"
+        ],
+        "missing": [
+          "DataFrame.filter",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.str.len_chars",
+            "title": "polars.Expr.str.len_chars",
+            "section": "String",
+            "n_tokens": 410
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/string.rst#005",
+            "title": "String",
+            "section": "INITCAP",
+            "n_tokens": 256
+          },
+          {
+            "id": "api:Series.str.len_chars",
+            "title": "polars.Series.str.len_chars",
+            "section": "String",
+            "n_tokens": 235
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/string.rst#012",
+            "title": "String",
+            "section": "REVERSE",
+            "n_tokens": 239
+          },
+          {
+            "id": "api:Expr.cat.len_chars",
+            "title": "polars.Expr.cat.len_chars",
+            "section": "Categories",
+            "n_tokens": 425
+          }
+        ],
+        "context_tokens": 1626
+      },
+      {
+        "id": "select_filter_011",
+        "category": "select_filter",
+        "recall": 0.5,
+        "recall_non_core": null,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.filter"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.over#p4",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 663
+          },
+          {
+            "id": "api:Expr.over#p5",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 463
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/operators/index.rst#002",
+            "title": "Operators",
+            "section": "Logical",
+            "n_tokens": 460
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#004",
+            "title": "Window functions",
+            "section": "Mapping results to dataframe rows > `group_to_rows`",
+            "n_tokens": 297
+          },
+          {
+            "id": "api:RowsError",
+            "title": "polars.RowsError",
+            "section": "Exceptions > Errors",
+            "n_tokens": 18
+          }
+        ],
+        "context_tokens": 1966
+      },
+      {
+        "id": "select_filter_012",
+        "category": "select_filter",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.over",
+          "len"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "Expr.over",
+          "len"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.unique#p1",
+            "title": "polars.DataFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 539
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:LazyFrame.unique#p1",
+            "title": "polars.LazyFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 560
+          },
+          {
+            "id": "api:Expr.unique_counts",
+            "title": "polars.Expr.unique_counts",
+            "section": "Computation",
+            "n_tokens": 433
+          }
+        ],
+        "context_tokens": 1918
+      },
+      {
+        "id": "select_filter_013",
+        "category": "select_filter",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.shift",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "Expr.shift",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#001",
+            "title": "Window",
+            "section": "",
+            "n_tokens": 336
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#005",
+            "title": "Window",
+            "section": "FIRST_VALUE",
+            "n_tokens": 203
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#001",
+            "title": "Aggregate",
+            "section": "",
+            "n_tokens": 497
+          },
+          {
+            "id": "api:read_ipc_stream",
+            "title": "polars.read_ipc_stream",
+            "section": "Input/output > Feather / IPC",
+            "n_tokens": 459
+          }
+        ],
+        "context_tokens": 1970
+      },
+      {
+        "id": "select_filter_014",
+        "category": "select_filter",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.mean",
+          "Expr.over",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "Expr.mean",
+          "Expr.over",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#001",
+            "title": "Aggregate",
+            "section": "",
+            "n_tokens": 497
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#014",
+            "title": "Window",
+            "section": "ROW_NUMBER",
+            "n_tokens": 491
+          },
+          {
+            "id": "guide:docs/source/user-guide/concepts/data-types-and-structures.md#007",
+            "title": "Data types and structures",
+            "section": "Appendix: full data types table",
+            "n_tokens": 168
+          }
+        ],
+        "context_tokens": 1966
+      },
+      {
+        "id": "group_by_001",
+        "category": "group_by",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#011",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 505
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#014",
+            "title": "Window",
+            "section": "ROW_NUMBER",
+            "n_tokens": 491
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#001",
+            "title": "Aggregate",
+            "section": "",
+            "n_tokens": 497
+          },
+          {
+            "id": "api:QueryResult.n_rows_total",
+            "title": "polars.QueryResult.n_rows_total",
+            "section": "QueryResult",
+            "n_tokens": 22
+          }
+        ],
+        "context_tokens": 1993
+      },
+      {
+        "id": "group_by_002",
+        "category": "group_by",
+        "recall": 0.42857142857142855,
+        "recall_non_core": 0.4,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "DataFrame.sort",
+          "Expr.alias",
+          "Expr.mean",
+          "GroupBy.agg",
+          "col",
+          "len"
+        ],
+        "found": [
+          "DataFrame.group_by",
+          "col",
+          "len"
+        ],
+        "missing": [
+          "DataFrame.sort",
+          "Expr.alias",
+          "Expr.mean",
+          "GroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#011",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 505
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#010",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 592
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#005",
+            "title": "Window functions",
+            "section": "Mapping results to dataframe rows > `join`",
+            "n_tokens": 447
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#004",
+            "title": "Aggregation",
+            "section": "Nested grouping",
+            "n_tokens": 340
+          },
+          {
+            "id": "api:Series.mean",
+            "title": "polars.Series.mean",
+            "section": "Aggregation",
+            "n_tokens": 53
+          }
+        ],
+        "context_tokens": 1999
+      },
+      {
+        "id": "group_by_003",
+        "category": "group_by",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "GroupBy.agg",
+          "len"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "GroupBy.agg",
+          "len"
+        ],
+        "retrieved": [
+          {
+            "id": "api:count",
+            "title": "polars.count",
+            "section": "Functions",
+            "n_tokens": 446
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#009",
+            "title": "Window",
+            "section": "NTH_VALUE",
+            "n_tokens": 65
+          },
+          {
+            "id": "api:Series.value_counts",
+            "title": "polars.Series.value_counts",
+            "section": "Descriptive",
+            "n_tokens": 641
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/basic-operations.md#004",
+            "title": "Basic operations",
+            "section": "Counting (unique) values",
+            "n_tokens": 437
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#001",
+            "title": "Window",
+            "section": "",
+            "n_tokens": 336
+          }
+        ],
+        "context_tokens": 1981
+      },
+      {
+        "id": "group_by_004",
+        "category": "group_by",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.max",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.max",
+          "GroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#004",
+            "title": "Window",
+            "section": "DENSE_RANK",
+            "n_tokens": 484
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#013",
+            "title": "Window",
+            "section": "RANK",
+            "n_tokens": 532
+          },
+          {
+            "id": "api:Series.max_by",
+            "title": "polars.Series.max_by",
+            "section": "Aggregation",
+            "n_tokens": 157
+          }
+        ],
+        "context_tokens": 1984
+      },
+      {
+        "id": "group_by_005",
+        "category": "group_by",
+        "recall": 0.25,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.sum",
+          "GroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "api:QueryResult.n_rows_total",
+            "title": "polars.QueryResult.n_rows_total",
+            "section": "QueryResult",
+            "n_tokens": 22
+          },
+          {
+            "id": "api:Expr.product",
+            "title": "polars.Expr.product",
+            "section": "Aggregation",
+            "n_tokens": 171
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#011",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 505
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#011",
+            "title": "Joins",
+            "section": "Cartesian product",
+            "n_tokens": 149
+          },
+          {
+            "id": "api:DataFrame.product",
+            "title": "polars.DataFrame.product",
+            "section": "Aggregation",
+            "n_tokens": 208
+          }
+        ],
+        "context_tokens": 1119
+      },
+      {
+        "id": "group_by_006",
+        "category": "group_by",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.mean",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.mean",
+          "GroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/expressions/structs.md#001",
+            "title": "Structs",
+            "section": "",
+            "n_tokens": 350
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/structs.md#003",
+            "title": "Structs",
+            "section": "Inferring the data type `Struct` from dictionaries",
+            "n_tokens": 300
+          },
+          {
+            "id": "api:Expr.rank#p1",
+            "title": "polars.Expr.rank",
+            "section": "Computation",
+            "n_tokens": 373
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/structs.md#005",
+            "title": "Structs",
+            "section": "Practical use-cases of `Struct` columns > Identifying duplicate rows",
+            "n_tokens": 303
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#003",
+            "title": "Aggregate",
+            "section": "APPROX_QUANTILE",
+            "n_tokens": 502
+          }
+        ],
+        "context_tokens": 1904
+      },
+      {
+        "id": "group_by_007",
+        "category": "group_by",
+        "recall": 0.2,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "DataFrame.group_by",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.filter",
+          "DataFrame.group_by",
+          "Expr.sum",
+          "GroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#001",
+            "title": "Aggregate",
+            "section": "",
+            "n_tokens": 497
+          },
+          {
+            "id": "api:QueryResult.n_rows_total",
+            "title": "polars.QueryResult.n_rows_total",
+            "section": "QueryResult",
+            "n_tokens": 22
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/user-defined-python-functions.md#002",
+            "title": "User-defined Python functions",
+            "section": "Processing individual values with `map_elements()`",
+            "n_tokens": 447
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/user-defined-python-functions.md#004",
+            "title": "User-defined Python functions",
+            "section": "Example: A fast custom function using Numba",
+            "n_tokens": 488
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          }
+        ],
+        "context_tokens": 1950
+      },
+      {
+        "id": "group_by_008",
+        "category": "group_by",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.n_unique",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.n_unique",
+          "GroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Series.unique_counts",
+            "title": "polars.Series.unique_counts",
+            "section": "Descriptive",
+            "n_tokens": 95
+          },
+          {
+            "id": "api:Expr.unique_counts",
+            "title": "polars.Expr.unique_counts",
+            "section": "Computation",
+            "n_tokens": 433
+          },
+          {
+            "id": "api:Series.value_counts",
+            "title": "polars.Series.value_counts",
+            "section": "Descriptive",
+            "n_tokens": 641
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:Series.is_first_distinct",
+            "title": "polars.Series.is_first_distinct",
+            "section": "Descriptive",
+            "n_tokens": 109
+          }
+        ],
+        "context_tokens": 1676
+      },
+      {
+        "id": "group_by_009",
+        "category": "group_by",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.product",
+            "title": "polars.Expr.product",
+            "section": "Aggregation",
+            "n_tokens": 171
+          },
+          {
+            "id": "api:Series.product",
+            "title": "polars.Series.product",
+            "section": "Aggregation",
+            "n_tokens": 105
+          },
+          {
+            "id": "api:Series.cum_prod",
+            "title": "polars.Series.cum_prod",
+            "section": "Computation",
+            "n_tokens": 144
+          },
+          {
+            "id": "api:DataFrame.product",
+            "title": "polars.DataFrame.product",
+            "section": "Aggregation",
+            "n_tokens": 208
+          },
+          {
+            "id": "api:Expr.cum_prod",
+            "title": "polars.Expr.cum_prod",
+            "section": "Computation",
+            "n_tokens": 338
+          }
+        ],
+        "context_tokens": 1032
+      },
+      {
+        "id": "group_by_010",
+        "category": "group_by",
+        "recall": 0.16666666666666666,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.max",
+          "Expr.min",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.max",
+          "Expr.min",
+          "GroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#002",
+            "title": "Window",
+            "section": "CUME_DIST",
+            "n_tokens": 533
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#004",
+            "title": "Window",
+            "section": "DENSE_RANK",
+            "n_tokens": 484
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/lists-and-arrays.md#008",
+            "title": "Lists and arrays",
+            "section": "Working with lists > Row-wise computations",
+            "n_tokens": 421
+          },
+          {
+            "id": "api:Expr.rank#p1",
+            "title": "polars.Expr.rank",
+            "section": "Computation",
+            "n_tokens": 373
+          },
+          {
+            "id": "api:DataFrame.set_sorted",
+            "title": "polars.DataFrame.set_sorted",
+            "section": "Manipulation/selection",
+            "n_tokens": 113
+          }
+        ],
+        "context_tokens": 1991
+      },
+      {
+        "id": "group_by_011",
+        "category": "group_by",
+        "recall": 0.16666666666666666,
+        "recall_non_core": 0.25,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.filter",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "Expr.sum"
+        ],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.filter",
+          "GroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#001",
+            "title": "Aggregate",
+            "section": "",
+            "n_tokens": 497
+          },
+          {
+            "id": "api:Series.sum",
+            "title": "polars.Series.sum",
+            "section": "Aggregation",
+            "n_tokens": 148
+          },
+          {
+            "id": "api:Expr.sum",
+            "title": "polars.Expr.sum",
+            "section": "Aggregation",
+            "n_tokens": 209
+          },
+          {
+            "id": "guide:docs/source/releases/upgrade/0.19.md#001",
+            "title": "Version 0.19",
+            "section": "Breaking changes",
+            "n_tokens": 492
+          },
+          {
+            "id": "guide:docs/source/user-guide/installation.md#007",
+            "title": "Installation",
+            "section": "Feature flags > Rust",
+            "n_tokens": 470
+          }
+        ],
+        "context_tokens": 1873
+      },
+      {
+        "id": "group_by_012",
+        "category": "group_by",
+        "recall": 0.5714285714285714,
+        "recall_non_core": 0.6666666666666666,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "DataFrame.select",
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "GroupBy.agg",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.select",
+          "DataFrame.with_columns",
+          "Expr.sum"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#002",
+            "title": "Window functions",
+            "section": "Operations per group",
+            "n_tokens": 478
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/categorical-data-and-enums.md#010",
+            "title": "Categorical data and enums",
+            "section": "Performance considerations on categorical data types > Data type `Categorical` and encodings",
+            "n_tokens": 430
+          },
+          {
+            "id": "guide:docs/source/user-guide/getting-started.md#005",
+            "title": "Getting started",
+            "section": "Expressions and contexts > `group_by`",
+            "n_tokens": 270
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#001",
+            "title": "Aggregate",
+            "section": "",
+            "n_tokens": 497
+          },
+          {
+            "id": "api:Series.cat.physical",
+            "title": "polars.Series.cat.physical",
+            "section": "Categories",
+            "n_tokens": 60
+          }
+        ],
+        "context_tokens": 1810
+      },
+      {
+        "id": "group_by_013",
+        "category": "group_by",
+        "recall": 0.4,
+        "recall_non_core": 0.3333333333333333,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "DataFrame.group_by",
+          "col"
+        ],
+        "missing": [
+          "Expr.alias",
+          "Expr.sum",
+          "GroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.over#p4",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 663
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#014",
+            "title": "Window",
+            "section": "ROW_NUMBER",
+            "n_tokens": 491
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/basic-operations.md#004",
+            "title": "Basic operations",
+            "section": "Counting (unique) values",
+            "n_tokens": 437
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#002",
+            "title": "Aggregation",
+            "section": "Basic aggregations",
+            "n_tokens": 360
+          }
+        ],
+        "context_tokens": 1999
+      },
+      {
+        "id": "group_by_014",
+        "category": "group_by",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 3,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.rolling_sum",
+            "title": "polars.Expr.rolling_sum",
+            "section": "Computation",
+            "n_tokens": 962
+          },
+          {
+            "id": "api:Expr.arr.dot",
+            "title": "polars.Expr.arr.dot",
+            "section": "Array",
+            "n_tokens": 828
+          },
+          {
+            "id": "api:Series.product",
+            "title": "polars.Series.product",
+            "section": "Aggregation",
+            "n_tokens": 105
+          }
+        ],
+        "context_tokens": 1935
+      },
+      {
+        "id": "join_001",
+        "category": "join",
+        "recall": 0.5,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join",
+          "DataFrame.select"
+        ],
+        "found": [
+          "DataFrame.join"
+        ],
+        "missing": [
+          "DataFrame.select"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#006",
+            "title": "Joins",
+            "section": "Join strategies > Inner join",
+            "n_tokens": 331
+          },
+          {
+            "id": "api:LazyFrame.join#p2",
+            "title": "polars.LazyFrame.join",
+            "section": "Manipulation/selection",
+            "n_tokens": 697
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#014",
+            "title": "Window",
+            "section": "ROW_NUMBER",
+            "n_tokens": 491
+          },
+          {
+            "id": "api:DataFrame.join_where#p1",
+            "title": "polars.DataFrame.join_where",
+            "section": "Manipulation/selection",
+            "n_tokens": 225
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#011",
+            "title": "Joins",
+            "section": "Cartesian product",
+            "n_tokens": 149
+          }
+        ],
+        "context_tokens": 1961
+      },
+      {
+        "id": "join_002",
+        "category": "join",
+        "recall": 0.5,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join",
+          "DataFrame.select"
+        ],
+        "found": [
+          "DataFrame.join"
+        ],
+        "missing": [
+          "DataFrame.select"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#003",
+            "title": "Joins",
+            "section": "Quick reference table",
+            "n_tokens": 405
+          },
+          {
+            "id": "api:DataFrame.product",
+            "title": "polars.DataFrame.product",
+            "section": "Aggregation",
+            "n_tokens": 208
+          },
+          {
+            "id": "api:DataFrame.join#p2",
+            "title": "polars.DataFrame.join",
+            "section": "Manipulation/selection",
+            "n_tokens": 675
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#006",
+            "title": "Joins",
+            "section": "Join strategies > Inner join",
+            "n_tokens": 331
+          },
+          {
+            "id": "api:Series.product",
+            "title": "polars.Series.product",
+            "section": "Aggregation",
+            "n_tokens": 105
+          }
+        ],
+        "context_tokens": 1790
+      },
+      {
+        "id": "join_003",
+        "category": "join",
+        "recall": 1.0,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join",
+          "DataFrame.select"
+        ],
+        "found": [
+          "DataFrame.join",
+          "DataFrame.select"
+        ],
+        "missing": [],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:Expr.meta.root_names",
+            "title": "polars.Expr.meta.root_names",
+            "section": "Meta",
+            "n_tokens": 164
+          },
+          {
+            "id": "guide:docs/source/user-guide/getting-started.md#006",
+            "title": "Getting started",
+            "section": "Expressions and contexts > More complex queries",
+            "n_tokens": 285
+          },
+          {
+            "id": "api:DataFrame.remove#p1",
+            "title": "polars.DataFrame.remove",
+            "section": "Manipulation/selection",
+            "n_tokens": 302
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#007",
+            "title": "Joins",
+            "section": "Join strategies > Full join",
+            "n_tokens": 300
+          }
+        ],
+        "context_tokens": 1450
+      },
+      {
+        "id": "join_004",
+        "category": "join",
+        "recall": 0.5,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join",
+          "DataFrame.select"
+        ],
+        "found": [
+          "DataFrame.join"
+        ],
+        "missing": [
+          "DataFrame.select"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#001",
+            "title": "Joins",
+            "section": "",
+            "n_tokens": 316
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#006",
+            "title": "Joins",
+            "section": "Join strategies > Inner join",
+            "n_tokens": 331
+          },
+          {
+            "id": "api:DataFrame.join#p2",
+            "title": "polars.DataFrame.join",
+            "section": "Manipulation/selection",
+            "n_tokens": 675
+          },
+          {
+            "id": "api:DataFrame.join_where#p1",
+            "title": "polars.DataFrame.join_where",
+            "section": "Manipulation/selection",
+            "n_tokens": 225
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/set_operations.rst#003",
+            "title": "Set Operations",
+            "section": "INTERSECT",
+            "n_tokens": 318
+          }
+        ],
+        "context_tokens": 1928
+      },
+      {
+        "id": "join_005",
+        "category": "join",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.join"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Series.unique_counts",
+            "title": "polars.Series.unique_counts",
+            "section": "Descriptive",
+            "n_tokens": 95
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/set_operations.rst#001",
+            "title": "Set Operations",
+            "section": "",
+            "n_tokens": 337
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          },
+          {
+            "id": "api:NoRowsReturnedError",
+            "title": "polars.NoRowsReturnedError",
+            "section": "Exceptions > Errors",
+            "n_tokens": 23
+          },
+          {
+            "id": "guide:docs/source/user-guide/io/cloud-storage.md#002",
+            "title": "Cloud storage",
+            "section": "Cloud authentication",
+            "n_tokens": 448
+          }
+        ],
+        "context_tokens": 1386
+      },
+      {
+        "id": "join_006",
+        "category": "join",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join",
+          "DataFrame.select"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.join",
+          "DataFrame.select"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Series.product",
+            "title": "polars.Series.product",
+            "section": "Aggregation",
+            "n_tokens": 105
+          },
+          {
+            "id": "api:DataFrame.product",
+            "title": "polars.DataFrame.product",
+            "section": "Aggregation",
+            "n_tokens": 208
+          },
+          {
+            "id": "guide:docs/source/user-guide/installation.md#007",
+            "title": "Installation",
+            "section": "Feature flags > Rust",
+            "n_tokens": 470
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/testing.rst#004",
+            "title": "Testing",
+            "section": "Examples",
+            "n_tokens": 469
+          },
+          {
+            "id": "api:Expr.product",
+            "title": "polars.Expr.product",
+            "section": "Aggregation",
+            "n_tokens": 171
+          }
+        ],
+        "context_tokens": 1481
+      },
+      {
+        "id": "join_007",
+        "category": "join",
+        "recall": 0.2,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join",
+          "DataFrame.select",
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.join",
+          "DataFrame.select",
+          "DataFrame.with_columns",
+          "Expr.alias"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.product",
+            "title": "polars.Expr.product",
+            "section": "Aggregation",
+            "n_tokens": 171
+          },
+          {
+            "id": "api:Series.product",
+            "title": "polars.Series.product",
+            "section": "Aggregation",
+            "n_tokens": 105
+          },
+          {
+            "id": "api:DataFrame.product",
+            "title": "polars.DataFrame.product",
+            "section": "Aggregation",
+            "n_tokens": 208
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/array.rst#003",
+            "title": "Array",
+            "section": "ARRAY_GET",
+            "n_tokens": 467
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#011",
+            "title": "Joins",
+            "section": "Cartesian product",
+            "n_tokens": 149
+          }
+        ],
+        "context_tokens": 1160
+      },
+      {
+        "id": "join_008",
+        "category": "join",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.join"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.product",
+            "title": "polars.DataFrame.product",
+            "section": "Aggregation",
+            "n_tokens": 208
+          },
+          {
+            "id": "api:DataFrame.unique#p1",
+            "title": "polars.DataFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 539
+          },
+          {
+            "id": "api:Series.product",
+            "title": "polars.Series.product",
+            "section": "Aggregation",
+            "n_tokens": 105
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:Expr.product",
+            "title": "polars.Expr.product",
+            "section": "Aggregation",
+            "n_tokens": 171
+          }
+        ],
+        "context_tokens": 1417
+      },
+      {
+        "id": "join_009",
+        "category": "join",
+        "recall": 1.0,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join"
+        ],
+        "found": [
+          "DataFrame.join"
+        ],
+        "missing": [],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#003",
+            "title": "Joins",
+            "section": "Quick reference table",
+            "n_tokens": 405
+          },
+          {
+            "id": "api:DataFrame.join#p2",
+            "title": "polars.DataFrame.join",
+            "section": "Manipulation/selection",
+            "n_tokens": 675
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#006",
+            "title": "Joins",
+            "section": "Join strategies > Inner join",
+            "n_tokens": 331
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#011",
+            "title": "Joins",
+            "section": "Cartesian product",
+            "n_tokens": 149
+          },
+          {
+            "id": "api:DataFrame.product",
+            "title": "polars.DataFrame.product",
+            "section": "Aggregation",
+            "n_tokens": 208
+          }
+        ],
+        "context_tokens": 1833
+      },
+      {
+        "id": "join_010",
+        "category": "join",
+        "recall": 1.0,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join"
+        ],
+        "found": [
+          "DataFrame.join"
+        ],
+        "missing": [],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.join#p2",
+            "title": "polars.DataFrame.join",
+            "section": "Manipulation/selection",
+            "n_tokens": 675
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#003",
+            "title": "Joins",
+            "section": "Quick reference table",
+            "n_tokens": 405
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#006",
+            "title": "Joins",
+            "section": "Join strategies > Inner join",
+            "n_tokens": 331
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#005",
+            "title": "Joins",
+            "section": "Equi joins",
+            "n_tokens": 294
+          },
+          {
+            "id": "api:DataFrame.join_where#p1",
+            "title": "polars.DataFrame.join_where",
+            "section": "Manipulation/selection",
+            "n_tokens": 225
+          }
+        ],
+        "context_tokens": 1998
+      },
+      {
+        "id": "join_011",
+        "category": "join",
+        "recall": 0.2,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "DataFrame.join",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.group_by",
+          "DataFrame.join",
+          "Expr.sum",
+          "GroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/sql/select.md#002",
+            "title": "SELECT",
+            "section": "GROUP BY",
+            "n_tokens": 368
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#003",
+            "title": "Aggregate",
+            "section": "APPROX_QUANTILE",
+            "n_tokens": 502
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#001",
+            "title": "Aggregate",
+            "section": "",
+            "n_tokens": 497
+          },
+          {
+            "id": "guide:docs/source/user-guide/migration/pandas.md#007",
+            "title": "Coming from Pandas",
+            "section": "Key syntax differences > Express yourself > Filtering",
+            "n_tokens": 332
+          },
+          {
+            "id": "api:QueryResult.n_rows_total",
+            "title": "polars.QueryResult.n_rows_total",
+            "section": "QueryResult",
+            "n_tokens": 22
+          }
+        ],
+        "context_tokens": 1785
+      },
+      {
+        "id": "join_012",
+        "category": "join",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join",
+          "DataFrame.select",
+          "Expr.alias",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.join",
+          "DataFrame.select",
+          "Expr.alias",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/set_operations.rst#001",
+            "title": "Set Operations",
+            "section": "",
+            "n_tokens": 337
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/set_operations.rst#004",
+            "title": "Set Operations",
+            "section": "UNION",
+            "n_tokens": 383
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/set_operations.rst#005",
+            "title": "Set Operations",
+            "section": "UNION ALL",
+            "n_tokens": 290
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/set_operations.rst#003",
+            "title": "Set Operations",
+            "section": "INTERSECT",
+            "n_tokens": 318
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#008",
+            "title": "Window",
+            "section": "LEAD",
+            "n_tokens": 493
+          }
+        ],
+        "context_tokens": 1872
+      },
+      {
+        "id": "join_013",
+        "category": "join",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.join",
+          "DataFrame.with_columns",
+          "Expr.fill_null",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.join",
+          "DataFrame.with_columns",
+          "Expr.fill_null",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/testing.rst#004",
+            "title": "Testing",
+            "section": "Examples",
+            "n_tokens": 469
+          },
+          {
+            "id": "api:Series.list.get",
+            "title": "polars.Series.list.get",
+            "section": "List",
+            "n_tokens": 208
+          },
+          {
+            "id": "api:Series.item",
+            "title": "polars.Series.item",
+            "section": "Manipulation/selection",
+            "n_tokens": 137
+          },
+          {
+            "id": "api:Expr.list.item",
+            "title": "polars.Expr.list.item",
+            "section": "List",
+            "n_tokens": 414
+          },
+          {
+            "id": "api:Series.list.sample",
+            "title": "polars.Series.list.sample",
+            "section": "List",
+            "n_tokens": 336
+          }
+        ],
+        "context_tokens": 1626
+      },
+      {
+        "id": "window_001",
+        "category": "window",
+        "recall": 0.16666666666666666,
+        "recall_non_core": 0.3333333333333333,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.cast",
+          "Expr.over",
+          "Expr.rank",
+          "col"
+        ],
+        "found": [
+          "Expr.rank"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.cast",
+          "Expr.over",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.rank#p1",
+            "title": "polars.Expr.rank",
+            "section": "Computation",
+            "n_tokens": 373
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#013",
+            "title": "Window",
+            "section": "RANK",
+            "n_tokens": 532
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#003",
+            "title": "Window",
+            "section": "CUME_DIST",
+            "n_tokens": 86
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#004",
+            "title": "Window",
+            "section": "DENSE_RANK",
+            "n_tokens": 484
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#012",
+            "title": "Window",
+            "section": "NTILE",
+            "n_tokens": 194
+          }
+        ],
+        "context_tokens": 1723
+      },
+      {
+        "id": "window_002",
+        "category": "window",
+        "recall": 0.2,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.max",
+          "Expr.over",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.max",
+          "Expr.over"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Series.max_by",
+            "title": "polars.Series.max_by",
+            "section": "Aggregation",
+            "n_tokens": 157
+          },
+          {
+            "id": "api:Expr.max_by",
+            "title": "polars.Expr.max_by",
+            "section": "Aggregation",
+            "n_tokens": 222
+          },
+          {
+            "id": "api:max",
+            "title": "polars.max",
+            "section": "Functions",
+            "n_tokens": 390
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "guide:docs/source/user-guide/misc/styling.md#002",
+            "title": "Styling",
+            "section": "Style: highlight max row",
+            "n_tokens": 252
+          }
+        ],
+        "context_tokens": 1414
+      },
+      {
+        "id": "window_003",
+        "category": "window",
+        "recall": 0.4,
+        "recall_non_core": 0.5,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.mean",
+          "Expr.over",
+          "col"
+        ],
+        "found": [
+          "Expr.over",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.mean"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/sql/select.md#002",
+            "title": "SELECT",
+            "section": "GROUP BY",
+            "n_tokens": 368
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#003",
+            "title": "Aggregate",
+            "section": "APPROX_QUANTILE",
+            "n_tokens": 502
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#004",
+            "title": "Window functions",
+            "section": "Mapping results to dataframe rows > `group_to_rows`",
+            "n_tokens": 297
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#002",
+            "title": "Window functions",
+            "section": "Operations per group",
+            "n_tokens": 478
+          },
+          {
+            "id": "api:DataFrame.mean",
+            "title": "polars.DataFrame.mean",
+            "section": "Aggregation",
+            "n_tokens": 246
+          }
+        ],
+        "context_tokens": 1958
+      },
+      {
+        "id": "window_004",
+        "category": "window",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.over",
+          "len"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.over",
+          "len"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#014",
+            "title": "Window",
+            "section": "ROW_NUMBER",
+            "n_tokens": 491
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#013",
+            "title": "Window",
+            "section": "RANK",
+            "n_tokens": 532
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#003",
+            "title": "Window",
+            "section": "CUME_DIST",
+            "n_tokens": 86
+          }
+        ],
+        "context_tokens": 1916
+      },
+      {
+        "id": "window_005",
+        "category": "window",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.cum_sum",
+          "Expr.over",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.cum_sum",
+          "Expr.over",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#016",
+            "title": "Window",
+            "section": "OVER",
+            "n_tokens": 680
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#001",
+            "title": "Window",
+            "section": "",
+            "n_tokens": 336
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#015",
+            "title": "Window",
+            "section": "OVER",
+            "n_tokens": 376
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#011",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 505
+          }
+        ],
+        "context_tokens": 1931
+      },
+      {
+        "id": "window_006",
+        "category": "window",
+        "recall": 0.6,
+        "recall_non_core": 0.5,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.over",
+          "Expr.sum",
+          "col"
+        ],
+        "found": [
+          "Expr.alias",
+          "Expr.over",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.sum"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.over#p1",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 567
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#002",
+            "title": "Window functions",
+            "section": "Operations per group",
+            "n_tokens": 478
+          },
+          {
+            "id": "api:Expr.pct_change",
+            "title": "polars.Expr.pct_change",
+            "section": "Computation",
+            "n_tokens": 330
+          },
+          {
+            "id": "guide:docs/source/user-guide/getting-started.md#005",
+            "title": "Getting started",
+            "section": "Expressions and contexts > `group_by`",
+            "n_tokens": 270
+          },
+          {
+            "id": "api:Expr.sort_by#p3",
+            "title": "polars.Expr.sort_by",
+            "section": "Manipulation/selection",
+            "n_tokens": 257
+          }
+        ],
+        "context_tokens": 1972
+      },
+      {
+        "id": "window_007",
+        "category": "window",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.first",
+          "Expr.over",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.first",
+          "Expr.over",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#005",
+            "title": "Window",
+            "section": "FIRST_VALUE",
+            "n_tokens": 203
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#001",
+            "title": "Window",
+            "section": "",
+            "n_tokens": 336
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#015",
+            "title": "Window",
+            "section": "OVER",
+            "n_tokens": 376
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#016",
+            "title": "Window",
+            "section": "OVER",
+            "n_tokens": 680
+          }
+        ],
+        "context_tokens": 1969
+      },
+      {
+        "id": "window_008",
+        "category": "window",
+        "recall": 0.6,
+        "recall_non_core": 0.5,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.mean",
+          "Expr.over",
+          "col"
+        ],
+        "found": [
+          "Expr.alias",
+          "Expr.over",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.mean"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#003",
+            "title": "Aggregation",
+            "section": "Filtering",
+            "n_tokens": 368
+          },
+          {
+            "id": "guide:docs/source/user-guide/getting-started.md#005",
+            "title": "Getting started",
+            "section": "Expressions and contexts > `group_by`",
+            "n_tokens": 270
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/time-series/rolling.md#001",
+            "title": "Grouping",
+            "section": "Grouping by fixed windows",
+            "n_tokens": 495
+          },
+          {
+            "id": "api:Expr.over#p1",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 567
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#011",
+            "title": "Aggregate",
+            "section": "TOTAL",
+            "n_tokens": 226
+          }
+        ],
+        "context_tokens": 1987
+      },
+      {
+        "id": "window_009",
+        "category": "window",
+        "recall": 0.4,
+        "recall_non_core": 0.5,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.over",
+          "Expr.shift",
+          "col"
+        ],
+        "found": [
+          "Expr.over",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.shift"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#001",
+            "title": "Window",
+            "section": "",
+            "n_tokens": 336
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#016",
+            "title": "Window",
+            "section": "OVER",
+            "n_tokens": 680
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#005",
+            "title": "Window",
+            "section": "FIRST_VALUE",
+            "n_tokens": 203
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#005",
+            "title": "Window functions",
+            "section": "Mapping results to dataframe rows > `join`",
+            "n_tokens": 447
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#003",
+            "title": "Window",
+            "section": "CUME_DIST",
+            "n_tokens": 86
+          }
+        ],
+        "context_tokens": 1804
+      },
+      {
+        "id": "window_010",
+        "category": "window",
+        "recall": 0.2,
+        "recall_non_core": 0.5,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.max",
+          "Expr.over",
+          "col"
+        ],
+        "found": [
+          "Expr.over"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.max",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.over#p4",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 663
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:Expr.over#p5",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 463
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#001",
+            "title": "Window",
+            "section": "",
+            "n_tokens": 336
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#003",
+            "title": "Window",
+            "section": "CUME_DIST",
+            "n_tokens": 86
+          }
+        ],
+        "context_tokens": 1929
+      },
+      {
+        "id": "window_011",
+        "category": "window",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.over",
+          "Expr.rank",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "Expr.over",
+          "Expr.rank",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          },
+          {
+            "id": "api:DataFrame.unique#p1",
+            "title": "polars.DataFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 539
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#014",
+            "title": "Window",
+            "section": "ROW_NUMBER",
+            "n_tokens": 491
+          },
+          {
+            "id": "api:DataFrame.drop_nulls#p1",
+            "title": "polars.DataFrame.drop_nulls",
+            "section": "Manipulation/selection",
+            "n_tokens": 128
+          }
+        ],
+        "context_tokens": 1976
+      },
+      {
+        "id": "window_012",
+        "category": "window",
+        "recall": 0.2,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.cum_max",
+          "Expr.over",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.cum_max",
+          "Expr.over"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#010",
+            "title": "Joins",
+            "section": "Asof join",
+            "n_tokens": 436
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/time-series/rolling.md#001",
+            "title": "Grouping",
+            "section": "Grouping by fixed windows",
+            "n_tokens": 495
+          },
+          {
+            "id": "api:Expr.peak_max",
+            "title": "polars.Expr.peak_max",
+            "section": "Computation",
+            "n_tokens": 140
+          },
+          {
+            "id": "api:Series.peak_max",
+            "title": "polars.Series.peak_max",
+            "section": "Computation",
+            "n_tokens": 92
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#001",
+            "title": "Window",
+            "section": "",
+            "n_tokens": 336
+          }
+        ],
+        "context_tokens": 1561
+      },
+      {
+        "id": "window_013",
+        "category": "window",
+        "recall": 0.2857142857142857,
+        "recall_non_core": 0.25,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.cast",
+          "Expr.max",
+          "Expr.over",
+          "Expr.rank",
+          "col"
+        ],
+        "found": [
+          "Expr.over",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.cast",
+          "Expr.max",
+          "Expr.rank"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#013",
+            "title": "Window",
+            "section": "RANK",
+            "n_tokens": 532
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#002",
+            "title": "Window functions",
+            "section": "Operations per group",
+            "n_tokens": 478
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#004",
+            "title": "Window",
+            "section": "DENSE_RANK",
+            "n_tokens": 484
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#003",
+            "title": "Window",
+            "section": "CUME_DIST",
+            "n_tokens": 86
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#004",
+            "title": "Window functions",
+            "section": "Mapping results to dataframe rows > `group_to_rows`",
+            "n_tokens": 297
+          }
+        ],
+        "context_tokens": 1939
+      },
+      {
+        "id": "lazy_001",
+        "category": "lazy",
+        "recall": 0.5,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "Expr.sum",
+          "LazyFrame.collect",
+          "LazyFrame.filter",
+          "LazyFrame.group_by",
+          "LazyGroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "LazyFrame.collect",
+          "LazyFrame.filter",
+          "col"
+        ],
+        "missing": [
+          "Expr.sum",
+          "LazyFrame.group_by",
+          "LazyGroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/concepts/lazy-api.md#001",
+            "title": "Lazy API",
+            "section": "",
+            "n_tokens": 470
+          },
+          {
+            "id": "guide:docs/source/user-guide/migration/pandas.md#004",
+            "title": "Coming from Pandas",
+            "section": "Key syntax differences > Selecting data",
+            "n_tokens": 341
+          },
+          {
+            "id": "api:Expr.over#p1",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 567
+          },
+          {
+            "id": "api:LazyFrame.filter#p1",
+            "title": "polars.LazyFrame.filter",
+            "section": "Manipulation/selection",
+            "n_tokens": 275
+          },
+          {
+            "id": "guide:docs/source/user-guide/lazy/schemas.md#003",
+            "title": "Schema",
+            "section": "Dealing with operations not available in the lazy API",
+            "n_tokens": 146
+          }
+        ],
+        "context_tokens": 1870
+      },
+      {
+        "id": "lazy_002",
+        "category": "lazy",
+        "recall": 0.5,
+        "recall_non_core": null,
+        "n_chunks": 5,
+        "needed": [
+          "LazyFrame.collect",
+          "LazyFrame.filter",
+          "LazyFrame.select",
+          "col"
+        ],
+        "found": [
+          "LazyFrame.collect",
+          "col"
+        ],
+        "missing": [
+          "LazyFrame.filter",
+          "LazyFrame.select"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.rows",
+            "title": "polars.DataFrame.rows",
+            "section": "Manipulation/selection",
+            "n_tokens": 558
+          },
+          {
+            "id": "guide:docs/source/user-guide/lazy/schemas.md#003",
+            "title": "Schema",
+            "section": "Dealing with operations not available in the lazy API",
+            "n_tokens": 146
+          },
+          {
+            "id": "api:DataFrame.remove#p1",
+            "title": "polars.DataFrame.remove",
+            "section": "Manipulation/selection",
+            "n_tokens": 302
+          },
+          {
+            "id": "api:LazyFrame.unique#p1",
+            "title": "polars.LazyFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 560
+          },
+          {
+            "id": "api:LazyFrame.remove#p1",
+            "title": "polars.LazyFrame.remove",
+            "section": "Manipulation/selection",
+            "n_tokens": 316
+          }
+        ],
+        "context_tokens": 1963
+      },
+      {
+        "id": "lazy_003",
+        "category": "lazy",
+        "recall": 0.5,
+        "recall_non_core": null,
+        "n_chunks": 5,
+        "needed": [
+          "Expr.alias",
+          "LazyFrame.collect",
+          "LazyFrame.with_columns",
+          "col"
+        ],
+        "found": [
+          "LazyFrame.collect",
+          "col"
+        ],
+        "missing": [
+          "Expr.alias",
+          "LazyFrame.with_columns"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/lazy/multiplexing.md#001",
+            "title": "Multiplexing queries",
+            "section": "",
+            "n_tokens": 348
+          },
+          {
+            "id": "guide:docs/source/user-guide/lazy/schemas.md#003",
+            "title": "Schema",
+            "section": "Dealing with operations not available in the lazy API",
+            "n_tokens": 146
+          },
+          {
+            "id": "api:DataFrame.with_columns_seq",
+            "title": "polars.DataFrame.with_columns_seq",
+            "section": "Manipulation/selection",
+            "n_tokens": 175
+          },
+          {
+            "id": "guide:docs/source/user-guide/migration/pandas.md#005",
+            "title": "Coming from Pandas",
+            "section": "Key syntax differences > Be lazy",
+            "n_tokens": 309
+          },
+          {
+            "id": "api:DataFrame.with_columns#p1",
+            "title": "polars.DataFrame.with_columns",
+            "section": "Manipulation/selection",
+            "n_tokens": 694
+          }
+        ],
+        "context_tokens": 1748
+      },
+      {
+        "id": "lazy_004",
+        "category": "lazy",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "LazyFrame.collect",
+          "LazyFrame.sort"
+        ],
+        "found": [],
+        "missing": [
+          "LazyFrame.collect",
+          "LazyFrame.sort"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.top_k",
+            "title": "polars.DataFrame.top_k",
+            "section": "Manipulation/selection",
+            "n_tokens": 566
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#005",
+            "title": "Aggregation",
+            "section": "Sorting",
+            "n_tokens": 364
+          },
+          {
+            "id": "api:DataFrame.bottom_k",
+            "title": "polars.DataFrame.bottom_k",
+            "section": "Manipulation/selection",
+            "n_tokens": 566
+          },
+          {
+            "id": "api:LazyFrame.merge_sorted#p1",
+            "title": "polars.LazyFrame.merge_sorted",
+            "section": "Manipulation/selection",
+            "n_tokens": 235
+          },
+          {
+            "id": "api:LazyFrame.set_sorted",
+            "title": "polars.LazyFrame.set_sorted",
+            "section": "Manipulation/selection",
+            "n_tokens": 160
+          }
+        ],
+        "context_tokens": 1968
+      },
+      {
+        "id": "lazy_005",
+        "category": "lazy",
+        "recall": 0.0,
+        "recall_non_core": null,
+        "n_chunks": 5,
+        "needed": [
+          "Expr.alias",
+          "LazyFrame.collect",
+          "LazyFrame.select",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "Expr.alias",
+          "LazyFrame.collect",
+          "LazyFrame.select",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/lazy/multiplexing.md#001",
+            "title": "Multiplexing queries",
+            "section": "",
+            "n_tokens": 348
+          },
+          {
+            "id": "api:DataFrame.pivot#p1",
+            "title": "polars.DataFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 691
+          },
+          {
+            "id": "api:DataFrame.with_columns_seq",
+            "title": "polars.DataFrame.with_columns_seq",
+            "section": "Manipulation/selection",
+            "n_tokens": 175
+          },
+          {
+            "id": "api:select",
+            "title": "polars.select",
+            "section": "Functions",
+            "n_tokens": 451
+          },
+          {
+            "id": "api:LazyFrame.with_columns#p1",
+            "title": "polars.LazyFrame.with_columns",
+            "section": "Manipulation/selection",
+            "n_tokens": 184
+          }
+        ],
+        "context_tokens": 1918
+      },
+      {
+        "id": "lazy_006",
+        "category": "lazy",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "Expr.sum",
+          "LazyFrame.collect",
+          "LazyFrame.filter",
+          "LazyFrame.group_by",
+          "LazyGroupBy.agg",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "Expr.sum",
+          "LazyFrame.collect",
+          "LazyFrame.filter",
+          "LazyFrame.group_by",
+          "LazyGroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.product",
+            "title": "polars.DataFrame.product",
+            "section": "Aggregation",
+            "n_tokens": 208
+          },
+          {
+            "id": "api:Expr.product",
+            "title": "polars.Expr.product",
+            "section": "Aggregation",
+            "n_tokens": 171
+          },
+          {
+            "id": "guide:docs/source/user-guide/lazy/multiplexing.md#001",
+            "title": "Multiplexing queries",
+            "section": "",
+            "n_tokens": 348
+          },
+          {
+            "id": "api:Expr.cum_prod",
+            "title": "polars.Expr.cum_prod",
+            "section": "Computation",
+            "n_tokens": 338
+          },
+          {
+            "id": "api:DataFrame.pivot#p1",
+            "title": "polars.DataFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 691
+          }
+        ],
+        "context_tokens": 1819
+      },
+      {
+        "id": "lazy_007",
+        "category": "lazy",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 1.0,
+        "n_chunks": 4,
+        "needed": [
+          "LazyFrame.collect",
+          "LazyFrame.join",
+          "LazyFrame.select"
+        ],
+        "found": [
+          "LazyFrame.join"
+        ],
+        "missing": [
+          "LazyFrame.collect",
+          "LazyFrame.select"
+        ],
+        "retrieved": [
+          {
+            "id": "api:LazyFrame.join#p1",
+            "title": "polars.LazyFrame.join",
+            "section": "Manipulation/selection",
+            "n_tokens": 650
+          },
+          {
+            "id": "api:LazyFrame.join_where#p1",
+            "title": "polars.LazyFrame.join_where",
+            "section": "Manipulation/selection",
+            "n_tokens": 276
+          },
+          {
+            "id": "api:LazyFrame.join#p2",
+            "title": "polars.LazyFrame.join",
+            "section": "Manipulation/selection",
+            "n_tokens": 697
+          },
+          {
+            "id": "api:LazyFrame.merge_sorted#p1",
+            "title": "polars.LazyFrame.merge_sorted",
+            "section": "Manipulation/selection",
+            "n_tokens": 235
+          }
+        ],
+        "context_tokens": 1927
+      },
+      {
+        "id": "lazy_008",
+        "category": "lazy",
+        "recall": 0.375,
+        "recall_non_core": 0.2,
+        "n_chunks": 5,
+        "needed": [
+          "Expr.alias",
+          "Expr.mean",
+          "LazyFrame.collect",
+          "LazyFrame.group_by",
+          "LazyFrame.sort",
+          "LazyGroupBy.agg",
+          "col",
+          "len"
+        ],
+        "found": [
+          "Expr.alias",
+          "col",
+          "len"
+        ],
+        "missing": [
+          "Expr.mean",
+          "LazyFrame.collect",
+          "LazyFrame.group_by",
+          "LazyFrame.sort",
+          "LazyGroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/sql/select.md#002",
+            "title": "SELECT",
+            "section": "GROUP BY",
+            "n_tokens": 368
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#003",
+            "title": "Aggregate",
+            "section": "APPROX_QUANTILE",
+            "n_tokens": 502
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#004",
+            "title": "Aggregation",
+            "section": "Nested grouping",
+            "n_tokens": 340
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#003",
+            "title": "Aggregation",
+            "section": "Filtering",
+            "n_tokens": 368
+          },
+          {
+            "id": "guide:docs/source/user-guide/getting-started.md#005",
+            "title": "Getting started",
+            "section": "Expressions and contexts > `group_by`",
+            "n_tokens": 270
+          }
+        ],
+        "context_tokens": 1909
+      },
+      {
+        "id": "lazy_009",
+        "category": "lazy",
+        "recall": 0.16666666666666666,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "Expr.abs",
+          "Expr.alias",
+          "LazyFrame.collect",
+          "LazyFrame.filter",
+          "LazyFrame.with_columns",
+          "col"
+        ],
+        "found": [
+          "Expr.abs"
+        ],
+        "missing": [
+          "Expr.alias",
+          "LazyFrame.collect",
+          "LazyFrame.filter",
+          "LazyFrame.with_columns",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.abs",
+            "title": "polars.Expr.abs",
+            "section": "Computation",
+            "n_tokens": 166
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/math.rst#001",
+            "title": "Math",
+            "section": "",
+            "n_tokens": 428
+          },
+          {
+            "id": "api:DataFrame.head",
+            "title": "polars.DataFrame.head",
+            "section": "Manipulation/selection",
+            "n_tokens": 443
+          },
+          {
+            "id": "api:DataFrame.tail",
+            "title": "polars.DataFrame.tail",
+            "section": "Manipulation/selection",
+            "n_tokens": 443
+          },
+          {
+            "id": "api:testing.assert_series_not_equal",
+            "title": "polars.testing.assert_series_not_equal",
+            "section": "Testing > Asserts",
+            "n_tokens": 442
+          }
+        ],
+        "context_tokens": 1988
+      },
+      {
+        "id": "lazy_010",
+        "category": "lazy",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "LazyFrame.collect",
+          "LazyFrame.head",
+          "LazyFrame.sort"
+        ],
+        "found": [],
+        "missing": [
+          "LazyFrame.collect",
+          "LazyFrame.head",
+          "LazyFrame.sort"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.top_k",
+            "title": "polars.DataFrame.top_k",
+            "section": "Manipulation/selection",
+            "n_tokens": 566
+          },
+          {
+            "id": "api:LazyFrame.top_k",
+            "title": "polars.LazyFrame.top_k",
+            "section": "Manipulation/selection",
+            "n_tokens": 570
+          },
+          {
+            "id": "api:LazyFrame.bottom_k",
+            "title": "polars.LazyFrame.bottom_k",
+            "section": "Manipulation/selection",
+            "n_tokens": 577
+          },
+          {
+            "id": "api:Expr.max_by",
+            "title": "polars.Expr.max_by",
+            "section": "Aggregation",
+            "n_tokens": 222
+          }
+        ],
+        "context_tokens": 2000
+      },
+      {
+        "id": "lazy_011",
+        "category": "lazy",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "Expr.sum",
+          "LazyFrame.collect",
+          "LazyFrame.group_by",
+          "LazyFrame.join",
+          "LazyFrame.sort",
+          "LazyGroupBy.agg",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "Expr.sum",
+          "LazyFrame.collect",
+          "LazyFrame.group_by",
+          "LazyFrame.join",
+          "LazyFrame.sort",
+          "LazyGroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:LazyFrame.merge_sorted#p1",
+            "title": "polars.LazyFrame.merge_sorted",
+            "section": "Manipulation/selection",
+            "n_tokens": 235
+          },
+          {
+            "id": "guide:docs/source/user-guide/lazy/multiplexing.md#001",
+            "title": "Multiplexing queries",
+            "section": "",
+            "n_tokens": 348
+          },
+          {
+            "id": "api:LazyFrame.join_asof#p3",
+            "title": "polars.LazyFrame.join_asof",
+            "section": "Manipulation/selection",
+            "n_tokens": 688
+          },
+          {
+            "id": "api:sql#p1",
+            "title": "polars.sql",
+            "section": "Functions",
+            "n_tokens": 580
+          }
+        ],
+        "context_tokens": 1907
+      },
+      {
+        "id": "lazy_012",
+        "category": "lazy",
+        "recall": 0.14285714285714285,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "Expr.sum",
+          "LazyFrame.collect",
+          "LazyFrame.filter",
+          "LazyFrame.group_by",
+          "LazyFrame.sort",
+          "LazyGroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "Expr.sum",
+          "LazyFrame.collect",
+          "LazyFrame.filter",
+          "LazyFrame.group_by",
+          "LazyFrame.sort",
+          "LazyGroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#001",
+            "title": "Aggregate",
+            "section": "",
+            "n_tokens": 497
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#006",
+            "title": "Aggregation",
+            "section": "Sorting",
+            "n_tokens": 352
+          },
+          {
+            "id": "api:LazyFrame.top_k",
+            "title": "polars.LazyFrame.top_k",
+            "section": "Manipulation/selection",
+            "n_tokens": 570
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/user-defined-python-functions.md#002",
+            "title": "User-defined Python functions",
+            "section": "Processing individual values with `map_elements()`",
+            "n_tokens": 447
+          },
+          {
+            "id": "api:QueryResult.n_rows_total",
+            "title": "polars.QueryResult.n_rows_total",
+            "section": "QueryResult",
+            "n_tokens": 22
+          }
+        ],
+        "context_tokens": 1956
+      },
+      {
+        "id": "lazy_013",
+        "category": "lazy",
+        "recall": 0.16666666666666666,
+        "recall_non_core": 0.5,
+        "n_chunks": 4,
+        "needed": [
+          "Expr.alias",
+          "Expr.over",
+          "Expr.sum",
+          "LazyFrame.collect",
+          "LazyFrame.with_columns",
+          "col"
+        ],
+        "found": [
+          "Expr.over"
+        ],
+        "missing": [
+          "Expr.alias",
+          "Expr.sum",
+          "LazyFrame.collect",
+          "LazyFrame.with_columns",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.over#p1",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 567
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#010",
+            "title": "Aggregate",
+            "section": "SUM",
+            "n_tokens": 484
+          },
+          {
+            "id": "api:DataFrame.group_by#p2",
+            "title": "polars.DataFrame.group_by",
+            "section": "Manipulation/selection",
+            "n_tokens": 630
+          },
+          {
+            "id": "api:DataFrame.group_by#p1",
+            "title": "polars.DataFrame.group_by",
+            "section": "Manipulation/selection",
+            "n_tokens": 203
+          }
+        ],
+        "context_tokens": 1936
+      },
+      {
+        "id": "string_001",
+        "category": "string",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 0.5,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.filter",
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.str.contains",
+          "Expr.str.to_uppercase",
+          "col"
+        ],
+        "found": [
+          "Expr.str.to_uppercase",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.filter",
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.str.contains"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/expressions/strings.md#005",
+            "title": "Strings",
+            "section": "Modifying strings > Concatenating strings",
+            "n_tokens": 275
+          },
+          {
+            "id": "api:selectors.contains",
+            "title": "polars.selectors.contains",
+            "section": "Selectors > Functions",
+            "n_tokens": 557
+          },
+          {
+            "id": "api:selectors.alpha",
+            "title": "polars.selectors.alpha",
+            "section": "Selectors > Functions",
+            "n_tokens": 851
+          },
+          {
+            "id": "api:Expr.str.to_uppercase",
+            "title": "polars.Expr.str.to_uppercase",
+            "section": "String",
+            "n_tokens": 157
+          }
+        ],
+        "context_tokens": 1900
+      },
+      {
+        "id": "string_002",
+        "category": "string",
+        "recall": 0.6666666666666666,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.str.to_lowercase",
+          "col"
+        ],
+        "found": [
+          "Expr.str.to_lowercase",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.str.replace_all#p3",
+            "title": "polars.Expr.str.replace_all",
+            "section": "String",
+            "n_tokens": 300
+          },
+          {
+            "id": "api:Expr.str.replace#p3",
+            "title": "polars.Expr.str.replace",
+            "section": "String",
+            "n_tokens": 289
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/strings.md#005",
+            "title": "Strings",
+            "section": "Modifying strings > Concatenating strings",
+            "n_tokens": 275
+          },
+          {
+            "id": "api:Expr.name.to_lowercase",
+            "title": "polars.Expr.name.to_lowercase",
+            "section": "Name",
+            "n_tokens": 292
+          },
+          {
+            "id": "api:Expr.str.to_lowercase",
+            "title": "polars.Expr.str.to_lowercase",
+            "section": "String",
+            "n_tokens": 155
+          }
+        ],
+        "context_tokens": 1381
+      },
+      {
+        "id": "string_003",
+        "category": "string",
+        "recall": 0.25,
+        "recall_non_core": 1.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.str.len_chars",
+          "col"
+        ],
+        "found": [
+          "Expr.str.len_chars"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.str.strip_chars_end",
+            "title": "polars.Expr.str.strip_chars_end",
+            "section": "String",
+            "n_tokens": 666
+          },
+          {
+            "id": "api:Expr.str.len_chars",
+            "title": "polars.Expr.str.len_chars",
+            "section": "String",
+            "n_tokens": 410
+          },
+          {
+            "id": "api:Expr.str.tail",
+            "title": "polars.Expr.str.tail",
+            "section": "String",
+            "n_tokens": 681
+          },
+          {
+            "id": "api:Series.str.to_titlecase",
+            "title": "polars.Series.str.to_titlecase",
+            "section": "String",
+            "n_tokens": 181
+          }
+        ],
+        "context_tokens": 1994
+      },
+      {
+        "id": "string_004",
+        "category": "string",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.str.starts_with",
+          "col"
+        ],
+        "found": [
+          "Expr.str.starts_with"
+        ],
+        "missing": [
+          "DataFrame.filter",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.head",
+            "title": "polars.DataFrame.head",
+            "section": "Manipulation/selection",
+            "n_tokens": 443
+          },
+          {
+            "id": "api:Expr.str.starts_with",
+            "title": "polars.Expr.str.starts_with",
+            "section": "String",
+            "n_tokens": 530
+          },
+          {
+            "id": "api:Expr.str.strip_prefix",
+            "title": "polars.Expr.str.strip_prefix",
+            "section": "String",
+            "n_tokens": 281
+          },
+          {
+            "id": "api:DataFrame.tail",
+            "title": "polars.DataFrame.tail",
+            "section": "Manipulation/selection",
+            "n_tokens": 443
+          },
+          {
+            "id": "api:Series.str.starts_with",
+            "title": "polars.Series.str.starts_with",
+            "section": "String",
+            "n_tokens": 136
+          }
+        ],
+        "context_tokens": 1906
+      },
+      {
+        "id": "string_005",
+        "category": "string",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.str.replace_all",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.str.replace_all",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/string.rst#013",
+            "title": "String",
+            "section": "RPAD",
+            "n_tokens": 327
+          },
+          {
+            "id": "guide:docs/source/releases/upgrade/1.md#007",
+            "title": "Version 1.0",
+            "section": "Breaking changes > Split `replace` functionality into two separate methods",
+            "n_tokens": 401
+          },
+          {
+            "id": "api:Expr.str.replace_many#p5",
+            "title": "polars.Expr.str.replace_many",
+            "section": "String",
+            "n_tokens": 362
+          },
+          {
+            "id": "api:scan_csv#p11",
+            "title": "polars.scan_csv",
+            "section": "Input/output > CSV",
+            "n_tokens": 650
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/time-series/resampling.md#002",
+            "title": "Resampling",
+            "section": "Upsampling to a higher frequency > Upsampling strategies",
+            "n_tokens": 142
+          }
+        ],
+        "context_tokens": 1963
+      },
+      {
+        "id": "string_006",
+        "category": "string",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "concat_str"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "concat_str"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#007",
+            "title": "Joins",
+            "section": "Join strategies > Full join",
+            "n_tokens": 300
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/strings.md#005",
+            "title": "Strings",
+            "section": "Modifying strings > Concatenating strings",
+            "n_tokens": 275
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#005",
+            "title": "Joins",
+            "section": "Equi joins",
+            "n_tokens": 294
+          },
+          {
+            "id": "api:DataFrame.join#p3",
+            "title": "polars.DataFrame.join",
+            "section": "Manipulation/selection",
+            "n_tokens": 708
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/joins.md#006",
+            "title": "Joins",
+            "section": "Join strategies > Inner join",
+            "n_tokens": 331
+          }
+        ],
+        "context_tokens": 1978
+      },
+      {
+        "id": "string_007",
+        "category": "string",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.str.strip_chars",
+          "col"
+        ],
+        "found": [
+          "Expr.str.strip_chars"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/string.rst#021",
+            "title": "String",
+            "section": "TIMESTAMP",
+            "n_tokens": 379
+          },
+          {
+            "id": "api:Expr.str.strip_chars",
+            "title": "polars.Expr.str.strip_chars",
+            "section": "String",
+            "n_tokens": 450
+          },
+          {
+            "id": "api:Expr.str.strip_chars_start",
+            "title": "polars.Expr.str.strip_chars_start",
+            "section": "String",
+            "n_tokens": 590
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/string.rst#022",
+            "title": "String",
+            "section": "TRIM",
+            "n_tokens": 181
+          }
+        ],
+        "context_tokens": 1989
+      },
+      {
+        "id": "string_008",
+        "category": "string",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.str.extract",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.str.extract",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/string.rst#015",
+            "title": "String",
+            "section": "SPLIT_PART",
+            "n_tokens": 317
+          },
+          {
+            "id": "api:Expr.str.zfill",
+            "title": "polars.Expr.str.zfill",
+            "section": "String",
+            "n_tokens": 583
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/string.rst#014",
+            "title": "String",
+            "section": "RTRIM",
+            "n_tokens": 215
+          },
+          {
+            "id": "api:Series.str.splitn",
+            "title": "polars.Series.str.splitn",
+            "section": "String",
+            "n_tokens": 444
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/string.rst#013",
+            "title": "String",
+            "section": "RPAD",
+            "n_tokens": 327
+          }
+        ],
+        "context_tokens": 1945
+      },
+      {
+        "id": "string_009",
+        "category": "string",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.get",
+          "Expr.str.split",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.get",
+          "Expr.str.split",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/temporal.rst#001",
+            "title": "Temporal",
+            "section": "",
+            "n_tokens": 596
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/temporal.rst#002",
+            "title": "Temporal",
+            "section": "DATE_PART",
+            "n_tokens": 395
+          },
+          {
+            "id": "api:duration#p3",
+            "title": "polars.duration",
+            "section": "Functions",
+            "n_tokens": 565
+          },
+          {
+            "id": "guide:docs/source/releases/upgrade/2.md#013",
+            "title": "Version 2.0",
+            "section": "Breaking changes > Set the output name of `pl.datetime` and `pl.repeat` to their leftmost argument name",
+            "n_tokens": 350
+          }
+        ],
+        "context_tokens": 1969
+      },
+      {
+        "id": "string_010",
+        "category": "string",
+        "recall": 0.25,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.str.count_matches",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.str.count_matches"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.unique_counts",
+            "title": "polars.Expr.unique_counts",
+            "section": "Computation",
+            "n_tokens": 433
+          },
+          {
+            "id": "api:GroupBy.head",
+            "title": "polars.GroupBy.head",
+            "section": "GroupBy",
+            "n_tokens": 384
+          },
+          {
+            "id": "api:GroupBy.tail",
+            "title": "polars.GroupBy.tail",
+            "section": "GroupBy",
+            "n_tokens": 384
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/strings.md#005",
+            "title": "Strings",
+            "section": "Modifying strings > Concatenating strings",
+            "n_tokens": 275
+          },
+          {
+            "id": "api:Expr.str.to_titlecase",
+            "title": "polars.Expr.str.to_titlecase",
+            "section": "String",
+            "n_tokens": 315
+          }
+        ],
+        "context_tokens": 1863
+      },
+      {
+        "id": "string_011",
+        "category": "string",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.str.zfill",
+          "col"
+        ],
+        "found": [
+          "Expr.str.zfill"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Series.str.pad_start",
+            "title": "polars.Series.str.pad_start",
+            "section": "String",
+            "n_tokens": 181
+          },
+          {
+            "id": "api:Series.str.pad_end",
+            "title": "polars.Series.str.pad_end",
+            "section": "String",
+            "n_tokens": 174
+          },
+          {
+            "id": "api:Series.str.zfill",
+            "title": "polars.Series.str.zfill",
+            "section": "String",
+            "n_tokens": 220
+          },
+          {
+            "id": "api:Expr.str.zfill",
+            "title": "polars.Expr.str.zfill",
+            "section": "String",
+            "n_tokens": 583
+          },
+          {
+            "id": "api:Expr.str.pad_start",
+            "title": "polars.Expr.str.pad_start",
+            "section": "String",
+            "n_tokens": 279
+          }
+        ],
+        "context_tokens": 1506
+      },
+      {
+        "id": "string_012",
+        "category": "string",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.str.slice",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.str.slice",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.str.strip_prefix",
+            "title": "polars.Expr.str.strip_prefix",
+            "section": "String",
+            "n_tokens": 281
+          },
+          {
+            "id": "api:Expr.str.strip_chars_start",
+            "title": "polars.Expr.str.strip_chars_start",
+            "section": "String",
+            "n_tokens": 590
+          },
+          {
+            "id": "api:Expr.name.prefix",
+            "title": "polars.Expr.name.prefix",
+            "section": "Name",
+            "n_tokens": 318
+          },
+          {
+            "id": "api:Expr.str.head",
+            "title": "polars.Expr.str.head",
+            "section": "String",
+            "n_tokens": 680
+          }
+        ],
+        "context_tokens": 1923
+      },
+      {
+        "id": "string_013",
+        "category": "string",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 0.25,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.sort",
+          "Expr.str.join",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "DataFrame.group_by",
+          "col"
+        ],
+        "missing": [
+          "Expr.alias",
+          "Expr.sort",
+          "Expr.str.join",
+          "GroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#008",
+            "title": "Aggregate",
+            "section": "STDDEV",
+            "n_tokens": 269
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#006",
+            "title": "Aggregation",
+            "section": "Sorting",
+            "n_tokens": 352
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/categorical-data-and-enums.md#006",
+            "title": "Categorical data and enums",
+            "section": "Data type `Categorical` > Combining `Categorical` columns",
+            "n_tokens": 334
+          },
+          {
+            "id": "guide:docs/source/user-guide/installation.md#003",
+            "title": "Installation",
+            "section": "Feature flags > Python > Excel",
+            "n_tokens": 378
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#005",
+            "title": "Aggregation",
+            "section": "Sorting",
+            "n_tokens": 364
+          }
+        ],
+        "context_tokens": 1766
+      },
+      {
+        "id": "string_014",
+        "category": "string",
+        "recall": 0.2,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.len",
+          "Expr.str.split",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.len",
+          "Expr.str.split"
+        ],
+        "retrieved": [
+          {
+            "id": "api:concat_str",
+            "title": "polars.concat_str",
+            "section": "Functions",
+            "n_tokens": 517
+          },
+          {
+            "id": "api:Expr.str.replace_all#p2",
+            "title": "polars.Expr.str.replace_all",
+            "section": "String",
+            "n_tokens": 463
+          },
+          {
+            "id": "api:Expr.str.replace#p2",
+            "title": "polars.Expr.str.replace",
+            "section": "String",
+            "n_tokens": 463
+          },
+          {
+            "id": "guide:docs/source/user-guide/migration/pandas.md#008",
+            "title": "Coming from Pandas",
+            "section": "pandas transform",
+            "n_tokens": 472
+          }
+        ],
+        "context_tokens": 1967
+      },
+      {
+        "id": "datetime_001",
+        "category": "datetime",
+        "recall": 0.5,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "DataFrame.select",
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.month",
+          "Expr.dt.year",
+          "Expr.str.to_date",
+          "col"
+        ],
+        "found": [
+          "Expr.dt.month",
+          "Expr.dt.year",
+          "Expr.str.to_date",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.filter",
+          "DataFrame.select",
+          "DataFrame.with_columns",
+          "Expr.alias"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.dt.month",
+            "title": "polars.Expr.dt.month",
+            "section": "Temporal",
+            "n_tokens": 299
+          },
+          {
+            "id": "api:date",
+            "title": "polars.date",
+            "section": "Functions",
+            "n_tokens": 627
+          },
+          {
+            "id": "api:Series.dt.month",
+            "title": "polars.Series.dt.month",
+            "section": "Temporal",
+            "n_tokens": 175
+          },
+          {
+            "id": "api:Expr.dt.days_in_month",
+            "title": "polars.Expr.dt.days_in_month",
+            "section": "Temporal",
+            "n_tokens": 330
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/time-series/parsing.md#002",
+            "title": "Parsing",
+            "section": "Parsing dates from a file",
+            "n_tokens": 442
+          }
+        ],
+        "context_tokens": 1937
+      },
+      {
+        "id": "datetime_002",
+        "category": "datetime",
+        "recall": 0.25,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.year",
+          "col"
+        ],
+        "found": [
+          "Expr.dt.year"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.dt.year",
+            "title": "polars.Expr.dt.year",
+            "section": "Temporal",
+            "n_tokens": 370
+          },
+          {
+            "id": "api:Series.dt.year",
+            "title": "polars.Series.dt.year",
+            "section": "Temporal",
+            "n_tokens": 147
+          },
+          {
+            "id": "api:Series.dt.iso_year",
+            "title": "polars.Series.dt.iso_year",
+            "section": "Temporal",
+            "n_tokens": 145
+          },
+          {
+            "id": "api:Expr.dt.iso_year",
+            "title": "polars.Expr.dt.iso_year",
+            "section": "Temporal",
+            "n_tokens": 391
+          },
+          {
+            "id": "api:date_ranges",
+            "title": "polars.date_ranges",
+            "section": "Functions",
+            "n_tokens": 715
+          }
+        ],
+        "context_tokens": 1833
+      },
+      {
+        "id": "datetime_003",
+        "category": "datetime",
+        "recall": 0.25,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.weekday",
+          "col"
+        ],
+        "found": [
+          "Expr.dt.weekday"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Series.dt.weekday",
+            "title": "polars.Series.dt.weekday",
+            "section": "Temporal",
+            "n_tokens": 179
+          },
+          {
+            "id": "api:Expr.dt.weekday",
+            "title": "polars.Expr.dt.weekday",
+            "section": "Temporal",
+            "n_tokens": 485
+          },
+          {
+            "id": "api:Expr.dt.day",
+            "title": "polars.Expr.dt.day",
+            "section": "Temporal",
+            "n_tokens": 499
+          },
+          {
+            "id": "api:Expr.dt.ordinal_day",
+            "title": "polars.Expr.dt.ordinal_day",
+            "section": "Temporal",
+            "n_tokens": 502
+          },
+          {
+            "id": "api:Series.dt.week",
+            "title": "polars.Series.dt.week",
+            "section": "Temporal",
+            "n_tokens": 187
+          }
+        ],
+        "context_tokens": 1919
+      },
+      {
+        "id": "datetime_004",
+        "category": "datetime",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.is_between",
+          "col",
+          "date"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "Expr.is_between",
+          "col",
+          "date"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/transformations/time-series/rolling.md#002",
+            "title": "Grouping",
+            "section": "Grouping by fixed windows > Parameters for `group_by_dynamic`",
+            "n_tokens": 378
+          },
+          {
+            "id": "api:selectors.datetime#p3",
+            "title": "polars.selectors.datetime",
+            "section": "Selectors > Functions",
+            "n_tokens": 664
+          },
+          {
+            "id": "api:Expr.dt.date",
+            "title": "polars.Expr.dt.date",
+            "section": "Temporal",
+            "n_tokens": 414
+          },
+          {
+            "id": "guide:docs/source/user-guide/io/hugging-face.md#004",
+            "title": "Hugging Face",
+            "section": "Scanning datasets from Hugging Face > Examples > Parquet",
+            "n_tokens": 322
+          }
+        ],
+        "context_tokens": 1848
+      },
+      {
+        "id": "datetime_005",
+        "category": "datetime",
+        "recall": 0.25,
+        "recall_non_core": 1.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.strftime",
+          "col"
+        ],
+        "found": [
+          "Expr.dt.strftime"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.dt.strftime",
+            "title": "polars.Expr.dt.strftime",
+            "section": "Temporal",
+            "n_tokens": 783
+          },
+          {
+            "id": "api:Series.dt.strftime",
+            "title": "polars.Series.dt.strftime",
+            "section": "Temporal",
+            "n_tokens": 398
+          },
+          {
+            "id": "api:Expr.dt.to_string#p5",
+            "title": "polars.Expr.dt.to_string",
+            "section": "Temporal",
+            "n_tokens": 463
+          },
+          {
+            "id": "api:Expr.dt.add_business_days#p3",
+            "title": "polars.Expr.dt.add_business_days",
+            "section": "Temporal",
+            "n_tokens": 272
+          }
+        ],
+        "context_tokens": 1970
+      },
+      {
+        "id": "datetime_006",
+        "category": "datetime",
+        "recall": 0.2,
+        "recall_non_core": 0.5,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.hour",
+          "Expr.str.to_datetime",
+          "col"
+        ],
+        "found": [
+          "Expr.dt.hour"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.str.to_datetime",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Series.dt.hour",
+            "title": "polars.Series.dt.hour",
+            "section": "Temporal",
+            "n_tokens": 292
+          },
+          {
+            "id": "api:Expr.dt.hour",
+            "title": "polars.Expr.dt.hour",
+            "section": "Temporal",
+            "n_tokens": 583
+          },
+          {
+            "id": "api:datetime#p2",
+            "title": "polars.datetime",
+            "section": "Functions",
+            "n_tokens": 603
+          },
+          {
+            "id": "api:Expr.dt.total_hours",
+            "title": "polars.Expr.dt.total_hours",
+            "section": "Temporal",
+            "n_tokens": 418
+          }
+        ],
+        "context_tokens": 1946
+      },
+      {
+        "id": "datetime_007",
+        "category": "datetime",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.total_days",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.total_days",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:business_day_count#p2",
+            "title": "polars.business_day_count",
+            "section": "Functions",
+            "n_tokens": 666
+          },
+          {
+            "id": "api:date_ranges",
+            "title": "polars.date_ranges",
+            "section": "Functions",
+            "n_tokens": 715
+          },
+          {
+            "id": "api:business_day_count#p3",
+            "title": "polars.business_day_count",
+            "section": "Functions",
+            "n_tokens": 299
+          },
+          {
+            "id": "api:Series.dt.ordinal_day",
+            "title": "polars.Series.dt.ordinal_day",
+            "section": "Temporal",
+            "n_tokens": 188
+          }
+        ],
+        "context_tokens": 1919
+      },
+      {
+        "id": "datetime_008",
+        "category": "datetime",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.truncate",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.truncate",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Series.dt.day",
+            "title": "polars.Series.dt.day",
+            "section": "Temporal",
+            "n_tokens": 190
+          },
+          {
+            "id": "api:Expr.dt.day",
+            "title": "polars.Expr.dt.day",
+            "section": "Temporal",
+            "n_tokens": 499
+          },
+          {
+            "id": "api:Expr.dt.month_start",
+            "title": "polars.Expr.dt.month_start",
+            "section": "Temporal",
+            "n_tokens": 509
+          },
+          {
+            "id": "api:Series.dt.month_start",
+            "title": "polars.Series.dt.month_start",
+            "section": "Temporal",
+            "n_tokens": 267
+          },
+          {
+            "id": "api:Expr.dt.days_in_month",
+            "title": "polars.Expr.dt.days_in_month",
+            "section": "Temporal",
+            "n_tokens": 330
+          }
+        ],
+        "context_tokens": 1863
+      },
+      {
+        "id": "datetime_009",
+        "category": "datetime",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.offset_by",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.offset_by",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.dt.add_business_days#p2",
+            "title": "polars.Expr.dt.add_business_days",
+            "section": "Temporal",
+            "n_tokens": 670
+          },
+          {
+            "id": "api:Expr.dt.add_business_days#p3",
+            "title": "polars.Expr.dt.add_business_days",
+            "section": "Temporal",
+            "n_tokens": 272
+          },
+          {
+            "id": "api:business_day_count#p2",
+            "title": "polars.business_day_count",
+            "section": "Functions",
+            "n_tokens": 666
+          },
+          {
+            "id": "api:Series.dt.day",
+            "title": "polars.Series.dt.day",
+            "section": "Temporal",
+            "n_tokens": 190
+          }
+        ],
+        "context_tokens": 1853
+      },
+      {
+        "id": "datetime_010",
+        "category": "datetime",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.dt.weekday",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "Expr.dt.weekday",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:business_day_count#p2",
+            "title": "polars.business_day_count",
+            "section": "Functions",
+            "n_tokens": 666
+          },
+          {
+            "id": "api:Expr.dt.add_business_days#p2",
+            "title": "polars.Expr.dt.add_business_days",
+            "section": "Temporal",
+            "n_tokens": 670
+          },
+          {
+            "id": "api:Series.dt.is_business_day",
+            "title": "polars.Series.dt.is_business_day",
+            "section": "Temporal",
+            "n_tokens": 534
+          },
+          {
+            "id": "api:escape_regex",
+            "title": "polars.escape_regex",
+            "section": "Functions > Miscellaneous",
+            "n_tokens": 38
+          }
+        ],
+        "context_tokens": 1964
+      },
+      {
+        "id": "datetime_011",
+        "category": "datetime",
+        "recall": 0.16666666666666666,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.dt.truncate",
+          "Expr.sum",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.dt.truncate",
+          "Expr.sum",
+          "GroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Series.dt.days_in_month",
+            "title": "polars.Series.dt.days_in_month",
+            "section": "Temporal",
+            "n_tokens": 201
+          },
+          {
+            "id": "api:Expr.dt.days_in_month",
+            "title": "polars.Expr.dt.days_in_month",
+            "section": "Temporal",
+            "n_tokens": 330
+          },
+          {
+            "id": "api:Series.dt.day",
+            "title": "polars.Series.dt.day",
+            "section": "Temporal",
+            "n_tokens": 190
+          },
+          {
+            "id": "api:Expr.dt.day",
+            "title": "polars.Expr.dt.day",
+            "section": "Temporal",
+            "n_tokens": 499
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/time-series/rolling.md#003",
+            "title": "Grouping",
+            "section": "Grouping by fixed windows > Using expressions in `group_by_dynamic`",
+            "n_tokens": 351
+          }
+        ],
+        "context_tokens": 1648
+      },
+      {
+        "id": "datetime_012",
+        "category": "datetime",
+        "recall": 0.16666666666666666,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.total_days",
+          "Expr.over",
+          "Expr.shift",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.total_days",
+          "Expr.over",
+          "Expr.shift"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/transformations/time-series/rolling.md#002",
+            "title": "Grouping",
+            "section": "Grouping by fixed windows > Parameters for `group_by_dynamic`",
+            "n_tokens": 378
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/time-series/rolling.md#003",
+            "title": "Grouping",
+            "section": "Grouping by fixed windows > Using expressions in `group_by_dynamic`",
+            "n_tokens": 351
+          },
+          {
+            "id": "api:Expr.dt.add_business_days#p3",
+            "title": "polars.Expr.dt.add_business_days",
+            "section": "Temporal",
+            "n_tokens": 272
+          },
+          {
+            "id": "api:Expr.dt.add_business_days#p2",
+            "title": "polars.Expr.dt.add_business_days",
+            "section": "Temporal",
+            "n_tokens": 670
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#003",
+            "title": "Window",
+            "section": "CUME_DIST",
+            "n_tokens": 86
+          }
+        ],
+        "context_tokens": 1840
+      },
+      {
+        "id": "datetime_013",
+        "category": "datetime",
+        "recall": 0.2,
+        "recall_non_core": 0.5,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.dt.weekday",
+          "col",
+          "date"
+        ],
+        "found": [
+          "Expr.dt.weekday"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "col",
+          "date"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.dt.weekday",
+            "title": "polars.Expr.dt.weekday",
+            "section": "Temporal",
+            "n_tokens": 485
+          },
+          {
+            "id": "api:Series.dt.weekday",
+            "title": "polars.Series.dt.weekday",
+            "section": "Temporal",
+            "n_tokens": 179
+          },
+          {
+            "id": "api:Expr.dt.day",
+            "title": "polars.Expr.dt.day",
+            "section": "Temporal",
+            "n_tokens": 499
+          },
+          {
+            "id": "api:Expr.dt.ordinal_day",
+            "title": "polars.Expr.dt.ordinal_day",
+            "section": "Temporal",
+            "n_tokens": 502
+          },
+          {
+            "id": "api:Series.dt.days_in_month",
+            "title": "polars.Series.dt.days_in_month",
+            "section": "Temporal",
+            "n_tokens": 201
+          }
+        ],
+        "context_tokens": 1935
+      },
+      {
+        "id": "list_struct_001",
+        "category": "list_struct",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 0.25,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.sort",
+          "Expr.unique",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "DataFrame.group_by",
+          "col"
+        ],
+        "missing": [
+          "Expr.alias",
+          "Expr.sort",
+          "Expr.unique",
+          "GroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:Expr.over#p1",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 567
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#006",
+            "title": "Aggregation",
+            "section": "Sorting",
+            "n_tokens": 352
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/window-functions.md#004",
+            "title": "Window functions",
+            "section": "Mapping results to dataframe rows > `group_to_rows`",
+            "n_tokens": 297
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#004",
+            "title": "Aggregation",
+            "section": "Nested grouping",
+            "n_tokens": 340
+          }
+        ],
+        "context_tokens": 1948
+      },
+      {
+        "id": "list_struct_002",
+        "category": "list_struct",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.len",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.len",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.rows",
+            "title": "polars.DataFrame.rows",
+            "section": "Manipulation/selection",
+            "n_tokens": 558
+          },
+          {
+            "id": "api:GroupBy.len",
+            "title": "polars.GroupBy.len",
+            "section": "GroupBy",
+            "n_tokens": 299
+          },
+          {
+            "id": "guide:docs/source/user-guide/installation.md#003",
+            "title": "Installation",
+            "section": "Feature flags > Python > Excel",
+            "n_tokens": 378
+          },
+          {
+            "id": "guide:docs/source/user-guide/installation.md#002",
+            "title": "Installation",
+            "section": "Legacy CPU",
+            "n_tokens": 358
+          },
+          {
+            "id": "api:scan_lance",
+            "title": "polars.scan_lance",
+            "section": "Input/output > Lance",
+            "n_tokens": 260
+          }
+        ],
+        "context_tokens": 1920
+      },
+      {
+        "id": "list_struct_003",
+        "category": "list_struct",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.explode"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.explode"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:LazyFrame.join#p2",
+            "title": "polars.LazyFrame.join",
+            "section": "Manipulation/selection",
+            "n_tokens": 697
+          },
+          {
+            "id": "api:DataFrame.join#p3",
+            "title": "polars.DataFrame.join",
+            "section": "Manipulation/selection",
+            "n_tokens": 708
+          },
+          {
+            "id": "api:Series.list.item",
+            "title": "polars.Series.list.item",
+            "section": "List",
+            "n_tokens": 181
+          }
+        ],
+        "context_tokens": 1971
+      },
+      {
+        "id": "list_struct_004",
+        "category": "list_struct",
+        "recall": 0.25,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.sum",
+          "col"
+        ],
+        "found": [
+          "Expr.list.sum"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.list.sum",
+            "title": "polars.Expr.list.sum",
+            "section": "List",
+            "n_tokens": 193
+          },
+          {
+            "id": "api:DataFrame.write_excel#p5",
+            "title": "polars.DataFrame.write_excel",
+            "section": "Input/output > Excel / ODS",
+            "n_tokens": 608
+          },
+          {
+            "id": "api:Series.list.sum",
+            "title": "polars.Series.list.sum",
+            "section": "List",
+            "n_tokens": 99
+          },
+          {
+            "id": "api:DataFrame.write_excel#p4",
+            "title": "polars.DataFrame.write_excel",
+            "section": "Input/output > Excel / ODS",
+            "n_tokens": 508
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#010",
+            "title": "Aggregate",
+            "section": "SUM",
+            "n_tokens": 484
+          }
+        ],
+        "context_tokens": 1964
+      },
+      {
+        "id": "list_struct_005",
+        "category": "list_struct",
+        "recall": 0.3333333333333333,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.filter",
+          "Expr.list.contains",
+          "col"
+        ],
+        "found": [
+          "Expr.list.contains"
+        ],
+        "missing": [
+          "DataFrame.filter",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.list.contains",
+            "title": "polars.Expr.list.contains",
+            "section": "List",
+            "n_tokens": 327
+          },
+          {
+            "id": "api:DataFrame.unique#p1",
+            "title": "polars.DataFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 539
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:selectors.contains",
+            "title": "polars.selectors.contains",
+            "section": "Selectors > Functions",
+            "n_tokens": 557
+          },
+          {
+            "id": "api:Series.list.to_map",
+            "title": "polars.Series.list.to_map",
+            "section": "List",
+            "n_tokens": 168
+          }
+        ],
+        "context_tokens": 1988
+      },
+      {
+        "id": "list_struct_006",
+        "category": "list_struct",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.get",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.get",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.unstack#p2",
+            "title": "polars.DataFrame.unstack",
+            "section": "Manipulation/selection",
+            "n_tokens": 1234
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:Expr.list.first",
+            "title": "polars.Expr.list.first",
+            "section": "List",
+            "n_tokens": 198
+          },
+          {
+            "id": "api:Series.list.first",
+            "title": "polars.Series.list.first",
+            "section": "List",
+            "n_tokens": 88
+          }
+        ],
+        "context_tokens": 1902
+      },
+      {
+        "id": "list_struct_007",
+        "category": "list_struct",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.struct.field",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.struct.field",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.struct.with_fields",
+            "title": "polars.Expr.struct.with_fields",
+            "section": "Struct",
+            "n_tokens": 752
+          },
+          {
+            "id": "api:Expr.arr.to_struct#p2",
+            "title": "polars.Expr.arr.to_struct",
+            "section": "Array",
+            "n_tokens": 431
+          },
+          {
+            "id": "api:Expr.list.to_struct",
+            "title": "polars.Expr.list.to_struct",
+            "section": "List",
+            "n_tokens": 519
+          },
+          {
+            "id": "api:Expr.name.prefix_fields",
+            "title": "polars.Expr.name.prefix_fields",
+            "section": "Name",
+            "n_tokens": 148
+          },
+          {
+            "id": "api:Field",
+            "title": "polars.Field",
+            "section": "Data types > Nested",
+            "n_tokens": 68
+          }
+        ],
+        "context_tokens": 1987
+      },
+      {
+        "id": "list_struct_008",
+        "category": "list_struct",
+        "recall": 0.25,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.sort",
+          "col"
+        ],
+        "found": [
+          "Expr.list.sort"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:arg_sort_by",
+            "title": "polars.arg_sort_by",
+            "section": "Functions",
+            "n_tokens": 617
+          },
+          {
+            "id": "api:Expr.list.sort",
+            "title": "polars.Expr.list.sort",
+            "section": "List",
+            "n_tokens": 410
+          },
+          {
+            "id": "api:Series.list.sort",
+            "title": "polars.Series.list.sort",
+            "section": "List",
+            "n_tokens": 219
+          },
+          {
+            "id": "api:LazyFrame.set_sorted",
+            "title": "polars.LazyFrame.set_sorted",
+            "section": "Manipulation/selection",
+            "n_tokens": 160
+          },
+          {
+            "id": "api:DataFrame.merge_sorted#p1",
+            "title": "polars.DataFrame.merge_sorted",
+            "section": "Manipulation/selection",
+            "n_tokens": 222
+          }
+        ],
+        "context_tokens": 1700
+      },
+      {
+        "id": "list_struct_009",
+        "category": "list_struct",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.max",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.max",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#013",
+            "title": "Window",
+            "section": "RANK",
+            "n_tokens": 532
+          },
+          {
+            "id": "api:DataFrame.max",
+            "title": "polars.DataFrame.max",
+            "section": "Aggregation",
+            "n_tokens": 197
+          },
+          {
+            "id": "api:DataFrame.top_k",
+            "title": "polars.DataFrame.top_k",
+            "section": "Manipulation/selection",
+            "n_tokens": 566
+          },
+          {
+            "id": "api:DataFrame.unique#p1",
+            "title": "polars.DataFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 539
+          },
+          {
+            "id": "api:Series.list.max",
+            "title": "polars.Series.list.max",
+            "section": "List",
+            "n_tokens": 83
+          }
+        ],
+        "context_tokens": 1983
+      },
+      {
+        "id": "list_struct_010",
+        "category": "list_struct",
+        "recall": 0.2,
+        "recall_non_core": 0.5,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.len",
+          "Expr.list.unique",
+          "col"
+        ],
+        "found": [
+          "Expr.list.unique"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.len",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#002",
+            "title": "Query Clauses",
+            "section": "DISTINCT",
+            "n_tokens": 329
+          },
+          {
+            "id": "api:DataFrame.unique#p1",
+            "title": "polars.DataFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 539
+          },
+          {
+            "id": "api:Expr.list.unique",
+            "title": "polars.Expr.list.unique",
+            "section": "List",
+            "n_tokens": 220
+          },
+          {
+            "id": "api:LazyFrame.unique#p1",
+            "title": "polars.LazyFrame.unique",
+            "section": "Manipulation/selection",
+            "n_tokens": 560
+          },
+          {
+            "id": "api:Series.list.unique",
+            "title": "polars.Series.list.unique",
+            "section": "List",
+            "n_tokens": 127
+          }
+        ],
+        "context_tokens": 1844
+      },
+      {
+        "id": "list_struct_011",
+        "category": "list_struct",
+        "recall": 0.16666666666666666,
+        "recall_non_core": 0.3333333333333333,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.eval",
+          "Expr.list.sum",
+          "col",
+          "element"
+        ],
+        "found": [
+          "Expr.list.sum"
+        ],
+        "missing": [
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "Expr.list.eval",
+          "col",
+          "element"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.list.sum",
+            "title": "polars.Expr.list.sum",
+            "section": "List",
+            "n_tokens": 193
+          },
+          {
+            "id": "api:Series.list.sum",
+            "title": "polars.Series.list.sum",
+            "section": "List",
+            "n_tokens": 99
+          },
+          {
+            "id": "api:Series.rolling_sum",
+            "title": "polars.Series.rolling_sum",
+            "section": "Computation",
+            "n_tokens": 327
+          },
+          {
+            "id": "api:Expr.rolling_sum",
+            "title": "polars.Expr.rolling_sum",
+            "section": "Computation",
+            "n_tokens": 962
+          },
+          {
+            "id": "api:Series.repeat_by",
+            "title": "polars.Series.repeat_by",
+            "section": "Manipulation/selection",
+            "n_tokens": 119
+          }
+        ],
+        "context_tokens": 1771
+      },
+      {
+        "id": "list_struct_012",
+        "category": "list_struct",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.unnest"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.unnest"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/expressions/structs.md#004",
+            "title": "Structs",
+            "section": "Extracting individual values of a `Struct`",
+            "n_tokens": 291
+          },
+          {
+            "id": "api:Expr.struct.with_fields",
+            "title": "polars.Expr.struct.with_fields",
+            "section": "Struct",
+            "n_tokens": 752
+          },
+          {
+            "id": "api:Expr.struct.eval",
+            "title": "polars.Expr.struct.eval",
+            "section": "Struct",
+            "n_tokens": 568
+          },
+          {
+            "id": "api:Expr.struct.drop",
+            "title": "polars.Expr.struct.drop",
+            "section": "Struct",
+            "n_tokens": 245
+          },
+          {
+            "id": "api:Field",
+            "title": "polars.Field",
+            "section": "Data types > Nested",
+            "n_tokens": 68
+          }
+        ],
+        "context_tokens": 1994
+      },
+      {
+        "id": "list_struct_013",
+        "category": "list_struct",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.head",
+          "Expr.sort",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.group_by",
+          "Expr.alias",
+          "Expr.head",
+          "Expr.sort",
+          "GroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.top_k",
+            "title": "polars.DataFrame.top_k",
+            "section": "Manipulation/selection",
+            "n_tokens": 566
+          },
+          {
+            "id": "api:LazyFrame.top_k",
+            "title": "polars.LazyFrame.top_k",
+            "section": "Manipulation/selection",
+            "n_tokens": 570
+          },
+          {
+            "id": "api:Expr.top_k_by#p1",
+            "title": "polars.Expr.top_k_by",
+            "section": "Manipulation/selection",
+            "n_tokens": 280
+          },
+          {
+            "id": "api:Series.top_k_by",
+            "title": "polars.Series.top_k_by",
+            "section": "Manipulation/selection",
+            "n_tokens": 301
+          },
+          {
+            "id": "api:Series.max_by",
+            "title": "polars.Series.max_by",
+            "section": "Aggregation",
+            "n_tokens": 157
+          }
+        ],
+        "context_tokens": 1955
+      },
+      {
+        "id": "reshape_001",
+        "category": "reshape",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.sort",
+          "DataFrame.unpivot"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.sort",
+          "DataFrame.unpivot"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.pivot#p3",
+            "title": "polars.DataFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 694
+          },
+          {
+            "id": "api:LazyFrame.pivot#p2",
+            "title": "polars.LazyFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 530
+          },
+          {
+            "id": "api:DataFrame.pivot#p4",
+            "title": "polars.DataFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 663
+          },
+          {
+            "id": "api:DataFrame.rechunk",
+            "title": "polars.DataFrame.rechunk",
+            "section": "Manipulation/selection",
+            "n_tokens": 39
+          }
+        ],
+        "context_tokens": 1988
+      },
+      {
+        "id": "reshape_002",
+        "category": "reshape",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.sort",
+          "DataFrame.unpivot"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.sort",
+          "DataFrame.unpivot"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.dt.quarter",
+            "title": "polars.Expr.dt.quarter",
+            "section": "Temporal",
+            "n_tokens": 287
+          },
+          {
+            "id": "api:Series.dt.quarter",
+            "title": "polars.Series.dt.quarter",
+            "section": "Temporal",
+            "n_tokens": 164
+          },
+          {
+            "id": "api:DataFrame.pivot#p3",
+            "title": "polars.DataFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 694
+          },
+          {
+            "id": "api:Expr.rolling_quantile_by#p1",
+            "title": "polars.Expr.rolling_quantile_by",
+            "section": "Computation",
+            "n_tokens": 685
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#003",
+            "title": "Window",
+            "section": "CUME_DIST",
+            "n_tokens": 86
+          }
+        ],
+        "context_tokens": 1986
+      },
+      {
+        "id": "reshape_003",
+        "category": "reshape",
+        "recall": 0.5,
+        "recall_non_core": 0.5,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.pivot",
+          "DataFrame.sort"
+        ],
+        "found": [
+          "DataFrame.pivot"
+        ],
+        "missing": [
+          "DataFrame.sort"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.pivot#p3",
+            "title": "polars.DataFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 694
+          },
+          {
+            "id": "api:LazyFrame.pivot#p2",
+            "title": "polars.LazyFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 530
+          },
+          {
+            "id": "api:DataFrame.pivot#p4",
+            "title": "polars.DataFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 663
+          },
+          {
+            "id": "api:DataFrame.rechunk",
+            "title": "polars.DataFrame.rechunk",
+            "section": "Manipulation/selection",
+            "n_tokens": 39
+          }
+        ],
+        "context_tokens": 1988
+      },
+      {
+        "id": "reshape_004",
+        "category": "reshape",
+        "recall": 1.0,
+        "recall_non_core": 1.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.rename"
+        ],
+        "found": [
+          "DataFrame.rename"
+        ],
+        "missing": [],
+        "retrieved": [
+          {
+            "id": "api:Series.struct.rename_fields",
+            "title": "polars.Series.struct.rename_fields",
+            "section": "Struct",
+            "n_tokens": 120
+          },
+          {
+            "id": "api:Expr.name.map",
+            "title": "polars.Expr.name.map",
+            "section": "Name",
+            "n_tokens": 368
+          },
+          {
+            "id": "api:DataFrame.rename",
+            "title": "polars.DataFrame.rename",
+            "section": "Manipulation/selection",
+            "n_tokens": 483
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/structs.md#004",
+            "title": "Structs",
+            "section": "Extracting individual values of a `Struct`",
+            "n_tokens": 291
+          },
+          {
+            "id": "guide:docs/source/releases/upgrade/2.md#046",
+            "title": "Version 2.0",
+            "section": "API reshapes > Raise an error on `struct.rename_fields()` with an incorrect number of fields",
+            "n_tokens": 317
+          }
+        ],
+        "context_tokens": 1668
+      },
+      {
+        "id": "reshape_005",
+        "category": "reshape",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.sort",
+          "DataFrame.unpivot"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.sort",
+          "DataFrame.unpivot"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.dt.total_days",
+            "title": "polars.Expr.dt.total_days",
+            "section": "Temporal",
+            "n_tokens": 392
+          },
+          {
+            "id": "api:Expr.dt.day",
+            "title": "polars.Expr.dt.day",
+            "section": "Temporal",
+            "n_tokens": 499
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/lists-and-arrays.md#008",
+            "title": "Lists and arrays",
+            "section": "Working with lists > Row-wise computations",
+            "n_tokens": 421
+          },
+          {
+            "id": "api:Expr.dt.ordinal_day",
+            "title": "polars.Expr.dt.ordinal_day",
+            "section": "Temporal",
+            "n_tokens": 502
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/index.md#001",
+            "title": "Transformations",
+            "section": "",
+            "n_tokens": 65
+          }
+        ],
+        "context_tokens": 1943
+      },
+      {
+        "id": "reshape_006",
+        "category": "reshape",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.pivot",
+          "DataFrame.sort"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.pivot",
+          "DataFrame.sort"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.over#p4",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 663
+          },
+          {
+            "id": "api:Expr.over#p5",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 463
+          },
+          {
+            "id": "api:Expr.over#p1",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 567
+          },
+          {
+            "id": "guide:docs/source/user-guide/concepts/data-types-and-structures.md#007",
+            "title": "Data types and structures",
+            "section": "Appendix: full data types table",
+            "n_tokens": 168
+          }
+        ],
+        "context_tokens": 1914
+      },
+      {
+        "id": "reshape_007",
+        "category": "reshape",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.filter",
+          "DataFrame.sort",
+          "DataFrame.unpivot",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.filter",
+          "DataFrame.sort",
+          "DataFrame.unpivot",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#014",
+            "title": "Window",
+            "section": "ROW_NUMBER",
+            "n_tokens": 491
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/clauses.rst#012",
+            "title": "Query Clauses",
+            "section": "WINDOW",
+            "n_tokens": 425
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#008",
+            "title": "Window",
+            "section": "LEAD",
+            "n_tokens": 493
+          },
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/window.rst#006",
+            "title": "Window",
+            "section": "LAG",
+            "n_tokens": 493
+          }
+        ],
+        "context_tokens": 1941
+      },
+      {
+        "id": "reshape_008",
+        "category": "reshape",
+        "recall": 0.2,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.pivot",
+          "DataFrame.sort",
+          "DataFrame.with_columns",
+          "Expr.fill_null",
+          "col"
+        ],
+        "found": [
+          "col"
+        ],
+        "missing": [
+          "DataFrame.pivot",
+          "DataFrame.sort",
+          "DataFrame.with_columns",
+          "Expr.fill_null"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/expressions/missing-data.md#001",
+            "title": "Missing data",
+            "section": "",
+            "n_tokens": 313
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#004",
+            "title": "Aggregation",
+            "section": "Nested grouping",
+            "n_tokens": 340
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/structs.md#005",
+            "title": "Structs",
+            "section": "Practical use-cases of `Struct` columns > Identifying duplicate rows",
+            "n_tokens": 303
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/missing-data.md#002",
+            "title": "Missing data",
+            "section": "Missing data metadata",
+            "n_tokens": 331
+          },
+          {
+            "id": "api:Expr.value_counts#p1",
+            "title": "polars.Expr.value_counts",
+            "section": "Computation",
+            "n_tokens": 237
+          }
+        ],
+        "context_tokens": 1591
+      },
+      {
+        "id": "reshape_009",
+        "category": "reshape",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.sort",
+          "DataFrame.unpivot"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.sort",
+          "DataFrame.unpivot"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:docs/source/user-guide/sql/select.md#002",
+            "title": "SELECT",
+            "section": "GROUP BY",
+            "n_tokens": 368
+          },
+          {
+            "id": "api:DataFrame.join_asof#p9",
+            "title": "polars.DataFrame.join_asof",
+            "section": "Manipulation/selection",
+            "n_tokens": 719
+          },
+          {
+            "id": "api:DataFrame.join_asof#p10",
+            "title": "polars.DataFrame.join_asof",
+            "section": "Manipulation/selection",
+            "n_tokens": 651
+          },
+          {
+            "id": "api:DataFrame.median",
+            "title": "polars.DataFrame.median",
+            "section": "Aggregation",
+            "n_tokens": 201
+          }
+        ],
+        "context_tokens": 1995
+      },
+      {
+        "id": "reshape_010",
+        "category": "reshape",
+        "recall": 0.4,
+        "recall_non_core": 0.0,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.pivot",
+          "DataFrame.sort",
+          "DataFrame.with_columns",
+          "Expr.alias",
+          "col"
+        ],
+        "found": [
+          "DataFrame.with_columns",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.pivot",
+          "DataFrame.sort",
+          "Expr.alias"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.product",
+            "title": "polars.DataFrame.product",
+            "section": "Aggregation",
+            "n_tokens": 208
+          },
+          {
+            "id": "api:Expr.product",
+            "title": "polars.Expr.product",
+            "section": "Aggregation",
+            "n_tokens": 171
+          },
+          {
+            "id": "guide:docs/source/user-guide/transformations/time-series/rolling.md#001",
+            "title": "Grouping",
+            "section": "Grouping by fixed windows",
+            "n_tokens": 495
+          },
+          {
+            "id": "guide:docs/source/user-guide/getting-started.md#004",
+            "title": "Getting started",
+            "section": "Expressions and contexts > `with_columns`",
+            "n_tokens": 319
+          },
+          {
+            "id": "api:Expr.over#p4",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 663
+          }
+        ],
+        "context_tokens": 1923
+      },
+      {
+        "id": "reshape_011",
+        "category": "reshape",
+        "recall": 0.0,
+        "recall_non_core": 0.0,
+        "n_chunks": 4,
+        "needed": [
+          "DataFrame.group_by",
+          "DataFrame.unpivot",
+          "Expr.alias",
+          "Expr.mean",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [],
+        "missing": [
+          "DataFrame.group_by",
+          "DataFrame.unpivot",
+          "Expr.alias",
+          "Expr.mean",
+          "GroupBy.agg",
+          "col"
+        ],
+        "retrieved": [
+          {
+            "id": "guide:py-polars/docs/source/reference/sql/functions/aggregate.rst#003",
+            "title": "Aggregate",
+            "section": "APPROX_QUANTILE",
+            "n_tokens": 502
+          },
+          {
+            "id": "api:DataFrame.pivot#p4",
+            "title": "polars.DataFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 663
+          },
+          {
+            "id": "guide:docs/source/user-guide/sql/select.md#002",
+            "title": "SELECT",
+            "section": "GROUP BY",
+            "n_tokens": 368
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/structs.md#005",
+            "title": "Structs",
+            "section": "Practical use-cases of `Struct` columns > Identifying duplicate rows",
+            "n_tokens": 303
+          }
+        ],
+        "context_tokens": 1898
+      },
+      {
+        "id": "reshape_012",
+        "category": "reshape",
+        "recall": 0.5,
+        "recall_non_core": 0.5,
+        "n_chunks": 3,
+        "needed": [
+          "DataFrame.pivot",
+          "DataFrame.sort"
+        ],
+        "found": [
+          "DataFrame.pivot"
+        ],
+        "missing": [
+          "DataFrame.sort"
+        ],
+        "retrieved": [
+          {
+            "id": "api:DataFrame.pivot#p1",
+            "title": "polars.DataFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 691
+          },
+          {
+            "id": "api:Expr.over#p1",
+            "title": "polars.Expr.over",
+            "section": "Window",
+            "n_tokens": 567
+          },
+          {
+            "id": "api:LazyFrame.pivot#p1",
+            "title": "polars.LazyFrame.pivot",
+            "section": "Manipulation/selection",
+            "n_tokens": 639
+          }
+        ],
+        "context_tokens": 1940
+      },
+      {
+        "id": "reshape_013",
+        "category": "reshape",
+        "recall": 0.2857142857142857,
+        "recall_non_core": 0.2,
+        "n_chunks": 5,
+        "needed": [
+          "DataFrame.group_by",
+          "DataFrame.sort",
+          "DataFrame.unpivot",
+          "Expr.alias",
+          "Expr.mean",
+          "GroupBy.agg",
+          "col"
+        ],
+        "found": [
+          "DataFrame.group_by",
+          "col"
+        ],
+        "missing": [
+          "DataFrame.sort",
+          "DataFrame.unpivot",
+          "Expr.alias",
+          "Expr.mean",
+          "GroupBy.agg"
+        ],
+        "retrieved": [
+          {
+            "id": "api:Expr.dt.quarter",
+            "title": "polars.Expr.dt.quarter",
+            "section": "Temporal",
+            "n_tokens": 287
+          },
+          {
+            "id": "api:Series.dt.quarter",
+            "title": "polars.Series.dt.quarter",
+            "section": "Temporal",
+            "n_tokens": 164
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#004",
+            "title": "Aggregation",
+            "section": "Nested grouping",
+            "n_tokens": 340
+          },
+          {
+            "id": "guide:docs/source/user-guide/expressions/aggregation.md#003",
+            "title": "Aggregation",
+            "section": "Filtering",
+            "n_tokens": 368
+          },
+          {
+            "id": "api:Series.rolling_quantile_by#p1",
+            "title": "polars.Series.rolling_quantile_by",
+            "section": "Computation",
+            "n_tokens": 652
+          }
+        ],
+        "context_tokens": 1877
+      }
+    ]
+  },
+  "sweep": [
+    {
+      "k": 1,
+      "budget_tokens": 1000,
+      "recall": 0.0596,
+      "recall_non_core": 0.1205
+    },
+    {
+      "k": 1,
+      "budget_tokens": 2000,
+      "recall": 0.0596,
+      "recall_non_core": 0.1205
+    },
+    {
+      "k": 1,
+      "budget_tokens": 3000,
+      "recall": 0.0596,
+      "recall_non_core": 0.1205
+    },
+    {
+      "k": 1,
+      "budget_tokens": 4000,
+      "recall": 0.0596,
+      "recall_non_core": 0.1205
+    },
+    {
+      "k": 3,
+      "budget_tokens": 1000,
+      "recall": 0.1522,
+      "recall_non_core": 0.1975
+    },
+    {
+      "k": 3,
+      "budget_tokens": 2000,
+      "recall": 0.1553,
+      "recall_non_core": 0.2417
+    },
+    {
+      "k": 3,
+      "budget_tokens": 3000,
+      "recall": 0.1553,
+      "recall_non_core": 0.2417
+    },
+    {
+      "k": 3,
+      "budget_tokens": 4000,
+      "recall": 0.1553,
+      "recall_non_core": 0.2417
+    },
+    {
+      "k": 5,
+      "budget_tokens": 1000,
+      "recall": 0.1563,
+      "recall_non_core": 0.1975
+    },
+    {
+      "k": 5,
+      "budget_tokens": 2000,
+      "recall": 0.2035,
+      "recall_non_core": 0.281
+    },
+    {
+      "k": 5,
+      "budget_tokens": 3000,
+      "recall": 0.2205,
+      "recall_non_core": 0.2854
+    },
+    {
+      "k": 5,
+      "budget_tokens": 4000,
+      "recall": 0.2163,
+      "recall_non_core": 0.281
+    },
+    {
+      "k": 8,
+      "budget_tokens": 1000,
+      "recall": 0.1563,
+      "recall_non_core": 0.1975
+    },
+    {
+      "k": 8,
+      "budget_tokens": 2000,
+      "recall": 0.2119,
+      "recall_non_core": 0.2899
+    },
+    {
+      "k": 8,
+      "budget_tokens": 3000,
+      "recall": 0.2724,
+      "recall_non_core": 0.3323
+    },
+    {
+      "k": 8,
+      "budget_tokens": 4000,
+      "recall": 0.2816,
+      "recall_non_core": 0.3479
+    },
+    {
+      "k": 10,
+      "budget_tokens": 1000,
+      "recall": 0.1563,
+      "recall_non_core": 0.1975
+    },
+    {
+      "k": 10,
+      "budget_tokens": 2000,
+      "recall": 0.2119,
+      "recall_non_core": 0.2899
+    },
+    {
+      "k": 10,
+      "budget_tokens": 3000,
+      "recall": 0.2766,
+      "recall_non_core": 0.3368
+    },
+    {
+      "k": 10,
+      "budget_tokens": 4000,
+      "recall": 0.3006,
+      "recall_non_core": 0.368
+    }
+  ],
+  "prompt_lengths": {
+    "max_prompt_tokens_no_context": 345,
+    "max_prompt_tokens_with_context": 2347,
+    "longest_task": "join_010",
+    "mean_prompt_tokens_with_context": 2144.1
+  }
+}
