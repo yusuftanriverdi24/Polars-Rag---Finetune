@@ -1,0 +1,226 @@
+{
+  "polars_version": "2.0.0",
+  "candidates_by_source": {
+    "docstring": 1286,
+    "user_guide": 158
+  },
+  "programs": {
+    "docstring": 881,
+    "user_guide": 56
+  },
+  "static_rejects": {
+    "docstring": {
+      "doctest_skip": 40,
+      "config": 1,
+      "io": 67,
+      "unresolved_name": 5,
+      "optional_dependency": 20,
+      "no_input_frame": 197,
+      "sql": 10,
+      "random": 3
+    },
+    "user_guide": {
+      "random": 1,
+      "no_input_frame": 31,
+      "io": 55,
+      "engine_or_plugin": 2,
+      "optional_dependency": 23,
+      "exceptions": 3,
+      "unresolved_name": 1,
+      "plotting": 7,
+      "sql": 9
+    }
+  },
+  "exact_duplicates": 17,
+  "sandbox_valid_by_source": {
+    "docstring": 1108,
+    "user_guide": 130
+  },
+  "sandbox_rejects": {
+    "docstring": {
+      "error": 14,
+      "result_type:Series": 53,
+      "result_type:list": 22,
+      "result_type:int": 22,
+      "result_type:Schema": 9,
+      "result_type:tuple": 7,
+      "result_type:float": 4,
+      "result_type:bool": 14,
+      "result_type:NoneType": 4,
+      "result_type:dict": 10,
+      "result_type:Float64": 2,
+      "result_type:defaultdict": 3,
+      "result_type:Struct": 1,
+      "deprecation_warning": 5,
+      "empty_result": 3,
+      "result_type:Int64": 1,
+      "result_type:str": 1,
+      "result_type:type": 1,
+      "result_type:date": 2
+    },
+    "user_guide": {
+      "result_type:Series": 13,
+      "result_type:Schema": 2,
+      "result_type:str": 3,
+      "empty_result": 1,
+      "result_type:bool": 4,
+      "result_type:tuple": 1,
+      "warning": 1,
+      "error": 3
+    }
+  },
+  "leakage": {
+    "dropped": {
+      "api_set": 5,
+      "solution": 1
+    },
+    "examples": [
+      {
+        "id": "Expr_rank__9e8bcd620a",
+        "reason": "api_set",
+        "benchmark_task": "window_011"
+      },
+      {
+        "id": "Expr_unique_counts__a9a8fe6b5b",
+        "reason": "api_set",
+        "benchmark_task": "select_filter_012"
+      },
+      {
+        "id": "Expr_name_to_lowercase__37c6eea56c",
+        "reason": "solution",
+        "benchmark_task": "string_002"
+      },
+      {
+        "id": "Expr_over__b43974d569",
+        "reason": "api_set",
+        "benchmark_task": "window_002"
+      },
+      {
+        "id": "Expr_over__b6990533dc",
+        "reason": "api_set",
+        "benchmark_task": "window_002"
+      },
+      {
+        "id": "Expr_over__25ab34f2d3",
+        "reason": "api_set",
+        "benchmark_task": "window_005"
+      }
+    ],
+    "no_api_call_dropped": 69
+  },
+  "before_downsampling": {
+    "n": 1163,
+    "by_source": {
+      "docstring": 1060,
+      "user_guide": 103
+    },
+    "by_category": {
+      "datetime": 64,
+      "group_by": 38,
+      "join": 63,
+      "lazy": 112,
+      "list_struct": 80,
+      "reshape": 30,
+      "select_filter": 588,
+      "string": 96,
+      "window": 92
+    },
+    "by_difficulty": {
+      "easy": 879,
+      "hard": 32,
+      "medium": 252
+    },
+    "multi_step_share": 0.244,
+    "multi_step_share_by_source": {
+      "docstring": 0.22,
+      "user_guide": 0.495
+    },
+    "ignore_row_order": 4,
+    "api_namespaces": {
+      "DataFrame": 1028,
+      "functions": 910,
+      "Expr": 624,
+      "LazyFrame": 305,
+      "Expr.str": 115,
+      "selectors": 112,
+      "Expr.dt": 83,
+      "Expr.list": 62,
+      "Expr.arr": 36,
+      "GroupBy": 34,
+      "Expr.name": 29,
+      "LazyGroupBy": 18,
+      "Series": 13,
+      "Expr.struct": 11,
+      "Expr.bin": 9,
+      "Expr.cat": 8,
+      "Expr.map": 6,
+      "Series.str": 2,
+      "Series.struct": 2
+    },
+    "distinct_api_names": 628,
+    "pages": 619,
+    "mean_non_core_api_names": 1.35
+  },
+  "downsampling": {
+    "trivial_cap": 2,
+    "single_step_cap": 6,
+    "dropped": {
+      "trivial": 30,
+      "single_step_cap": 24
+    }
+  },
+  "final": {
+    "n": 1109,
+    "by_source": {
+      "docstring": 1016,
+      "user_guide": 93
+    },
+    "by_category": {
+      "datetime": 64,
+      "group_by": 38,
+      "join": 52,
+      "lazy": 90,
+      "list_struct": 80,
+      "reshape": 30,
+      "select_filter": 567,
+      "string": 96,
+      "window": 92
+    },
+    "by_difficulty": {
+      "easy": 825,
+      "hard": 32,
+      "medium": 252
+    },
+    "multi_step_share": 0.256,
+    "multi_step_share_by_source": {
+      "docstring": 0.229,
+      "user_guide": 0.548
+    },
+    "ignore_row_order": 4,
+    "api_namespaces": {
+      "DataFrame": 1006,
+      "functions": 875,
+      "Expr": 615,
+      "LazyFrame": 273,
+      "Expr.str": 115,
+      "selectors": 112,
+      "Expr.dt": 83,
+      "Expr.list": 62,
+      "Expr.arr": 36,
+      "GroupBy": 34,
+      "Expr.name": 29,
+      "LazyGroupBy": 18,
+      "Series": 13,
+      "Expr.struct": 11,
+      "Expr.bin": 9,
+      "Expr.cat": 8,
+      "Expr.map": 6,
+      "Series.str": 2,
+      "Series.struct": 2
+    },
+    "distinct_api_names": 628,
+    "pages": 616,
+    "mean_non_core_api_names": 1.39
+  },
+  "wall_time_s": 628.8
+}

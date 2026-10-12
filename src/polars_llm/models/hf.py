@@ -39,12 +39,14 @@ class HFModel:
         max_seq_length: int = DEFAULT_MAX_SEQ_LENGTH,
         enable_thinking: bool = False,
         seed: int = 0,
+        revision: str | None = None,
     ):
         import torch
         from unsloth import FastLanguageModel
 
         self.name = model_id
         self.adapter = adapter
+        self.revision = revision
         self.enable_thinking = enable_thinking
         self.max_seq_length = max_seq_length
 
@@ -55,6 +57,7 @@ class HFModel:
             max_seq_length=max_seq_length,
             dtype=torch.bfloat16,  # bf16, no quantization
             load_in_4bit=False,
+            **({"revision": revision} if revision else {}),
         )
 
         if adapter:

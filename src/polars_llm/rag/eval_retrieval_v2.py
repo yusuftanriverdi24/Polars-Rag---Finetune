@@ -74,17 +74,38 @@ _MODE_ORDER = {"instruction": 0, "draft": 1}
 def choose_best(configs: list[dict]) -> dict:
     """configs: dicts with variant, query_mode, k, budget_tokens, recall, recall_non_core (overall floats)."""
 
-    return min(
-        configs,
-        key=lambda c: (
-            -c["recall_non_core"],
-            -c["recall"],
-            c["budget_tokens"],
-            c["k"],
-            _MODE_ORDER[c["query_mode"]],
-            c["variant"],
-        ),
-    )
+    return min(configs, key=_rank_key)
+
+
+def _rank_key(c: dict):
+    return (-c["recall_non_core"], -c["recall"], c["budget_tokens"], c["k"], _MODE_ORDER[c["query_mode"]], c["variant"])
+
+
+def _same_config(a: dict, b: dict) -> bool:
+    return all(a[k] == b[k] for k in ("embedder", "query_mode", "k", "budget_tokens"))
+
+
+def frozen_config_report(configs: list[dict], frozen: dict) -> dict:
+    """Where a frozen config ranks among ``configs`` (same selection order).
+    Reported only; it never changes the frozen config."""
+
+    ranked = sorted(configs, key=_rank_key)
+    rank = next((i for i, c in enumerate(ranked, start=1) if _same_config(c, frozen)), None)
+    if rank is None:
+        raise ValueError("frozen config was not evaluated")
+    mine = ranked[rank - 1]
+    best = ranked[0]
+    return {
+        "config": {k: frozen[k] for k in ("embedder", "query_mode", "k", "budget_tokens")},
+        "recall": mine["recall"],
+        "recall_non_core": mine["recall_non_core"],
+        "rank": rank,
+        "of": len(ranked),
+        "best": {k: best[k] for k in ("variant", "embedder", "query_mode", "k", "budget_tokens", "recall",
+                                       "recall_non_core")},
+        "gap_to_best_non_core": round(best["recall_non_core"] - mine["recall_non_core"], 4),
+        "frozen_still_wins": rank == 1,
+    }
 
 
 def required_max_seq_length(max_prompt_tokens: int, max_new_tokens: int = MAX_NEW_TOKENS) -> int:
@@ -163,6 +184,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", default=str(DEFAULT_OUT))
     parser.add_argument("--device", default=None)
     parser.add_argument("--skip-naive", action="store_true", help="don't evaluate the v1 (Arm B) index")
+    parser.add_argument(
+        "--frozen-config", default=None,
+        help="robustness check: report where this file's 'chosen' config ranks on --tasks (never changes it)",
+    )
     args = parser.parse_args(argv)
 
     tasks = load_tasks(args.tasks)
@@ -180,6 +205,16 @@ def main(argv: list[str] | None = None) -> int:
     variants["b"] = run_variant(tasks, INDEX_DIRS["qwen3"], "instruction", drafts, needed, device=args.device)
     winner = better_embedder(variants["a"]["grid"], variants["b"]["grid"])
     variants["c"] = run_variant(tasks, INDEX_DIRS[winner], "draft", drafts, needed, device=args.device)
+    frozen = None
+    if args.frozen_config:
+        frozen = json.loads(Path(args.frozen_config).read_text(encoding="utf-8"))["chosen"]
+        if not any(
+            v["index_meta"]["embedder"] == frozen["embedder"] and v["query_mode"] == frozen["query_mode"]
+            for n, v in variants.items() if n != "naive"
+        ):
+            # c used the other embedder on these tasks: evaluate the frozen combination too.
+            variants["frozen"] = run_variant(tasks, INDEX_DIRS[frozen["embedder"]], frozen["query_mode"], drafts,
+                                             needed, device=args.device)
 
     configs = [
         {
@@ -230,10 +265,16 @@ def main(argv: list[str] | None = None) -> int:
         "grid": {"k": list(GRID_K), "budget_tokens": list(GRID_BUDGET)},
         "better_embedder": winner,
         "variants": variants,
-        "chosen": chosen,
+        # A robustness run must not produce a usable "chosen" config by mistake.
+        ("best_on_these_tasks" if frozen else "chosen"): chosen,
         "chosen_details": details,
         "prompt_lengths": prompt_lengths,
     }
+    if frozen:
+        report["frozen"] = frozen_config_report(configs, frozen)
+        f = report["frozen"]
+        print(f"frozen config {f['config']}: non-core {f['recall_non_core']}, rank {f['rank']}/{f['of']}, "
+              f"still wins: {f['frozen_still_wins']} (best: {f['best']})")
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
