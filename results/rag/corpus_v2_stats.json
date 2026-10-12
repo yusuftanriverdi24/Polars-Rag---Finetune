@@ -1,0 +1,35 @@
+{
+  "tiny_tokens": 100,
+  "before": {
+    "n_chunks": 2381,
+    "by_kind": {
+      "api": 1864,
+      "guide": 517
+    }
+  },
+  "after": {
+    "n_chunks": 1686,
+    "by_kind": {
+      "api": 1332,
+      "guide": 354
+    }
+  },
+  "dropped": {
+    "sql_reference": 144,
+    "old_upgrade_guide": 17,
+    "series_duplicate": 403,
+    "tiny_no_example": 131
+  },
+  "dropped_by_kind": {
+    "old_upgrade_guide/guide": 17,
+    "series_duplicate/api": 403,
+    "sql_reference/api": 7,
+    "sql_reference/guide": 137,
+    "tiny_no_example/api": 122,
+    "tiny_no_example/guide": 9
+  },
+  "api_names_before": 1477,
+  "api_names_after": 970,
+  "v1_sha256": "fb2f916d6d07d4b5e0a07350bf205f244b59825788b5f4901cc428b9ee0cc044",
+  "v2_sha256": "0392b2f8628fc02449499f956b34b17a0fa470617643979831556ef544d80220"
+}
