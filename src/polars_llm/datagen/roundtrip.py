@@ -31,6 +31,11 @@ Pre-registered decision rules (PLAN.md), reported in ``roundtrip_stats.json``:
   correct ones kept. They are solved alongside, but never enter the data.
 * ``audit_kept`` / ``audit_rejected``: 20 random each (seed 0) for a manual
   audit; if >= 3 of the 20 kept requests are wrong, the filter is insufficient.
+  The kept sample is stratified: up to 5 of the 20 are ``api_mismatch`` ones.
+* ``api_mismatch`` (report only, not a filter): kept requests whose solver
+  code uses none of the reference's non-core API names, i.e. possible
+  output-equivalent mismatches (the request is satisfied on this input but
+  does not describe the code), which an output comparison cannot catch.
 * ``decision_rules``: reshape retention < half the overall retention ->
   inspect; fewer than ~1,000 kept with most rejections ``error:*`` -> one retry
   with the error message before moving to data v2.
@@ -48,6 +53,7 @@ CLI::
 from __future__ import annotations
 
 import argparse
+import ast
 import collections
 import json
 import os
@@ -74,6 +80,7 @@ from .instructions import (
     load_checkpoint,
     write_with_checkpoint,
 )
+from .leakage import non_core
 from .oracle import answer_in_context
 
 SOLVER_MODEL = WRITER_MODEL
@@ -87,6 +94,7 @@ DEFAULT_CHECKPOINT = Path("data/sft/roundtrip_checkpoint.jsonl")
 DEFAULT_RESULTS = Path("results/datagen/roundtrip_results.jsonl")
 DEFAULT_STATS = Path("results/datagen/roundtrip_stats.json")
 N_AUDIT = 20
+N_AUDIT_API_MISMATCH = 5  # of the 20 kept, up to 5 drawn from the api_mismatch ones
 AUDIT_MAX_WRONG_KEPT = 2  # >= 3 of 20 wrong kept requests -> the filter is insufficient
 RETRY_IF_KEPT_BELOW = 1000
 SEED = 0
@@ -175,6 +183,40 @@ def judge_all(examples: list[dict], outputs: dict[str, str], workers: int = 4) -
         return dict(pool.map(one, examples))
 
 
+def api_mismatch(example: dict, solver_code: str) -> bool | None:
+    """Report-only: True when the solver's code uses **none** of the reference
+    solution's non-core API names (None when the reference has none).
+
+    Static approximation (the solver's code is not executed outside the
+    sandbox): a reference name counts as used when its last component
+    (``DataFrame.join_asof`` -> ``join_asof``, ``selectors.struct`` ->
+    ``struct``) is a called or accessed name in the solver's code. Flags kept
+    requests that may be output-equivalent mismatches (right output on this
+    input, different operation), the class an output comparison can't catch."""
+
+    names = non_core(example.get("api_names", []))
+    if not names:
+        return None
+    used = _used_names(solver_code)
+    return not any(n.rsplit(".", 1)[-1] in used for n in names)
+
+
+def _used_names(code: str) -> set[str]:
+    """Attribute and called names in ``code`` (``len``/``list`` included: Polars API names too)."""
+
+    try:
+        tree = ast.parse(code)
+    except SyntaxError:
+        return set()
+    out = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Attribute):
+            out.add(node.attr)
+        elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            out.add(node.func.id)
+    return out
+
+
 # ---------------------------------------------------------------------------
 # canaries
 # ---------------------------------------------------------------------------
@@ -217,6 +259,8 @@ def _rate(rows: list[dict], key) -> dict:
 
 def report(examples: list[dict], verdicts: dict[str, dict], outputs: dict[str, str]) -> dict:
     rows = [{**e, **verdicts[e["id"]]} for e in examples]
+    for r in rows:
+        r["api_mismatch"] = api_mismatch(r, extract_code(outputs[r["id"]])) if r["kept"] else None
     kept = [r for r in rows if r["kept"]]
     rejected = [r for r in rows if not r["kept"]]
     rng = random.Random(SEED)
@@ -224,7 +268,20 @@ def report(examples: list[dict], verdicts: dict[str, dict], outputs: dict[str, s
     def show(r):
         return {"id": r["id"], "category": r["category"], "instruction": r["instruction"],
                 "reference_solution": r["reference_solution"], "solver_code": extract_code(outputs[r["id"]]),
-                "reason": r["reason"], "detail": r["detail"], "audit_label": None}
+                "reason": r["reason"], "detail": r["detail"], "api_mismatch": r["api_mismatch"],
+                "audit_label": None}
+
+    # Audit of kept requests, stratified: up to N_AUDIT_API_MISMATCH api_mismatch ones, the rest from the others.
+    mismatched = [r for r in kept if r["api_mismatch"]]
+    others = [r for r in kept if not r["api_mismatch"]]
+    audit_mm = rng.sample(mismatched, min(N_AUDIT_API_MISMATCH, len(mismatched)))
+    audit_kept = audit_mm + rng.sample(others, min(N_AUDIT - len(audit_mm), len(others)))
+    applicable = [r for r in kept if r["api_mismatch"] is not None]
+    mm_by_cat: dict[str, dict] = {}
+    for r in applicable:
+        d = mm_by_cat.setdefault(r["category"], {"n_kept": 0, "api_mismatch": 0})
+        d["n_kept"] += 1
+        d["api_mismatch"] += bool(r["api_mismatch"])
 
     retention = round(len(kept) / max(len(rows), 1), 3)
     by_category = _rate(rows, lambda r: r["category"])
@@ -249,7 +306,16 @@ def report(examples: list[dict], verdicts: dict[str, dict], outputs: dict[str, s
             "retry_with_error_message": len(kept) < RETRY_IF_KEPT_BELOW and errors > len(rejected) / 2,
             "audit": f"manual: label audit_kept; >= {AUDIT_MAX_WRONG_KEPT + 1}/{N_AUDIT} wrong -> filter insufficient",
         },
-        "audit_kept": [show(r) for r in rng.sample(kept, min(N_AUDIT, len(kept)))],
+        "api_mismatch": {
+            "report_only": "kept requests whose solver code uses none of the reference's non-core API names "
+                           "(static name match); not a filter",
+            "n_kept_with_non_core_names": len(applicable),
+            "count": len(mismatched),
+            "share": round(len(mismatched) / max(len(applicable), 1), 3),
+            "by_category": dict(sorted(mm_by_cat.items())),
+        },
+        "audit_kept": [show(r) for r in audit_kept],
+        "audit_kept_strata": {"api_mismatch": len(audit_mm), "other": len(audit_kept) - len(audit_mm)},
         "audit_rejected": [show(r) for r in rng.sample(rejected, min(N_AUDIT, len(rejected)))],
     }
 
@@ -390,7 +456,9 @@ def main(argv: list[str] | None = None) -> int:
     kept = [e for e in examples if verdicts[e["id"]]["kept"]]
     for path, rows in ((Path(args.out), kept),
                        (Path(args.results), [{"id": e["id"], "candidate_id": e["candidate_id"], **verdicts[e["id"]],
-                                              "solver_code": extract_code(outputs[e["id"]])} for e in everything])):
+                                              "solver_code": extract_code(outputs[e["id"]]),
+                                              "api_mismatch": api_mismatch(e, extract_code(outputs[e["id"]]))
+                                              if verdicts[e["id"]]["kept"] else None} for e in everything])):
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8", newline="\n") as fh:
             fh.writelines(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in rows)

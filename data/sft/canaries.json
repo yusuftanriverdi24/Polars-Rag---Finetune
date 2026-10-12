@@ -4,9 +4,9 @@
   "candidate_id": "selectors_struct__cf94837ba5",
   "style": "concise",
   "instruction": "From the input table `df`, keep only the `foo` column and return the result with that single column in the first position.",
-  "label": "wrong",
-  "expected": "reject",
-  "note": "describes the output ('keep only foo'), not the selection the code makes (all struct columns)",
+  "label": "output_equivalent_mismatch",
+  "expected": "keep",
+  "note": "output-equivalent mismatch: the request is satisfied on this input but does not describe the code; an output-based round trip cannot catch it",
   "source_of_text": "A100 writer run 2026-10-12 (instructions_raw.jsonl), spot check"
  },
  {

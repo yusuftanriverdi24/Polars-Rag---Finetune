@@ -134,3 +134,38 @@ def test_answer_in_context_aborts(tmp_path):
         roundtrip.main(["--model", "mock", "--examples", str(tmp_path / "f.jsonl"), "--candidates",
                         str(tmp_path / "cands.jsonl"), "--canaries", str(tmp_path / "none.json"),
                         "--checkpoint", str(tmp_path / "ck.jsonl")])
+
+
+def test_api_mismatch_is_report_only_and_stratifies_the_audit():
+    from polars_llm.datagen.roundtrip import api_mismatch
+
+    ex = {**EX, "api_names": ["DataFrame.group_by", "GroupBy.agg", "Expr.sum", "col"]}
+    assert api_mismatch(ex, "def solve(df):\n    return df.group_by('k').agg(pl.col('v').sum())") is False
+    assert api_mismatch(ex, "def solve(df):\n    return df.select(pl.col('k'))") is True
+    assert api_mismatch({**EX, "api_names": ["col", "DataFrame.select"]}, "def solve(df):\n    return df") is None
+    # selectors_struct-like case: right output on this input, different operation.
+    struct = {**EX, "api_names": ["DataFrame.select", "selectors.struct"]}
+    assert api_mismatch(struct, "def solve(df):\n    return df.select('foo')") is True
+    assert api_mismatch(struct, "def solve(df):\n    return df.select(cs.struct())") is False
+
+    exs = [{**EX, "id": f"c{i}__concise", "candidate_id": f"c{i}", "api_names": ex["api_names"],
+            "category": "group_by" if i % 2 else "string"} for i in range(40)]
+    verdicts = {e["id"]: {"kept": True, "reason": "match", "detail": ""} for e in exs}
+    outputs = {e["id"]: _out(GOOD) if int(e["id"][1:].split("_")[0]) % 4 else _out('df.select("k")') for e in exs}
+    rep = report(exs, verdicts, outputs)
+    mm = rep["api_mismatch"]
+    assert mm["count"] == 10 and mm["n_kept_with_non_core_names"] == 40 and mm["by_category"]["string"]["api_mismatch"] == 10
+    assert rep["kept"] == 40  # report only: nothing is dropped
+    assert rep["audit_kept_strata"] == {"api_mismatch": 5, "other": 15} and len(rep["audit_kept"]) == 20
+    assert sum(a["api_mismatch"] for a in rep["audit_kept"]) == 5
+
+
+def test_api_mismatch_never_flags_the_reference_itself():
+    from pathlib import Path
+
+    from polars_llm.datagen.roundtrip import api_mismatch
+
+    path = Path(__file__).resolve().parents[1] / "data" / "sft" / "candidates.jsonl"
+    recs = [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
+    flags = [api_mismatch(r, r["reference_solution"]) for r in recs]
+    assert sum(f is not None for f in flags) > 1000 and not any(flags)
