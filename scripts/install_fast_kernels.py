@@ -146,9 +146,13 @@ def main(argv: list[str] | None = None) -> int:
     env = torch_env()
     report = {"env": env, "causal_conv1d": install_causal_conv1d(env), "flash_linear_attention": install_fla(env)}
     report["transformers_sees"] = transformers_fast_path()
-    fast = report["causal_conv1d"]["path"] in ("prebuilt wheel", "already installed") and report[
-        "flash_linear_attention"]["path"] in ("prebuilt wheel", "already installed")
-    report["linear_attention"] = "fast kernels" if fast else "torch fallback (slow)"
+    have = [k for k in ("causal_conv1d", "flash_linear_attention")
+            if report[k]["path"] in ("prebuilt wheel", "already installed")]
+    report["linear_attention"] = (
+        "fast kernels" if len(have) == 2
+        else f"partial: only {have[0]} (the rest on the torch fallback)" if have
+        else "torch fallback (slow)"
+    )
     print(json.dumps(report, indent=2))
     print(f"linear attention: {report['linear_attention']}")
     if args.log:

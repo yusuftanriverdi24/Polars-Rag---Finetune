@@ -189,3 +189,17 @@ def test_cli_mock_resume_writes_candidate_order(tmp_path):
     assert [o["id"] for o in out] == [f"k{i}" for i in range(5)] and all(o["instructions"] for o in out)
     meta = json.loads((tmp_path / "meta.json").read_text(encoding="utf-8"))
     assert meta["this_session"]["n_resumed"] == 3 and meta["n_parsed"] == 5
+
+    # Complete checkpoint: no writer is built, --out is rebuilt identically, the meta is left alone.
+    before = (tmp_path / "out.jsonl").read_bytes(), (tmp_path / "meta.json").read_bytes()
+    (tmp_path / "out.jsonl").unlink()
+
+    def no_model(*a, **k):
+        raise AssertionError("the writer must not be loaded")
+
+    ins.MockWriter, saved = no_model, ins.MockWriter
+    try:
+        assert ins.main(common) == 0
+    finally:
+        ins.MockWriter = saved
+    assert ((tmp_path / "out.jsonl").read_bytes(), (tmp_path / "meta.json").read_bytes()) == before

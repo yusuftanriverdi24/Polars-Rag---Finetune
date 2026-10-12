@@ -337,11 +337,25 @@ def is_oom(exc: BaseException) -> bool:
     return type(exc).__name__ == "OutOfMemoryError" or "out of memory" in str(exc).lower()
 
 
-def writer_settings(writer, max_new_tokens: int) -> dict:
+def writer_settings(model: str, revision: str | None, max_new_tokens: int) -> dict:
     """Settings every checkpoint row carries; a resumed run must match them exactly."""
 
-    return {"writer_model": writer.name, "writer_revision": writer.revision,
+    return {"writer_model": model, "writer_revision": revision,
             "writer_prompt_sha256": writer_prompt_sha256(), "max_new_tokens": max_new_tokens}
+
+
+def write_out(path: Path, recs: list[dict], done: dict[str, dict]) -> list[dict]:
+    """``--out`` from the checkpoint rows, in candidate order."""
+
+    missing = [r["id"] for r in recs if r["id"] not in done]
+    if missing:
+        raise SystemExit(f"{len(missing)} candidates missing from the checkpoint, e.g. {missing[:3]}")
+    rows = [done[r["id"]] for r in recs]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="\n") as fh:
+        fh.writelines(json.dumps({k: row[k] for k in ("id", "raw", "instructions")}, ensure_ascii=False) + "\n"
+                      for row in rows)
+    return rows
 
 
 def load_checkpoint(path: Path, settings: dict) -> dict[str, dict]:
@@ -459,6 +473,20 @@ def main(argv: list[str] | None = None) -> int:
     if args.limit:
         recs = recs[: args.limit]
     revision = args.revision or (WRITER_REVISION if args.model == WRITER_MODEL else None)
+    settings = writer_settings(args.model, revision, args.max_new_tokens)
+    checkpoint = Path(args.checkpoint)
+    out = Path(args.out)
+
+    # A complete checkpoint: nothing to generate, so don't even load the model. Only --out is
+    # (re)built from it; the meta of the run that wrote the rows is left as it is.
+    done = load_checkpoint(checkpoint, settings)
+    if all(r["id"] in done for r in recs):
+        rows = write_out(out, recs, done)
+        print(f"checkpoint {checkpoint} already has all {len(recs)} candidates: no generation, model not loaded; "
+              f"rebuilt {out} ({sum(r['instructions'] is not None for r in rows)} parsed), {args.meta} untouched")
+        return 0
+
+    alloc_conf_requested = os.environ.get("PYTORCH_CUDA_ALLOC_CONF")
     writer = MockWriter() if args.model == "mock" else ModelWriter(args.model, revision)
 
     gpu = None if args.model == "mock" else gpu_info()
@@ -488,24 +516,13 @@ def main(argv: list[str] | None = None) -> int:
 
         free_memory = writer.free_memory
 
-    settings = writer_settings(writer, args.max_new_tokens)
-    checkpoint = Path(args.checkpoint)
     t0 = time.perf_counter()
     run = write_with_checkpoint(recs, write_batch, checkpoint=checkpoint, settings=settings, batch_size=batch_size,
                                 free_memory=free_memory)
     wall = time.perf_counter() - t0
 
     # The final file, in candidate order, whatever the interruption history.
-    done = load_checkpoint(checkpoint, settings)
-    missing = [r["id"] for r in recs if r["id"] not in done]
-    if missing:
-        raise SystemExit(f"{len(missing)} candidates missing from the checkpoint, e.g. {missing[:3]}")
-    rows = [done[r["id"]] for r in recs]
-    out = Path(args.out)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    with out.open("w", encoding="utf-8", newline="\n") as fh:
-        fh.writelines(json.dumps({k: row[k] for k in ("id", "raw", "instructions")}, ensure_ascii=False) + "\n"
-                      for row in rows)
+    rows = write_out(out, recs, load_checkpoint(checkpoint, settings))
     n_parsed = sum(row["instructions"] is not None for row in rows)
     batch_sizes = sorted({row["batch_size"] for row in rows})
     meta = {
@@ -517,7 +534,10 @@ def main(argv: list[str] | None = None) -> int:
         "n_candidates": len(recs),
         "n_parsed": n_parsed,
         "gpu": gpu,
-        "pytorch_cuda_alloc_conf": os.environ.get("PYTORCH_CUDA_ALLOC_CONF"),
+        # Requested before torch/Unsloth were imported, and what was left in the environment at the end
+        # (the first A100 run recorded only the latter, as null: something in the stack removed it).
+        "pytorch_cuda_alloc_conf_requested": alloc_conf_requested,
+        "pytorch_cuda_alloc_conf_at_end": os.environ.get("PYTORCH_CUDA_ALLOC_CONF"),
         "batch_size_source": source,
         "batch_sizes_used": batch_sizes,
         "this_session": {**run, "wall_time_s": round(wall, 1)},

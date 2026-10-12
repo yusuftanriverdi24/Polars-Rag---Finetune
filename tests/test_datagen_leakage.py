@@ -8,7 +8,8 @@ from polars_llm.datagen.build_sft import grouped_split, make_example
 from polars_llm.datagen.candidates import assign_category, difficulty, downsample
 from polars_llm.datagen.leakage import (
     bench_refs,
-    instruction_leaks,
+    calibrate_instruction_threshold,
+    instruction_api_leaks,
     normalize_solution,
     solution_leak,
 )
@@ -59,11 +60,37 @@ def test_identical_api_set_is_a_leak():
     assert solution_leak(sol, names - {"Expr.sum"} | {"Expr.mean"}, REFS) is None
 
 
-def test_instruction_embedding_leak():
-    instr = np.array([[1.0, 0.0], [0.6, 0.8]])
-    bench = np.array([[1.0, 0.0], [0.0, 1.0]])
-    out = instruction_leaks(instr, bench, threshold=0.85)
-    assert out[0] == (0, 1.0) and out[1] is None
+def _unit(*rows):
+    a = np.array(rows, dtype=float)
+    return a / np.linalg.norm(a, axis=1, keepdims=True)
+
+
+def test_threshold_is_calibrated_on_distinct_benchmark_tasks():
+    bench = _unit([1, 0, 0], [0.8, 0.6, 0], [0, 0, 1])  # t0~t1 at 0.8, t2 far from both
+    cal = calibrate_instruction_threshold(bench, ["t0", "t1", "t2"])
+    assert cal["threshold"] == 0.8 and cal["nn_cosine_distribution"]["max"] == 0.8
+    assert cal["nn_cosine_distribution"]["min"] == 0.0
+    assert cal["closest_benchmark_pairs"][0] == {"a": "t0", "b": "t1", "cosine": 0.8}  # each pair listed once
+    assert len(cal["closest_benchmark_pairs"]) == 2
+
+
+def test_leak_needs_similar_instruction_and_same_api_set():
+    bench = _unit([1, 0], [0, 1])
+    bench_names = [["DataFrame.group_by", "GroupBy.agg", "Expr.sum", "col"], ["DataFrame.pivot"]]
+    instr = _unit([1, 0.05], [1, 0.05], [0.2, 1], [1, 1])
+    names = [
+        ["DataFrame.group_by", "GroupBy.agg", "Expr.sum", "DataFrame.select"],  # same non-core set, close -> leak
+        ["DataFrame.group_by", "GroupBy.agg", "Expr.mean"],  # close but different APIs -> kept
+        ["DataFrame.pivot"],  # same APIs as bench 1, cosine 0.98 -> leak even with a single API
+        ["DataFrame.pivot"],  # same APIs, but cosine 0.71 < threshold -> kept
+    ]
+    out = instruction_api_leaks(instr, bench, names, bench_names, threshold=0.9)
+    assert out[0]["leak"][0] == 0 and out[1]["leak"] is None and out[2]["leak"][0] == 1 and out[3]["leak"] is None
+    assert out[1]["nearest"] == 0 and out[1]["cosine"] > 0.99  # the closest pair is still reported
+    # A match with a less similar task above the threshold counts too, not only the nearest one.
+    out = instruction_api_leaks(_unit([1, 0.9]), _unit([1, 0.8], [1, 1]), [["DataFrame.pivot"]],
+                                [["DataFrame.unpivot"], ["DataFrame.pivot"]], threshold=0.9)
+    assert out[0]["leak"][0] == 1
 
 
 def _ex(i, page):

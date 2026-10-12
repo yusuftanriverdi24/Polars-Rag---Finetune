@@ -1,0 +1,728 @@
+{
+ "tasks_sha256": "fcfaf410bd60a4585b7c4eb3a9a511528680c3bdd99872c352c1c7b60c968e41",
+ "api_names": {
+  "select_filter_001": [
+   "DataFrame.filter",
+   "DataFrame.select",
+   "col"
+  ],
+  "select_filter_002": [
+   "DataFrame.filter",
+   "col"
+  ],
+  "select_filter_003": [
+   "DataFrame.select"
+  ],
+  "select_filter_004": [
+   "DataFrame.filter",
+   "Expr.is_between",
+   "col"
+  ],
+  "select_filter_005": [
+   "DataFrame.filter",
+   "Expr.is_not_null",
+   "col"
+  ],
+  "select_filter_006": [
+   "DataFrame.filter",
+   "Expr.is_in",
+   "col"
+  ],
+  "select_filter_007": [
+   "DataFrame.filter",
+   "col"
+  ],
+  "select_filter_008": [
+   "DataFrame.head",
+   "DataFrame.select",
+   "DataFrame.sort"
+  ],
+  "select_filter_009": [
+   "DataFrame.filter",
+   "Expr.mean",
+   "col"
+  ],
+  "select_filter_010": [
+   "DataFrame.filter",
+   "Expr.str.len_chars",
+   "col"
+  ],
+  "select_filter_011": [
+   "DataFrame.filter",
+   "col"
+  ],
+  "select_filter_012": [
+   "DataFrame.filter",
+   "Expr.over",
+   "len"
+  ],
+  "select_filter_013": [
+   "DataFrame.filter",
+   "Expr.shift",
+   "col"
+  ],
+  "select_filter_014": [
+   "DataFrame.filter",
+   "Expr.mean",
+   "Expr.over",
+   "col"
+  ],
+  "group_by_001": [
+   "DataFrame.group_by",
+   "Expr.sum",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_002": [
+   "DataFrame.group_by",
+   "DataFrame.sort",
+   "Expr.alias",
+   "Expr.mean",
+   "GroupBy.agg",
+   "col",
+   "len"
+  ],
+  "group_by_003": [
+   "DataFrame.group_by",
+   "Expr.alias",
+   "GroupBy.agg",
+   "len"
+  ],
+  "group_by_004": [
+   "DataFrame.group_by",
+   "Expr.max",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_005": [
+   "DataFrame.group_by",
+   "Expr.sum",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_006": [
+   "DataFrame.group_by",
+   "Expr.mean",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_007": [
+   "DataFrame.filter",
+   "DataFrame.group_by",
+   "Expr.sum",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_008": [
+   "DataFrame.group_by",
+   "Expr.alias",
+   "Expr.n_unique",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_009": [
+   "DataFrame.group_by",
+   "Expr.sum",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_010": [
+   "DataFrame.group_by",
+   "Expr.alias",
+   "Expr.max",
+   "Expr.min",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_011": [
+   "DataFrame.group_by",
+   "Expr.alias",
+   "Expr.filter",
+   "Expr.sum",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_012": [
+   "DataFrame.group_by",
+   "DataFrame.select",
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.sum",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_013": [
+   "DataFrame.group_by",
+   "Expr.alias",
+   "Expr.sum",
+   "GroupBy.agg",
+   "col"
+  ],
+  "group_by_014": [
+   "DataFrame.group_by",
+   "Expr.alias",
+   "Expr.sum",
+   "GroupBy.agg",
+   "col"
+  ],
+  "join_001": [
+   "DataFrame.join",
+   "DataFrame.select"
+  ],
+  "join_002": [
+   "DataFrame.join",
+   "DataFrame.select"
+  ],
+  "join_003": [
+   "DataFrame.join",
+   "DataFrame.select"
+  ],
+  "join_004": [
+   "DataFrame.join",
+   "DataFrame.select"
+  ],
+  "join_005": [
+   "DataFrame.join"
+  ],
+  "join_006": [
+   "DataFrame.join",
+   "DataFrame.select"
+  ],
+  "join_007": [
+   "DataFrame.join",
+   "DataFrame.select",
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "col"
+  ],
+  "join_008": [
+   "DataFrame.join"
+  ],
+  "join_009": [
+   "DataFrame.join"
+  ],
+  "join_010": [
+   "DataFrame.join"
+  ],
+  "join_011": [
+   "DataFrame.group_by",
+   "DataFrame.join",
+   "Expr.sum",
+   "GroupBy.agg",
+   "col"
+  ],
+  "join_012": [
+   "DataFrame.join",
+   "DataFrame.select",
+   "Expr.alias",
+   "col"
+  ],
+  "join_013": [
+   "DataFrame.join",
+   "DataFrame.with_columns",
+   "Expr.fill_null",
+   "col"
+  ],
+  "window_001": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.cast",
+   "Expr.over",
+   "Expr.rank",
+   "col"
+  ],
+  "window_002": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.max",
+   "Expr.over",
+   "col"
+  ],
+  "window_003": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.mean",
+   "Expr.over",
+   "col"
+  ],
+  "window_004": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.over",
+   "len"
+  ],
+  "window_005": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.cum_sum",
+   "Expr.over",
+   "col"
+  ],
+  "window_006": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.over",
+   "Expr.sum",
+   "col"
+  ],
+  "window_007": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.first",
+   "Expr.over",
+   "col"
+  ],
+  "window_008": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.mean",
+   "Expr.over",
+   "col"
+  ],
+  "window_009": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.over",
+   "Expr.shift",
+   "col"
+  ],
+  "window_010": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.max",
+   "Expr.over",
+   "col"
+  ],
+  "window_011": [
+   "DataFrame.filter",
+   "Expr.over",
+   "Expr.rank",
+   "col"
+  ],
+  "window_012": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.cum_max",
+   "Expr.over",
+   "col"
+  ],
+  "window_013": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.cast",
+   "Expr.max",
+   "Expr.over",
+   "Expr.rank",
+   "col"
+  ],
+  "lazy_001": [
+   "Expr.sum",
+   "LazyFrame.collect",
+   "LazyFrame.filter",
+   "LazyFrame.group_by",
+   "LazyGroupBy.agg",
+   "col"
+  ],
+  "lazy_002": [
+   "LazyFrame.collect",
+   "LazyFrame.filter",
+   "LazyFrame.select",
+   "col"
+  ],
+  "lazy_003": [
+   "Expr.alias",
+   "LazyFrame.collect",
+   "LazyFrame.with_columns",
+   "col"
+  ],
+  "lazy_004": [
+   "LazyFrame.collect",
+   "LazyFrame.sort"
+  ],
+  "lazy_005": [
+   "Expr.alias",
+   "LazyFrame.collect",
+   "LazyFrame.select",
+   "col"
+  ],
+  "lazy_006": [
+   "Expr.sum",
+   "LazyFrame.collect",
+   "LazyFrame.filter",
+   "LazyFrame.group_by",
+   "LazyGroupBy.agg",
+   "col"
+  ],
+  "lazy_007": [
+   "LazyFrame.collect",
+   "LazyFrame.join",
+   "LazyFrame.select"
+  ],
+  "lazy_008": [
+   "Expr.alias",
+   "Expr.mean",
+   "LazyFrame.collect",
+   "LazyFrame.group_by",
+   "LazyFrame.sort",
+   "LazyGroupBy.agg",
+   "col",
+   "len"
+  ],
+  "lazy_009": [
+   "Expr.abs",
+   "Expr.alias",
+   "LazyFrame.collect",
+   "LazyFrame.filter",
+   "LazyFrame.with_columns",
+   "col"
+  ],
+  "lazy_010": [
+   "LazyFrame.collect",
+   "LazyFrame.head",
+   "LazyFrame.sort"
+  ],
+  "lazy_011": [
+   "Expr.sum",
+   "LazyFrame.collect",
+   "LazyFrame.group_by",
+   "LazyFrame.join",
+   "LazyFrame.sort",
+   "LazyGroupBy.agg",
+   "col"
+  ],
+  "lazy_012": [
+   "Expr.sum",
+   "LazyFrame.collect",
+   "LazyFrame.filter",
+   "LazyFrame.group_by",
+   "LazyFrame.sort",
+   "LazyGroupBy.agg",
+   "col"
+  ],
+  "lazy_013": [
+   "Expr.alias",
+   "Expr.over",
+   "Expr.sum",
+   "LazyFrame.collect",
+   "LazyFrame.with_columns",
+   "col"
+  ],
+  "string_001": [
+   "DataFrame.filter",
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.str.contains",
+   "Expr.str.to_uppercase",
+   "col"
+  ],
+  "string_002": [
+   "DataFrame.with_columns",
+   "Expr.str.to_lowercase",
+   "col"
+  ],
+  "string_003": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.str.len_chars",
+   "col"
+  ],
+  "string_004": [
+   "DataFrame.filter",
+   "Expr.str.starts_with",
+   "col"
+  ],
+  "string_005": [
+   "DataFrame.with_columns",
+   "Expr.str.replace_all",
+   "col"
+  ],
+  "string_006": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "concat_str"
+  ],
+  "string_007": [
+   "DataFrame.with_columns",
+   "Expr.str.strip_chars",
+   "col"
+  ],
+  "string_008": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.str.extract",
+   "col"
+  ],
+  "string_009": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.list.get",
+   "Expr.str.split",
+   "col"
+  ],
+  "string_010": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.str.count_matches",
+   "col"
+  ],
+  "string_011": [
+   "DataFrame.with_columns",
+   "Expr.str.zfill",
+   "col"
+  ],
+  "string_012": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.str.slice",
+   "col"
+  ],
+  "string_013": [
+   "DataFrame.group_by",
+   "Expr.alias",
+   "Expr.sort",
+   "Expr.str.join",
+   "GroupBy.agg",
+   "col"
+  ],
+  "string_014": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.list.len",
+   "Expr.str.split",
+   "col"
+  ],
+  "datetime_001": [
+   "DataFrame.filter",
+   "DataFrame.select",
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.dt.month",
+   "Expr.dt.year",
+   "Expr.str.to_date",
+   "col"
+  ],
+  "datetime_002": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.dt.year",
+   "col"
+  ],
+  "datetime_003": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.dt.weekday",
+   "col"
+  ],
+  "datetime_004": [
+   "DataFrame.filter",
+   "Expr.is_between",
+   "col",
+   "date"
+  ],
+  "datetime_005": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.dt.strftime",
+   "col"
+  ],
+  "datetime_006": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.dt.hour",
+   "Expr.str.to_datetime",
+   "col"
+  ],
+  "datetime_007": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.dt.total_days",
+   "col"
+  ],
+  "datetime_008": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.dt.truncate",
+   "col"
+  ],
+  "datetime_009": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.dt.offset_by",
+   "col"
+  ],
+  "datetime_010": [
+   "DataFrame.filter",
+   "Expr.dt.weekday",
+   "col"
+  ],
+  "datetime_011": [
+   "DataFrame.group_by",
+   "Expr.alias",
+   "Expr.dt.truncate",
+   "Expr.sum",
+   "GroupBy.agg",
+   "col"
+  ],
+  "datetime_012": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.dt.total_days",
+   "Expr.over",
+   "Expr.shift",
+   "col"
+  ],
+  "datetime_013": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.dt.weekday",
+   "col",
+   "date"
+  ],
+  "list_struct_001": [
+   "DataFrame.group_by",
+   "Expr.alias",
+   "Expr.sort",
+   "Expr.unique",
+   "GroupBy.agg",
+   "col"
+  ],
+  "list_struct_002": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.list.len",
+   "col"
+  ],
+  "list_struct_003": [
+   "DataFrame.explode"
+  ],
+  "list_struct_004": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.list.sum",
+   "col"
+  ],
+  "list_struct_005": [
+   "DataFrame.filter",
+   "Expr.list.contains",
+   "col"
+  ],
+  "list_struct_006": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.list.get",
+   "col"
+  ],
+  "list_struct_007": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.struct.field",
+   "col"
+  ],
+  "list_struct_008": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.list.sort",
+   "col"
+  ],
+  "list_struct_009": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.list.max",
+   "col"
+  ],
+  "list_struct_010": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.list.len",
+   "Expr.list.unique",
+   "col"
+  ],
+  "list_struct_011": [
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "Expr.list.eval",
+   "Expr.list.sum",
+   "col",
+   "element"
+  ],
+  "list_struct_012": [
+   "DataFrame.unnest"
+  ],
+  "list_struct_013": [
+   "DataFrame.group_by",
+   "Expr.alias",
+   "Expr.head",
+   "Expr.sort",
+   "GroupBy.agg",
+   "col"
+  ],
+  "reshape_001": [
+   "DataFrame.sort",
+   "DataFrame.unpivot"
+  ],
+  "reshape_002": [
+   "DataFrame.sort",
+   "DataFrame.unpivot"
+  ],
+  "reshape_003": [
+   "DataFrame.pivot",
+   "DataFrame.sort"
+  ],
+  "reshape_004": [
+   "DataFrame.rename"
+  ],
+  "reshape_005": [
+   "DataFrame.sort",
+   "DataFrame.unpivot"
+  ],
+  "reshape_006": [
+   "DataFrame.pivot",
+   "DataFrame.sort"
+  ],
+  "reshape_007": [
+   "DataFrame.filter",
+   "DataFrame.sort",
+   "DataFrame.unpivot",
+   "col"
+  ],
+  "reshape_008": [
+   "DataFrame.pivot",
+   "DataFrame.sort",
+   "DataFrame.with_columns",
+   "Expr.fill_null",
+   "col"
+  ],
+  "reshape_009": [
+   "DataFrame.sort",
+   "DataFrame.unpivot"
+  ],
+  "reshape_010": [
+   "DataFrame.pivot",
+   "DataFrame.sort",
+   "DataFrame.with_columns",
+   "Expr.alias",
+   "col"
+  ],
+  "reshape_011": [
+   "DataFrame.group_by",
+   "DataFrame.unpivot",
+   "Expr.alias",
+   "Expr.mean",
+   "GroupBy.agg",
+   "col"
+  ],
+  "reshape_012": [
+   "DataFrame.pivot",
+   "DataFrame.sort"
+  ],
+  "reshape_013": [
+   "DataFrame.group_by",
+   "DataFrame.sort",
+   "DataFrame.unpivot",
+   "Expr.alias",
+   "Expr.mean",
+   "GroupBy.agg",
+   "col"
+  ]
+ }
+}

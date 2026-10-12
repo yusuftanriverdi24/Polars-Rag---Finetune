@@ -8,9 +8,13 @@ format (so ``load_tasks`` and the whole benchmark tooling work on it).
 1. ``instructions.instruction_problems`` drops a request that names a method
    the solution uses, contains code, is too short/long or misses an output
    column.
-2. Leakage: requests whose embedding (``EMBEDDER``, the RAG model) has cosine
-   >= ``leakage.INSTRUCTION_SIM_THRESHOLD`` to any benchmark instruction are
-   dropped. (The solution / API-set checks already ran in PART 1.)
+2. Leakage (``leakage.instruction_api_leaks``): a request is dropped only if
+   its embedding (granite, the RAG model) is at least as close to a benchmark
+   instruction as the closest two distinct benchmark tasks are to each other
+   (threshold calibrated on the benchmark, ``calibrate_instruction_threshold``)
+   AND its solution has the same non-core API set as that benchmark task.
+   Benchmark API names are cached in ``results/datagen/benchmark_api_names.json``
+   (same extraction as PART 1). The solution-level checks already ran in PART 1.
 3. Split ~90/10 train/dev **grouped by source doc page**: whole pages go to
    one side (pages shuffled with a fixed seed, dev filled up to
    ``DEV_FRACTION`` of the examples), so near-identical examples from one page
@@ -33,10 +37,13 @@ from pathlib import Path
 
 from ..bench.schema import Task, load_tasks
 from .instructions import DEFAULT_CANDIDATES, DEFAULT_OUT as DEFAULT_RAW, STYLES, instruction_problems
-from .leakage import INSTRUCTION_SIM_THRESHOLD, instruction_leaks
+from .leakage import calibrate_instruction_threshold, instruction_api_leaks, non_core
 
 SFT_DIR = Path("data/sft")
 DEFAULT_STATS = Path("results/datagen/sft_stats.json")
+DEFAULT_BENCH_API_NAMES = Path("results/datagen/benchmark_api_names.json")
+DEFAULT_V1_CHUNKS = Path("data/rag/chunks.jsonl")
+N_CLOSEST_SURVIVING = 20
 DEV_FRACTION = 0.10
 SEED = 0
 
@@ -100,6 +107,28 @@ class FakeEmbedder:
         return out / np.where(norms == 0, 1, norms)
 
 
+def benchmark_api_names(tasks_path: str, cache: Path, chunks: Path = DEFAULT_V1_CHUNKS) -> dict[str, list[str]]:
+    """API names of each benchmark reference solution, resolved exactly as in
+    PART 1 (``eval_retrieval.solution_api_names``). Cached in ``cache`` (keyed
+    by the tasks file hash) so Colab doesn't need the RAG chunks for this."""
+
+    # LF-normalised: the Windows checkout has CRLF, Colab LF (repo stores LF).
+    sha = hashlib.sha256(Path(tasks_path).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+    if cache.exists():
+        data = json.loads(cache.read_text(encoding="utf-8"))
+        if data.get("tasks_sha256") == sha:
+            return data["api_names"]
+    from ..rag.chunk import read_chunks
+    from ..rag.eval_retrieval import build_code_map, solution_api_names
+
+    code_map = build_code_map(read_chunks(chunks))
+    names = {t.id: sorted(solution_api_names(t.setup_code, t.reference_solution, code_map))
+             for t in load_tasks(tasks_path)}
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    cache.write_text(json.dumps({"tasks_sha256": sha, "api_names": names}, indent=1) + "\n", encoding="utf-8")
+    return names
+
+
 def embed(model, texts: list[str]):
     return model.encode(texts, normalize_embeddings=True, convert_to_numpy=True, batch_size=64)
 
@@ -133,6 +162,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--stats", default=str(DEFAULT_STATS))
     parser.add_argument("--embedder", choices=["granite", "fake"], default="granite")
     parser.add_argument("--device", default=None)
+    parser.add_argument("--bench-api-names", default=str(DEFAULT_BENCH_API_NAMES))
     args = parser.parse_args(argv)
 
     recs = {json.loads(l)["id"]: json.loads(l) for l in Path(args.candidates).read_text(encoding="utf-8").splitlines() if l.strip()}
@@ -159,21 +189,34 @@ def main(argv: list[str] | None = None) -> int:
                 examples.append(make_example(rec, style, text))
     n_after_filters = len(examples)
 
-    # Instruction-embedding leakage vs the frozen benchmark.
+    # Instruction-embedding + API-set leakage vs the frozen benchmark.
     bench = load_tasks(args.tasks)
+    bench_names = benchmark_api_names(args.tasks, Path(args.bench_api_names))
     if args.embedder == "fake":
         model = FakeEmbedder()
     else:
         from ..rag.index import load_embedder
 
         model = load_embedder(args.device, "granite")
-    leaks = instruction_leaks(embed(model, [e["instruction"] for e in examples]),
-                              embed(model, [t.instruction for t in bench]))
-    leak_examples = [
-        {"id": e["id"], "benchmark_task": bench[l[0]].id, "cosine": round(l[1], 4)}
-        for e, l in zip(examples, leaks) if l is not None
-    ]
-    examples = [e for e, l in zip(examples, leaks) if l is None]
+    bench_vecs = embed(model, [t.instruction for t in bench])
+    calibration = calibrate_instruction_threshold(bench_vecs, [t.id for t in bench])
+    threshold = calibration["threshold"]
+    checks = instruction_api_leaks(
+        embed(model, [e["instruction"] for e in examples]), bench_vecs,
+        [e["api_names"] for e in examples], [bench_names[t.id] for t in bench], threshold,
+    )
+
+    def pair(e, j, cos):
+        return {"id": e["id"], "instruction": e["instruction"], "benchmark_task": bench[j].id,
+                "benchmark_instruction": bench[j].instruction, "cosine": round(cos, 4),
+                "api_names": sorted(non_core(e["api_names"])),
+                "benchmark_api_names": sorted(non_core(bench_names[bench[j].id]))}
+
+    dropped = [pair(e, *c["leak"]) for e, c in zip(examples, checks) if c["leak"]]
+    survivors = [(e, c) for e, c in zip(examples, checks) if not c["leak"]]
+    above = sum(c["cosine"] >= threshold for _, c in survivors)
+    closest = sorted(survivors, key=lambda ec: -ec[1]["cosine"])[:N_CLOSEST_SURVIVING]
+    examples = [e for e, _ in survivors]
 
     train, dev = grouped_split(examples)
     out_dir = Path(args.out_dir)
@@ -189,10 +232,14 @@ def main(argv: list[str] | None = None) -> int:
         "filter_problems_by_style": {s: dict(c) for s, c in problems_by_style.items()},
         "n_after_filters": n_after_filters,
         "instruction_leakage": {
+            "rule": "drop iff cosine >= calibrated threshold AND same non-core API set as that benchmark task",
             "embedder": args.embedder,
-            "threshold": INSTRUCTION_SIM_THRESHOLD,
-            "dropped": len(leak_examples),
-            "examples": leak_examples,
+            "calibration": calibration,
+            "threshold": threshold,
+            "dropped": len(dropped),
+            "kept_above_threshold_different_api_set": above,
+            "dropped_examples": dropped,
+            "closest_surviving": [pair(e, c["nearest"], c["cosine"]) for e, c in closest],
         },
         "all": summarize(examples),
         "train": {**summarize(train), "sha256": train_sha},
@@ -201,7 +248,9 @@ def main(argv: list[str] | None = None) -> int:
     }
     Path(args.stats).parent.mkdir(parents=True, exist_ok=True)
     Path(args.stats).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    print(f"filters dropped {dict(problems)} (unparsed {n_unparsed}); leakage dropped {len(leak_examples)}")
+    print(f"filters dropped {dict(problems)} (unparsed {n_unparsed})")
+    print(f"leakage: threshold {threshold} (benchmark NN cosines {calibration['nn_cosine_distribution']}); "
+          f"dropped {len(dropped)}; kept above threshold with a different API set {above}")
     print(f"train {len(train)} / dev {len(dev)} examples ({report['train']['n_pages']} / {report['dev']['n_pages']} pages)")
     print(f"Wrote {out_dir / 'train.jsonl'}, {out_dir / 'dev.jsonl'}, {args.stats}")
     return 0

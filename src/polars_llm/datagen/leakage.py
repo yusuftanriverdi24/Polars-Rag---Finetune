@@ -19,9 +19,16 @@ distinct **non-core** API names (core = ``col``, ``select``, ``with_columns``,
 not a copy of a benchmark task, and short bodies that share only the core
 boilerplate (``df.with_columns(pl.col(..)...)``) would otherwise look alike.
 
-``instruction``
-    Cosine similarity of instruction embeddings >= ``INSTRUCTION_SIM_THRESHOLD``
-    (checked after the instructions are written; see ``build_sft.py``).
+``instruction_and_api_set`` (after the instructions are written; ``build_sft.py``)
+    A training request is dropped only if BOTH (a) its embedding cosine to a
+    benchmark instruction is >= a **calibrated** threshold, and (b) its
+    solution has exactly the same set of non-core API names as that benchmark
+    task. The threshold is calibrated on the benchmark itself
+    (``calibrate_instruction_threshold``): the nearest-neighbour cosine between
+    *distinct* benchmark tasks, which are by construction not leaks of each
+    other; the threshold is the maximum of that distribution. A fixed 0.85 was
+    meaningless: the embedder puts almost any short Polars request at
+    0.85-0.93 to some benchmark task (the first real run dropped 2,036 of 2,137).
 """
 
 from __future__ import annotations
@@ -34,7 +41,6 @@ from ..rag.eval_retrieval import CORE_NAMES
 
 SOLUTION_SIM_THRESHOLD = 0.85
 MIN_NON_CORE_NAMES = 2
-INSTRUCTION_SIM_THRESHOLD = 0.85
 
 
 class _Normalizer(ast.NodeTransformer):
@@ -141,18 +147,65 @@ def solution_leak(solution: str, api_names, refs: list[BenchRef]) -> tuple[str, 
     return None
 
 
-def instruction_leaks(instr_vecs, bench_vecs, threshold: float = INSTRUCTION_SIM_THRESHOLD) -> list[tuple[int, float] | None]:
-    """For each instruction (rows of L2-normalised ``instr_vecs``), the index and
-    cosine of the closest benchmark instruction if it reaches ``threshold``."""
+def nearest_neighbour_cosines(vecs):
+    """For each row of L2-normalised ``vecs``: (cosine, index) of its closest *other* row."""
 
     import numpy as np
 
-    if len(instr_vecs) == 0:
-        return []
-    sims = np.asarray(instr_vecs) @ np.asarray(bench_vecs).T
-    best = sims.argmax(axis=1)
-    out: list[tuple[int, float] | None] = []
-    for i, j in enumerate(best):
-        s = float(sims[i, j])
-        out.append((int(j), s) if s >= threshold else None)
+    sims = np.asarray(vecs) @ np.asarray(vecs).T
+    np.fill_diagonal(sims, -np.inf)
+    idx = sims.argmax(axis=1)
+    return sims[np.arange(len(sims)), idx], idx
+
+
+def calibrate_instruction_threshold(bench_vecs, bench_ids: list[str]) -> dict:
+    """Threshold = max nearest-neighbour cosine between distinct benchmark tasks,
+    plus the distribution it comes from and the closest benchmark pairs."""
+
+    import numpy as np
+
+    nn, idx = nearest_neighbour_cosines(bench_vecs)
+    pct = {f"p{q}": round(float(np.percentile(nn, q)), 4) for q in (50, 90, 95, 99)}
+    order = np.argsort(-nn)
+    pairs, seen = [], set()
+    for i in order:
+        key = frozenset((bench_ids[i], bench_ids[idx[i]]))
+        if key in seen:
+            continue
+        seen.add(key)
+        pairs.append({"a": bench_ids[i], "b": bench_ids[idx[i]], "cosine": round(float(nn[i]), 4)})
+        if len(pairs) == 5:
+            break
+    return {
+        "rule": "max nearest-neighbour cosine between distinct benchmark tasks",
+        "threshold": round(float(nn.max()), 4),
+        "n_benchmark_tasks": len(bench_ids),
+        "nn_cosine_distribution": {"min": round(float(nn.min()), 4), "mean": round(float(nn.mean()), 4), **pct,
+                                   "max": round(float(nn.max()), 4)},
+        "closest_benchmark_pairs": pairs,
+    }
+
+
+def instruction_api_leaks(instr_vecs, bench_vecs, instr_api_names, bench_api_names, threshold: float) -> list[dict]:
+    """Per training request: its nearest benchmark task and cosine, and ``leak``
+    = (benchmark index, cosine) of the most similar benchmark task that is
+    both >= ``threshold`` AND has the same non-core API set, else None."""
+
+    import numpy as np
+
+    sims = np.asarray(instr_vecs) @ np.asarray(bench_vecs).T if len(instr_vecs) else np.zeros((0, len(bench_vecs)))
+    bench_sets = [non_core(n) for n in bench_api_names]
+    out = []
+    for i, names in enumerate(instr_api_names):
+        mine = non_core(names)
+        row = sims[i]
+        nearest = int(row.argmax())
+        leak = None
+        for j in np.argsort(-row):
+            if row[j] < threshold:
+                break
+            if bench_sets[j] == mine:
+                leak = (int(j), float(row[j]))
+                break
+        out.append({"nearest": nearest, "cosine": float(row[nearest]), "leak": leak})
     return out
