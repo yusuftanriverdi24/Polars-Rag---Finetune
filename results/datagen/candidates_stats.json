@@ -226,10 +226,16 @@
     "mean_non_core_api_names": 1.44
   },
   "oracle_doc_context": {
+    "answer_removed": "API pages: Examples section dropped; guide chunks: the candidate's code block(s) dropped",
     "missing_by_source": {
       "user_guide": 1
     },
-    "mean_chunks": 1.71
+    "mean_chunks": 1.8,
+    "answer_in_context": {
+      "n": 1191,
+      "with_answer_in_context": 0,
+      "ids": []
+    }
   },
   "wall_time_s": 831.2
 }

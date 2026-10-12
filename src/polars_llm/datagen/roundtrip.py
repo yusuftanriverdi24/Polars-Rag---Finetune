@@ -8,24 +8,36 @@ reproduce the reference output:
 
 * **Solver:** ``SOLVER_MODEL`` (Qwen3.5-9B, the instruction writer), **not**
   the 4B student: filtering on what the student already solves would keep
-  only what it already knows.
+  only what it already knows. Limitation: writer and solver are the same
+  model, so a misreading they share can pass.
 * **Input:** the request + ``setup_code`` + signature, in the same prompt
-  template as the RAG arms, with the **source doc chunk(s)** of the example
-  as context (oracle context, ``candidates.attach_doc_context``). This tests
-  whether the request is faithful and unambiguous, not whether the solver
-  knows the API.
+  template as the RAG arms, with the example's **source doc chunk(s) minus
+  the example itself** as context (``oracle.py``: no Examples section, no
+  code block the candidate came from; ``answer_in_context`` must be 0). This
+  tests whether the request is faithful and unambiguous, not whether the
+  solver knows the API, and the solver cannot copy the answer from the doc.
 * **Decoding:** greedy, thinking off; adaptive batching (start from free GPU
   memory, halve on CUDA OOM) and checkpoint/resume on Google Drive, exactly
   as for the instruction writer (``instructions.write_with_checkpoint``).
 * **Check:** the solver's code runs in the sandbox; its output must equal the
-  reference output with the **row order and column order ignored** (column
-  names and values must match; numeric widths ignored as in the benchmark).
+  reference output under the **candidate's own check flags**, as in the
+  benchmark (``ignore_row_order`` only where the reference itself has no
+  defined row order; column order is checked; numeric widths ignored).
+
+Pre-registered decision rules (PLAN.md), reported in ``roundtrip_stats.json``:
+
+* ``canaries``: pinned spot-check requests (``data/sft/canaries.json``) with
+  their expected verdict: the wrong/ambiguous ones must be rejected, the
+  correct ones kept. They are solved alongside, but never enter the data.
+* ``audit_kept`` / ``audit_rejected``: 20 random each (seed 0) for a manual
+  audit; if >= 3 of the 20 kept requests are wrong, the filter is insufficient.
+* ``decision_rules``: reshape retention < half the overall retention ->
+  inspect; fewer than ~1,000 kept with most rejections ``error:*`` -> one retry
+  with the error message before moving to data v2.
 
 Outputs: ``data/sft/verified.jsonl`` (kept examples),
 ``results/datagen/roundtrip_results.jsonl`` (one row per request: verdict,
-reason, solver code) and ``results/datagen/roundtrip_stats.json`` (retention
-overall and by source / style / category / multi-step, plus random kept and
-rejected examples).
+reason, solver code) and ``results/datagen/roundtrip_stats.json``.
 
 CLI::
 
@@ -42,13 +54,15 @@ import os
 import random
 import time
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from pathlib import Path
 
 from ..bench.compare import compare_frames
 from ..bench.executor import compute_expected, run_solution
 from ..bench.extract import extract_code
-from ..bench.schema import CheckFlags, Task
+from ..bench.schema import Task
 from ..prompts.template import build_messages, prompt_fingerprint
+from .build_sft import make_example
 from .instructions import (
     ALLOC_CONF,
     DEFAULT_CANDIDATES,
@@ -60,6 +74,7 @@ from .instructions import (
     load_checkpoint,
     write_with_checkpoint,
 )
+from .oracle import answer_in_context
 
 SOLVER_MODEL = WRITER_MODEL
 SOLVER_REVISION = WRITER_REVISION
@@ -67,11 +82,13 @@ MAX_NEW_TOKENS = 768  # as for the benchmark arms
 MAX_SEQ_LENGTH = 8192  # <= 4,000 context tokens + request/setup + 768 new
 DEFAULT_IN = Path("data/sft/filtered.jsonl")
 DEFAULT_OUT = Path("data/sft/verified.jsonl")
+DEFAULT_CANARIES = Path("data/sft/canaries.json")
 DEFAULT_CHECKPOINT = Path("data/sft/roundtrip_checkpoint.jsonl")
 DEFAULT_RESULTS = Path("results/datagen/roundtrip_results.jsonl")
 DEFAULT_STATS = Path("results/datagen/roundtrip_stats.json")
-CHECK = CheckFlags(ignore_row_order=True, ignore_column_order=True, ignore_numeric_width=True)
-N_SHOW = 6
+N_AUDIT = 20
+AUDIT_MAX_WRONG_KEPT = 2  # >= 3 of 20 wrong kept requests -> the filter is insufficient
+RETRY_IF_KEPT_BELOW = 1000
 SEED = 0
 
 
@@ -91,13 +108,26 @@ def roundtrip_settings(model: str, revision: str | None) -> dict:
 # ---------------------------------------------------------------------------
 
 
+def _compare(got, want, check):
+    """compare_frames, falling back to row order when ignoring it fails on unsortable dtypes."""
+
+    try:
+        return compare_frames(got, want, check)
+    except Exception:  # noqa: BLE001 - lists/structs can't be sorted
+        return compare_frames(got, want, replace(check, ignore_row_order=False))
+
+
 def judge(example: dict, solver_output: str, expected, timeout_s: float = 30.0) -> dict:
-    """Run the solver's code and compare with the reference output.
+    """Run the solver's code and compare with the reference output under the
+    example's own check flags (as the benchmark does).
 
     Returns {"kept", "reason", "detail"}; reasons: ``match``, ``no_code``,
-    ``error:<Type>``, ``timeout``, ``not_a_dataframe``, ``wrong_columns``,
-    ``wrong_row_count``, ``wrong_values``."""
+    ``error:<Type>``, ``timeout``, ``not_a_dataframe``, ``wrong_columns``
+    (different set of names), ``wrong_column_order``, ``wrong_row_count``,
+    ``wrong_row_order`` (right rows, order required but different),
+    ``wrong_values``."""
 
+    check = Task.from_dict(example).check
     code = extract_code(solver_output)
     if not code.strip() or "def solve" not in code:
         return {"kept": False, "reason": "no_code", "detail": ""}
@@ -111,18 +141,18 @@ def judge(example: dict, solver_output: str, expected, timeout_s: float = 30.0) 
     if got is None:
         return {"kept": False, "reason": "not_a_dataframe", "detail": ""}
     if set(got.columns) != set(want.columns):
-        return {"kept": False, "reason": "wrong_columns",
+        return {"kept": False, "reason": "wrong_columns", "detail": f"got {got.columns}, expected {want.columns}"[:300]}
+    if got.columns != want.columns and not check.ignore_column_order:
+        return {"kept": False, "reason": "wrong_column_order",
                 "detail": f"got {got.columns}, expected {want.columns}"[:300]}
     if got.height != want.height:
         return {"kept": False, "reason": "wrong_row_count", "detail": f"got {got.height}, expected {want.height}"}
-    want = want.select(got.columns)
-    try:
-        cmp = compare_frames(got, want, CHECK)
-    except Exception:  # noqa: BLE001 - unsortable dtypes (lists, structs): compare in row order instead
-        cmp = compare_frames(got, want, CheckFlags(ignore_column_order=True))
-    if not cmp.equal:
-        return {"kept": False, "reason": "wrong_values", "detail": (cmp.detail or "")[:300]}
-    return {"kept": True, "reason": "match", "detail": ""}
+    cmp = _compare(got, want, check)
+    if cmp.equal:
+        return {"kept": True, "reason": "match", "detail": ""}
+    if not check.ignore_row_order and _compare(got, want, replace(check, ignore_row_order=True)).equal:
+        return {"kept": False, "reason": "wrong_row_order", "detail": ""}
+    return {"kept": False, "reason": "wrong_values", "detail": (cmp.detail or "")[:300]}
 
 
 def judge_all(examples: list[dict], outputs: dict[str, str], workers: int = 4) -> dict[str, dict]:
@@ -146,6 +176,34 @@ def judge_all(examples: list[dict], outputs: dict[str, str], workers: int = 4) -
 
 
 # ---------------------------------------------------------------------------
+# canaries
+# ---------------------------------------------------------------------------
+
+
+def load_canaries(path: Path, candidates: dict[str, dict]) -> list[dict]:
+    """Pinned spot-check requests as examples (id ``canary:...``) + their expectation."""
+
+    if not path.exists():
+        return []
+    out = []
+    for c in json.loads(path.read_text(encoding="utf-8")):
+        ex = make_example(candidates[c["candidate_id"]], c["style"], c["instruction"])
+        out.append({**ex, "id": c["id"], "canary": {k: c[k] for k in ("label", "expected", "note")}})
+    return out
+
+
+def canary_report(canaries: list[dict], verdicts: dict[str, dict]) -> dict:
+    rows = []
+    for c in canaries:
+        v = verdicts[c["id"]]
+        actual = "keep" if v["kept"] else "reject"
+        rows.append({"id": c["id"], "label": c["canary"]["label"], "expected": c["canary"]["expected"],
+                     "actual": actual, "reason": v["reason"], "passed": actual == c["canary"]["expected"]})
+    return {"n": len(rows), "passed": sum(r["passed"] for r in rows),
+            "all_passed": bool(rows) and all(r["passed"] for r in rows), "results": rows}
+
+
+# ---------------------------------------------------------------------------
 # report
 # ---------------------------------------------------------------------------
 
@@ -164,21 +222,35 @@ def report(examples: list[dict], verdicts: dict[str, dict], outputs: dict[str, s
     rng = random.Random(SEED)
 
     def show(r):
-        return {"id": r["id"], "instruction": r["instruction"], "reference_solution": r["reference_solution"],
-                "solver_code": extract_code(outputs[r["id"]]), "reason": r["reason"], "detail": r["detail"]}
+        return {"id": r["id"], "category": r["category"], "instruction": r["instruction"],
+                "reference_solution": r["reference_solution"], "solver_code": extract_code(outputs[r["id"]]),
+                "reason": r["reason"], "detail": r["detail"], "audit_label": None}
 
+    retention = round(len(kept) / max(len(rows), 1), 3)
+    by_category = _rate(rows, lambda r: r["category"])
+    errors = sum(r["reason"].startswith("error:") for r in rejected)
+    reshape = by_category.get("reshape", {}).get("retention")
     return {
         "n": len(rows),
         "kept": len(kept),
-        "retention": round(len(kept) / max(len(rows), 1), 3),
+        "retention": retention,
         "reasons": dict(collections.Counter(r["reason"] for r in rows).most_common()),
         "by_source": _rate(rows, lambda r: r["source"]),
         "by_style": _rate(rows, lambda r: r["style"]),
-        "by_category": _rate(rows, lambda r: r["category"]),
+        "by_category": by_category,
         "by_multi_step": _rate(rows, lambda r: r["multi_step"]),
+        "by_check_flags": _rate(rows, lambda r: "ignore_row_order" if r["check"].get("ignore_row_order")
+                                else "row_order_checked"),
         "both_styles_of_a_candidate": _candidate_agreement(rows),
-        "random_kept": [show(r) for r in rng.sample(kept, min(N_SHOW, len(kept)))],
-        "random_rejected": [show(r) for r in rng.sample(rejected, min(N_SHOW, len(rejected)))],
+        "decision_rules": {
+            "reshape_retention": reshape,
+            "reshape_below_half_overall": reshape is not None and reshape < retention / 2,
+            "error_share_of_rejections": round(errors / max(len(rejected), 1), 3),
+            "retry_with_error_message": len(kept) < RETRY_IF_KEPT_BELOW and errors > len(rejected) / 2,
+            "audit": f"manual: label audit_kept; >= {AUDIT_MAX_WRONG_KEPT + 1}/{N_AUDIT} wrong -> filter insufficient",
+        },
+        "audit_kept": [show(r) for r in rng.sample(kept, min(N_AUDIT, len(kept)))],
+        "audit_rejected": [show(r) for r in rng.sample(rejected, min(N_AUDIT, len(rejected)))],
     }
 
 
@@ -208,7 +280,7 @@ class MockSolver:
             code = it["reference_solution"]
             if int(it["id"].encode().hex(), 16) % 3 == 0:
                 code = code.replace("def solve", "def _ref", 1) + (
-                    f"\n\ndef solve(*args, **kwargs):\n    out = _ref(*args, **kwargs)\n    return out.drop(out.columns[-1])"
+                    "\n\ndef solve(*args, **kwargs):\n    out = _ref(*args, **kwargs)\n    return out.drop(out.columns[-1])"
                 )
             out.append((f"```python\n{code}\n```", 0.0))
         return out
@@ -238,6 +310,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Round-trip verification of training requests.")
     parser.add_argument("--examples", default=str(DEFAULT_IN), help="filtered examples (build_sft --stage filter)")
     parser.add_argument("--candidates", default=str(DEFAULT_CANDIDATES), help="for the oracle doc context")
+    parser.add_argument("--canaries", default=str(DEFAULT_CANARIES))
     parser.add_argument("--out", default=str(DEFAULT_OUT))
     parser.add_argument("--results", default=str(DEFAULT_RESULTS))
     parser.add_argument("--stats", default=str(DEFAULT_STATS))
@@ -255,17 +328,30 @@ def main(argv: list[str] | None = None) -> int:
     examples = [json.loads(l) for l in Path(args.examples).read_text(encoding="utf-8").splitlines() if l.strip()]
     if args.limit:
         examples = examples[: args.limit]
-    context = {}
+    candidates = {}
     for line in Path(args.candidates).read_text(encoding="utf-8").splitlines():
         if line.strip():
             c = json.loads(line)
-            context[c["id"]] = c.get("doc_context", "")
-    missing_ctx = sum(not context.get(e["candidate_id"]) for e in examples)
+            candidates[c["id"]] = c
+    canaries = load_canaries(Path(args.canaries), candidates)
+
+    def context(e):
+        return candidates.get(e["candidate_id"], {}).get("doc_context", "")
+
+    # The guarantee the oracle context must give: the answer is not in it.
+    leaks = sorted({e["candidate_id"] for e in examples + canaries
+                    if answer_in_context(e["reference_solution"], context(e))})
+    answer_stats = {"n_candidates": len({e["candidate_id"] for e in examples + canaries}),
+                    "with_answer_in_context": len(leaks), "ids": leaks[:50]}
+    if leaks:
+        raise SystemExit(f"the reference answer is in the oracle context of {len(leaks)} candidates, e.g. {leaks[:3]}; "
+                         "run `python -m polars_llm.datagen.candidates --refresh-context`")
 
     revision = args.revision or (SOLVER_REVISION if args.model == SOLVER_MODEL else None)
     settings = roundtrip_settings(args.model, revision)
     checkpoint = Path(args.checkpoint)
-    items = [{**e, "messages": solver_messages(e, context.get(e["candidate_id"], ""))} for e in examples]
+    everything = examples + canaries
+    items = [{**e, "messages": solver_messages(e, context(e))} for e in everything]
 
     def make_row(item, text):
         return {"raw": text}
@@ -273,7 +359,7 @@ def main(argv: list[str] | None = None) -> int:
     done = load_checkpoint(checkpoint, settings)
     run = {"n_resumed": len(done), "n_written": 0, "oom_events": []}
     gpu, source, wall = None, "none (checkpoint complete)", 0.0
-    if any(e["id"] not in done for e in examples):
+    if any(e["id"] not in done for e in everything):
         solver = MockSolver() if args.model == "mock" else ModelSolver(args.model, revision)
         gpu = None if args.model == "mock" else gpu_info()
         if args.batch_size:
@@ -293,18 +379,18 @@ def main(argv: list[str] | None = None) -> int:
         wall = time.perf_counter() - t0
         done = load_checkpoint(checkpoint, settings)
     else:
-        print(f"checkpoint {checkpoint} already has all {len(examples)} solver outputs: model not loaded")
+        print(f"checkpoint {checkpoint} already has all {len(everything)} solver outputs: model not loaded")
 
-    outputs = {e["id"]: done[e["id"]]["raw"] for e in examples}
-    print(f"checking {len(examples)} solver outputs in the sandbox ({args.workers} workers)...")
+    outputs = {e["id"]: done[e["id"]]["raw"] for e in everything}
+    print(f"checking {len(everything)} solver outputs in the sandbox ({args.workers} workers)...")
     t1 = time.perf_counter()
-    verdicts = judge_all(examples, outputs, workers=args.workers)
+    verdicts = judge_all(everything, outputs, workers=args.workers)
     check_wall = time.perf_counter() - t1
 
     kept = [e for e in examples if verdicts[e["id"]]["kept"]]
     for path, rows in ((Path(args.out), kept),
                        (Path(args.results), [{"id": e["id"], "candidate_id": e["candidate_id"], **verdicts[e["id"]],
-                                              "solver_code": extract_code(outputs[e["id"]])} for e in examples])):
+                                              "solver_code": extract_code(outputs[e["id"]])} for e in everything])):
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8", newline="\n") as fh:
             fh.writelines(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in rows)
@@ -312,19 +398,24 @@ def main(argv: list[str] | None = None) -> int:
     stats = {
         **settings,
         "decoding": "greedy",
-        "context": "oracle: the example's source doc chunk(s), RAG prompt template",
-        "check": "sandbox output == reference output, row and column order ignored, numeric width ignored",
-        "n_without_doc_context": missing_ctx,
+        "context": "oracle: the example's source doc chunk(s) without the example (no Examples section / own code "
+                   "block), RAG prompt template",
+        "check": "sandbox output == reference output under the candidate's own check flags (as the benchmark)",
+        "answer_in_context": answer_stats,
+        "n_without_doc_context": sum(not context(e) for e in examples),
         "gpu": gpu,
         "batch_size_source": source,
-        "batch_sizes_used": sorted({done[e["id"]].get("batch_size", 0) for e in examples}),
+        "batch_sizes_used": sorted({done[e["id"]].get("batch_size", 0) for e in everything}),
         "this_session": {**run, "generation_wall_time_s": round(wall, 1), "check_wall_time_s": round(check_wall, 1)},
-        "generation_time_s_all_sessions": round(sum(done[e["id"]].get("latency_s", 0.0) for e in examples), 1),
+        "generation_time_s_all_sessions": round(sum(done[e["id"]].get("latency_s", 0.0) for e in everything), 1),
+        "canaries": canary_report(canaries, verdicts),
         **report(examples, verdicts, outputs),
     }
     Path(args.stats).parent.mkdir(parents=True, exist_ok=True)
     Path(args.stats).write_text(json.dumps(stats, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"round trip: kept {stats['kept']} / {stats['n']} ({stats['retention']}); reasons {stats['reasons']}")
+    print(f"canaries: {stats['canaries']['passed']}/{stats['canaries']['n']} as expected; "
+          f"decision rules: {stats['decision_rules']}")
     print(f"Wrote {args.out}, {args.results}, {args.stats}")
     return 0
 

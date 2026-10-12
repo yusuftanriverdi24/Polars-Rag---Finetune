@@ -1,0 +1,62 @@
+[
+ {
+  "id": "canary:selectors_struct__cf94837ba5__concise",
+  "candidate_id": "selectors_struct__cf94837ba5",
+  "style": "concise",
+  "instruction": "From the input table `df`, keep only the `foo` column and return the result with that single column in the first position.",
+  "label": "wrong",
+  "expected": "reject",
+  "note": "describes the output ('keep only foo'), not the selection the code makes (all struct columns)",
+  "source_of_text": "A100 writer run 2026-10-12 (instructions_raw.jsonl), spot check"
+ },
+ {
+  "id": "canary:when__a6fc5bc1e2__descriptive",
+  "candidate_id": "when__a6fc5bc1e2",
+  "style": "descriptive",
+  "instruction": "Start with the input table `df` and evaluate every row to see if every number in that row is strictly less than 2. If a row meets this condition, replace the values in both the `foo` and `bar` columns with 0. If a row does not meet the condition, keep the original values for `foo` and `bar` unchanged. The final table should have two columns named `foo` and `bar` appearing in that specific order, containing the transformed integer values.",
+  "label": "wrong",
+  "expected": "reject",
+  "note": "says 'every number in the row' but the code uses any_horizontal (any value)",
+  "source_of_text": "A100 writer run 2026-10-12 (instructions_raw.jsonl), spot check"
+ },
+ {
+  "id": "canary:user_guide_expressions_folds_py__48ddc86538__concise",
+  "candidate_id": "user_guide_expressions_folds_py__48ddc86538",
+  "style": "concise",
+  "instruction": "Create a new column named `prod` by multiplying the values in columns `a` and `b` for each row in `df`, keeping the original row order.",
+  "label": "ambiguous",
+  "expected": "reject",
+  "note": "'create a new column prod' suggests keeping the other columns; the code returns only prod",
+  "source_of_text": "A100 writer run 2026-10-12 (instructions_raw.jsonl), spot check"
+ },
+ {
+  "id": "canary:max_horizontal__c69237b6f3__concise",
+  "candidate_id": "max_horizontal__c69237b6f3",
+  "style": "concise",
+  "instruction": "Add a new column named `max` to the existing `df` table that contains the larger value between columns `a` and `b` for each row, keeping the original columns `a`, `b`, and `c` in their current order.",
+  "label": "correct",
+  "expected": "keep",
+  "note": "",
+  "source_of_text": "A100 writer run 2026-10-12 (instructions_raw.jsonl), spot check"
+ },
+ {
+  "id": "canary:LazyFrame_join_asof__489e1d4bd9__descriptive",
+  "candidate_id": "LazyFrame_join_asof__fc1bfaae55",
+  "style": "descriptive",
+  "instruction": "Take the population table and match each of its rows to the most recent available date in the gdp table that is less than or equal to the population date. For each population record, include the original date and population value, along with the matched gdp date and the corresponding gdp value. Ensure the final result contains exactly four columns named date, population, date_right, and gdp in that specific sequence, sorted by the date column.",
+  "label": "correct",
+  "expected": "keep",
+  "note": "candidate id changed when the population literal was lifted into the inputs; request text unchanged",
+  "source_of_text": "A100 writer run 2026-10-12 (instructions_raw.jsonl), spot check"
+ },
+ {
+  "id": "canary:DataFrame_drop__5b26fe80fe__descriptive",
+  "candidate_id": "DataFrame_drop__5b26fe80fe",
+  "style": "descriptive",
+  "instruction": "Start with the input table `df` and remove every column that contains numbers. The final result should be a table with only one column named `ham` containing the string values a, b, and c in that specific order.",
+  "label": "correct",
+  "expected": "keep",
+  "note": "",
+  "source_of_text": "A100 writer run 2026-10-12 (instructions_raw.jsonl), spot check"
+ }
+]
