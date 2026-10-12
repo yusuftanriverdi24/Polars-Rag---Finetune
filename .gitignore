@@ -41,3 +41,4 @@ Thumbs.db
 .vscode/
 # Local default checkpoint of the instruction writer (the notebook keeps it on Drive)
 data/sft/instructions_checkpoint.jsonl*
+data/sft/roundtrip_checkpoint.jsonl*

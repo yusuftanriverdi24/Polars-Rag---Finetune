@@ -224,6 +224,72 @@ def build_records(validated, code_map, refs) -> tuple[list[dict], dict]:
     return records, {"dropped": dict(leaks), "examples": leak_examples, "no_api_call_dropped": no_api}
 
 
+ORACLE_MAX_TOKENS = 4000
+ORACLE_MAX_GUIDE_CHUNKS = 2
+
+
+def _code_lines(rec: dict) -> set[str]:
+    """Distinctive source lines of a candidate (setup + solution), for finding its guide chunk."""
+
+    lines = set()
+    for code in (rec["setup_code"], rec["reference_solution"]):
+        for line in code.splitlines():
+            s = line.strip()
+            if len(s) >= 15 and not s.startswith(("def solve", "inputs = ", "return ", "import ", "from ")):
+                lines.add(s)
+    return lines
+
+
+def oracle_chunks(rec: dict, api_chunks: dict[str, list], guide_chunks: list) -> list:
+    """The doc chunk(s) a candidate came from (RAG corpus v2): all parts of its
+    API page, or the guide chunk(s) containing the most of its code lines.
+    Capped at ``ORACLE_MAX_TOKENS``."""
+
+    if rec["source"] == "docstring":
+        found = api_chunks.get(rec["page"], [])
+    else:
+        lines = _code_lines(rec)
+        scored = [(sum(l in c.text for l in lines), c) for c in guide_chunks]
+        best = max((s for s, _ in scored), default=0)
+        same_page = rec["page"].rsplit(".", 1)[0] + ".md"  # user-guide/x/y.py -> .../user-guide/x/y.md
+        found = sorted((c for s, c in scored if s == best and s > 0),
+                       key=lambda c: (not c.source.endswith(same_page), c.id))[:ORACLE_MAX_GUIDE_CHUNKS]
+    out, total = [], 0
+    for c in found:
+        if out and total + c.n_tokens > ORACLE_MAX_TOKENS:
+            break
+        out.append(c)
+        total += c.n_tokens
+    return out
+
+
+def attach_doc_context(records: list[dict], chunks_path: Path = DEFAULT_V2_CHUNKS) -> dict:
+    """Add ``doc_chunk_ids`` and ``doc_context`` (formatted like the RAG context)
+    to every record; the round-trip check gives it to the solver as oracle context."""
+
+    from ..rag.retrieve import Retrieved, format_context
+
+    chunks = read_chunks(chunks_path)
+    api_chunks: dict[str, list] = collections.defaultdict(list)
+    for c in chunks:
+        if c.kind == "api" and c.api_names:
+            api_chunks[c.api_names[0]].append(c)
+    for v in api_chunks.values():
+        v.sort(key=lambda c: c.part)
+    guide_chunks = [c for c in chunks if c.kind == "guide"]
+    missing = collections.Counter()
+    for r in records:
+        found = oracle_chunks(r, api_chunks, guide_chunks)
+        r["doc_chunk_ids"] = [c.id for c in found]
+        r["doc_context"] = format_context(
+            [Retrieved(c.id, c.kind, c.title, c.section, c.api_names, c.text, c.n_tokens) for c in found]
+        )
+        if not found:
+            missing[r["source"]] += 1
+    return {"missing_by_source": dict(missing),
+            "mean_chunks": round(statistics.fmean(len(r["doc_chunk_ids"]) for r in records), 2) if records else 0}
+
+
 def stats(records: list[dict]) -> dict:
     by_source = collections.Counter(r["source"] for r in records)
     ns = collections.Counter(namespace(n) for r in records for n in set(r["api_names"]))
@@ -280,6 +346,7 @@ def main(argv: list[str] | None = None) -> int:
     before_downsample = stats(records)
     records, down_report = downsample(records)
     final = stats(records)
+    context_report = attach_doc_context(records, Path(args.v2_chunks))
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -296,6 +363,7 @@ def main(argv: list[str] | None = None) -> int:
         "before_downsampling": before_downsample,
         "downsampling": {"trivial_cap": TRIVIAL_CAP, "single_step_cap": SINGLE_STEP_CAP, "dropped": down_report},
         "final": final,
+        "oracle_doc_context": context_report,
         "wall_time_s": round(time.perf_counter() - t0, 1),
     }
     stats_path = Path(args.stats)

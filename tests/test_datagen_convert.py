@@ -134,3 +134,68 @@ def test_return_statement_parenthesises_multiline_and_collects():
     assert return_statement("a + b", collect=True) == "return (a + b).collect()"
     multi = return_statement("lf.filter(x)\n.select('a')", collect=True)
     assert multi == "return (\n    lf.filter(x)\n    .select('a')\n).collect()"
+
+
+JOIN_ASOF_DOC = textwrap.dedent(
+    '''
+    Join on nearest key.
+
+    Examples
+    --------
+    >>> from datetime import date
+    >>> gdp = pl.LazyFrame({"date": [date(2016, 1, 1), date(2018, 1, 1)], "gdp": [4164, 4566]})
+    >>> population = pl.LazyFrame(
+    ...     {"date": [date(2016, 3, 1), date(2018, 8, 1)], "population": [82.19, 82.66]}
+    ... ).sort("date")
+    >>> population.join_asof(gdp, on="date", strategy="backward").collect()
+    shape: (2, 3)
+    ...
+    '''
+)
+
+
+def test_frame_literal_in_a_step_is_lifted_into_the_inputs():
+    (c,), _ = program_candidates(docstring_program("LazyFrame.join_asof", JOIN_ASOF_DOC))
+    assert c.params == ["gdp", "population"] and c.param_types == ["LazyFrame", "LazyFrame"]
+    assert c.signature == "def solve(gdp: pl.LazyFrame, population: pl.LazyFrame) -> pl.DataFrame:"
+    assert 'population = pl.LazyFrame(\n    {"date"' in c.setup_code
+    assert c.setup_code.splitlines()[0] == "from datetime import date"
+    assert c.setup_code.endswith('inputs = {"gdp": gdp, "population": population}')
+    assert 'population = population.sort("date")' in c.solution
+    assert "pl.LazyFrame(" not in c.solution and "import" not in c.solution  # date import only needed by setup
+    res = run_solution(c.setup_code, c.solution)
+    assert res.ok and res.frame.columns == ["date", "population", "gdp"]
+
+
+def test_inline_frame_literal_and_its_plain_values_are_lifted():
+    prog = Program("docstring", "DataFrame.join", [
+        Stmt('df = pl.DataFrame({"k": [1, 2], "a": ["x", "y"]})'),
+        Stmt("keys = [1, 2]"),
+        Stmt('df.join(pl.DataFrame({"k": keys, "b": ["é", "ü"]}), on="k")', displays=True),
+    ])  # fmt: skip
+    (c,), _ = program_candidates(prog)
+    assert c.params == ["df", "other"] and c.param_types == ["DataFrame", "DataFrame"]
+    assert c.setup_code.splitlines() == [
+        'df = pl.DataFrame({"k": [1, 2], "a": ["x", "y"]})',
+        "keys = [1, 2]",
+        'other = pl.DataFrame({"k": keys, "b": ["é", "ü"]})',  # non-ASCII: byte offsets handled
+        'inputs = {"df": df, "other": other}',
+    ]
+    assert c.solution.endswith('return df.join(other, on="k")') and "keys" not in c.solution
+    assert run_solution(c.setup_code, c.solution).ok
+
+    # A literal built from an input (or inside a lambda) cannot be lifted: the candidate is dropped.
+    prog = Program("docstring", "DataFrame.join", [
+        Stmt('df = pl.DataFrame({"k": [1, 2]})'),
+        Stmt('df.join(pl.DataFrame({"k": df["k"]}), on="k")', displays=True),
+    ])  # fmt: skip
+    cands, rejects = program_candidates(prog)
+    assert not cands and rejects == {"frame_literal_not_liftable": 1}
+
+
+def test_displayed_literal_chain_gets_an_input():
+    prog = Program("docstring", "DataFrame.with_row_index", [
+        Stmt('pl.DataFrame({"a": [5, 6]}).with_row_index()', displays=True),
+    ])  # fmt: skip
+    (c,), _ = program_candidates(prog)
+    assert c.params == ["other"] and c.solution.endswith("return other.with_row_index()")

@@ -409,9 +409,17 @@ def write_with_checkpoint(
     batch_size: int,
     free_memory: Callable[[], None] = lambda: None,
     log: Callable[[str], None] = print,
+    make_row: Callable[[dict, str], dict] | None = None,
 ) -> dict:
-    """Write requests for every candidate not yet in ``checkpoint``, halving the
-    batch size on CUDA OOM. Returns run stats (resumed/new counts, OOM events)."""
+    """Generate for every item (``id``) not yet in ``checkpoint``, halving the
+    batch size on CUDA OOM. ``make_row(item, text)`` gives the row fields
+    (default: the writer's raw text + parsed requests). Shared by the
+    instruction writer and the round-trip solver. Returns run stats
+    (resumed/new counts, OOM events)."""
+
+    if make_row is None:
+        def make_row(item, text):
+            return {"raw": text, "instructions": parse_writer_output(text)}
 
     done = load_checkpoint(checkpoint, settings)
     todo = [r for r in recs if r["id"] not in done]
@@ -439,8 +447,7 @@ def write_with_checkpoint(
             log(f"CUDA OOM: freed memory, retrying the same batch with batch size {batch_size}")
             continue
         rows = [
-            {"id": r["id"], "raw": text, "instructions": parse_writer_output(text), "batch_size": len(batch),
-             "latency_s": latency, **settings}
+            {"id": r["id"], **make_row(r, text), "batch_size": len(batch), "latency_s": latency, **settings}
             for r, (text, latency) in zip(batch, out)
         ]
         append_rows(checkpoint, rows)

@@ -254,13 +254,84 @@ def _displayed_expr(stmt: ast.stmt, displays: bool) -> ast.expr | None:
 
 
 def _segment(code: str, node: ast.AST) -> str:
-    """Source of ``node`` inside ``code``, with its own relative indentation kept."""
+    """Source of ``node`` inside ``code``, with its own relative indentation kept.
+    (AST column offsets count UTF-8 bytes, so slicing is done on bytes.)"""
 
-    lines = code.splitlines()
-    seg_lines = lines[node.lineno - 1 : node.end_lineno]
-    seg_lines[-1] = seg_lines[-1][: node.end_col_offset]
-    seg_lines[0] = " " * node.col_offset + seg_lines[0][node.col_offset :]
-    return textwrap.dedent("\n".join(seg_lines))
+    lines = [l.encode("utf-8") for l in code.splitlines()[node.lineno - 1 : node.end_lineno]]
+    lines[-1] = lines[-1][: node.end_col_offset]
+    lines[0] = b" " * node.col_offset + lines[0][node.col_offset :]
+    return textwrap.dedent("\n".join(l.decode("utf-8") for l in lines))
+
+
+def _replace_nodes(code: str, replacements: list[tuple[ast.AST, str]]) -> str:
+    """``code`` with each node's source span replaced by the given text."""
+
+    lines = [l.encode("utf-8") for l in code.splitlines(keepends=True)]
+    for node, text in sorted(replacements, key=lambda r: (r[0].lineno, r[0].col_offset), reverse=True):
+        first, last = node.lineno - 1, node.end_lineno - 1
+        lines[first : last + 1] = [lines[first][: node.col_offset] + text.encode("utf-8") + lines[last][node.end_col_offset :]]
+    return b"".join(lines).decode("utf-8")
+
+
+FRAME_CONSTRUCTORS = frozenset({"DataFrame", "LazyFrame", "from_dict", "from_dicts", "from_records"})
+
+
+def frame_literal_type(node: ast.AST) -> str | None:
+    """'DataFrame' / 'LazyFrame' when ``node`` is ``pl.<frame ctor>(...)``, optionally ``.lazy()``."""
+
+    lazy = False
+    if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == "lazy"
+            and not node.args and not node.keywords):
+        lazy, node = True, node.func.value
+    if not (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)):
+        return None
+    f = node.func
+    if not (isinstance(f.value, ast.Name) and f.value.id == "pl" and f.attr in FRAME_CONSTRUCTORS):
+        return None
+    return "LazyFrame" if lazy or f.attr == "LazyFrame" else "DataFrame"
+
+
+class _FrameLiterals(ast.NodeVisitor):
+    """Outermost frame literals in a statement; ``nested`` is set when one sits
+    inside a lambda, function, class, loop or comprehension (not liftable: it
+    would be built once instead of per call/iteration)."""
+
+    def __init__(self):
+        self.found: list[tuple[ast.Call, str]] = []
+        self.nested = False
+        self._depth = 0
+
+    def visit_Call(self, node):
+        typ = frame_literal_type(node)
+        if typ:
+            if self._depth:
+                self.nested = True
+            self.found.append((node, typ))
+            return  # the literal's own arguments belong to it
+        self.generic_visit(node)
+
+    def _scope(self, node):
+        self._depth += 1
+        self.generic_visit(node)
+        self._depth -= 1
+
+    visit_Lambda = visit_FunctionDef = visit_AsyncFunctionDef = visit_ClassDef = _scope
+    visit_For = visit_While = visit_ListComp = visit_SetComp = visit_DictComp = visit_GeneratorExp = _scope
+
+
+def frame_literals(node: ast.AST) -> tuple[list[tuple[ast.Call, str]], bool]:
+    v = _FrameLiterals()
+    v.visit(node)
+    return v.found, v.nested
+
+
+def _is_receiver_root(value: ast.AST, lit: ast.AST) -> bool:
+    """``lit`` is where the method chain ``value`` starts (``lit.a(...).b(...)``)."""
+
+    cur = value
+    while cur is not lit and isinstance(cur, (ast.Call, ast.Attribute)):
+        cur = cur.func if isinstance(cur, ast.Call) else cur.value
+    return cur is lit
 
 
 def return_statement(expr_src: str, collect: bool = False) -> str:
@@ -374,32 +445,46 @@ def _make_candidate(program, parsed, i, expr, expr_src) -> tuple[Candidate | Non
     # A plain value used by both the setup and the solution is defined in both.
     shared_js = {j for j in step_js if users.get(j, set()) & setup_js}
 
-    # Inputs: constructed variables the solution (steps + E) reads.
-    sol_loads = loaded_names(expr)
-    for j in step_js:
-        sol_loads |= loaded_names(parsed[j]) | mutated_names(parsed[j])
-    param_js = [j for j in picked if ctor[j] and (stored_names(parsed[j]) & sol_loads)]
-    if not param_js:
-        return None, "no_input_frame"
-    names = [next(iter(stored_names(parsed[j]))) for j in param_js]
-    types = [ctor[j] for j in param_js]
+    lifted = _lift_frame_literals(stmts, parsed, picked, ctor, imports, setup_js | shared_js, step_js, i)
+    if lifted is None:
+        return None, "frame_literal_not_liftable"
+    step_code, expr_src, lifts, copied_js = lifted
+    if lifts:
+        # A step that only fed the lifted literals now lives in the setup only.
+        step_js = _drop_unused_steps(step_js, step_code, parsed, expr_src, copied_js)
+    step_nodes = [ast.parse(step_code[j]) for j in step_js]
+    expr_node = _parse_expr(expr_src)
 
-    # setup: imports used by setup + setup statements + inputs dict.
+    # Inputs: constructed variables the solution (steps + E) reads, then the lifted literals.
+    sol_loads = loaded_names(expr_node)
+    for n in step_nodes:
+        sol_loads |= loaded_names(n)
+        for s in n.body:
+            sol_loads |= mutated_names(s)
+    param_js = [j for j in picked if ctor[j] and (stored_names(parsed[j]) & sol_loads)]
+    if not param_js and not lifts:
+        return None, "no_input_frame"
+    names = [next(iter(stored_names(parsed[j]))) for j in param_js] + [n for n, _, _ in lifts]
+    types = [ctor[j] for j in param_js] + [t for _, t, _ in lifts]
+
+    # setup: imports used by setup + setup statements + lifted literals + inputs dict.
     def used_imports(nodes) -> list[str]:
         loads: set[str] = set()
         for n in nodes:
             loads |= loaded_names(n)
         return [stmts[j].code.strip() for j in imports if stored_names(parsed[j]) & loads]
 
-    setup_order = sorted(setup_js | shared_js)
-    setup_nodes = [parsed[j] for j in setup_order]
-    setup_lines = used_imports(setup_nodes) + [textwrap.dedent(stmts[j].code).strip() for j in setup_order]
+    setup_order = sorted(setup_js | shared_js | copied_js)
+    lift_lines = [f"{n} = {src}" for n, _, src in lifts]
+    setup_nodes = [parsed[j] for j in setup_order] + [ast.parse(l) for l in lift_lines]
+    setup_lines = (used_imports(setup_nodes) + [textwrap.dedent(stmts[j].code).strip() for j in setup_order]
+                   + lift_lines)
     inputs = "inputs = {" + ", ".join(f'"{n}": {n}' for n in names) + "}"
     setup_code = "\n".join(setup_lines + [inputs])
 
-    sol_imports = [s for s in used_imports([parsed[j] for j in step_js] + [expr]) if not s.startswith("import polars as pl")]
+    sol_imports = [s for s in used_imports(step_nodes + [expr_node]) if not s.startswith("import polars as pl")]
     signature = "def solve(" + ", ".join(f"{n}: pl.{t}" for n, t in zip(names, types)) + ") -> pl.DataFrame:"
-    steps = [textwrap.dedent(stmts[j].code).strip() for j in step_js]
+    steps = [step_code[j] for j in step_js]
     solution = build_solution(signature, sol_imports, steps, expr_src)
     label = program.labels[i] if program.labels else ""
     return (
@@ -419,6 +504,118 @@ def _make_candidate(program, parsed, i, expr, expr_src) -> tuple[Candidate | Non
         ),
         "",
     )
+
+
+def _lift_frame_literals(stmts, parsed, picked, ctor, imports, setup_set, step_js, i):
+    """Lift every DataFrame/LazyFrame literal in the solution (steps + displayed
+    statement ``i``) into the setup, as a new input.
+
+    Each literal is replaced by a parameter name: the assignment target when the
+    literal starts the assigned method chain (``p = pl.LazyFrame({...}).sort("d")``
+    -> setup ``p = pl.LazyFrame({...})``, step ``p = p.sort("d")``), otherwise a
+    fresh ``other``/``other2``... The names a literal reads must be available in
+    the setup: imports, setup statements, or plain-value steps that are then
+    copied to the setup (recursively). A literal reading an input or a computed
+    value, or one inside a lambda/function/loop/comprehension, is not liftable.
+
+    Returns (step code by index, displayed expression source, [(name, type,
+    literal source)], step indices copied to the setup), or None if not liftable.
+    """
+
+    taken: set[str] = set()
+    for node in parsed:
+        if node is not None:
+            taken |= {n.id for n in ast.walk(node) if isinstance(n, ast.Name)}
+    defined_at = {j: stored_names(parsed[j]) for j in picked}
+
+    def definer(name: str, before: int) -> int | None:
+        js = [j for j in picked if j < before and name in defined_at[j]]
+        return max(js) if js else None
+
+    ctor_names = {n for j in picked if ctor[j] for n in defined_at[j]}
+    copied: set[int] = set()
+
+    def resolvable(names: set[str], before: int) -> bool:
+        for n in names - BUILTIN_NAMES - PRELUDE_NAMES:
+            j = definer(n, before)
+            if j is None:
+                return False
+            if ctor[j]:
+                return False  # built from an input frame: not a literal
+            if j in imports or j in setup_set or j in copied:
+                continue
+            if j not in step_js:
+                return False
+            node = parsed[j]
+            if not isinstance(node, ast.Assign) or frame_literals(node)[0] or mutated_names(node):
+                return False
+            copied.add(j)
+            if not resolvable(loaded_names(node), j):
+                return False
+        return True
+
+    lifts: list[tuple[str, str, str]] = []
+    used: set[str] = set()
+
+    def fresh(preferred: str) -> str:
+        name, k = preferred, 2
+        while name in used or name in taken:
+            name, k = f"{preferred}{k}", k + 1
+        used.add(name)
+        return name
+
+    step_code: dict[int, str] = {}
+    new_expr_src = None
+    for j in list(step_js) + [i]:
+        code = stmts[j].code
+        found, nested = frame_literals(parsed[j])
+        if nested:
+            return None
+        repl = []
+        for lit, typ in found:
+            if not resolvable(loaded_names(lit), j):
+                return None
+            node = parsed[j]
+            root_target = (
+                isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name)
+                and node.value is not lit and _is_receiver_root(node.value, lit)
+            )
+            if root_target and node.targets[0].id not in used | ctor_names:
+                name = node.targets[0].id
+                used.add(name)
+            else:
+                name = fresh("other")
+            lifts.append((name, typ, _segment(code, lit).lstrip()))  # continuation lines sit inside brackets
+            repl.append((lit, name))
+        new_code = _replace_nodes(code, repl) if repl else code
+        if j == i:
+            node = ast.parse(new_code).body[0]
+            new_expr_src = _segment(new_code, _displayed_expr(node, stmts[i].displays))
+        else:
+            step_code[j] = textwrap.dedent(new_code).strip()
+    return step_code, new_expr_src, lifts, copied
+
+
+def _parse_expr(expr_src: str) -> ast.AST:
+    """A displayed expression (possibly a multi-line method chain) as an AST."""
+
+    return ast.parse("(\n" + expr_src + "\n)", mode="eval")
+
+
+def _drop_unused_steps(step_js, step_code, parsed, expr_src, copied_js) -> list[int]:
+    """Drop copied plain-value steps that the solution no longer reads."""
+
+    keep: list[int] = []
+    needed = loaded_names(_parse_expr(expr_src))
+    for j in sorted(step_js, reverse=True):
+        node = ast.parse(step_code[j])
+        if j in copied_js and not (stored_names(parsed[j]) & needed):
+            continue
+        keep.append(j)
+        needed |= loaded_names(node)
+        for s in node.body:
+            needed |= mutated_names(s)
+    return sorted(keep)
 
 
 # ---------------------------------------------------------------------------

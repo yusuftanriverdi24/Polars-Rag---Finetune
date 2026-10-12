@@ -44,6 +44,7 @@ DEFAULT_STATS = Path("results/datagen/sft_stats.json")
 DEFAULT_BENCH_API_NAMES = Path("results/datagen/benchmark_api_names.json")
 DEFAULT_V1_CHUNKS = Path("data/rag/chunks.jsonl")
 N_CLOSEST_SURVIVING = 20
+DEFAULT_ROUNDTRIP_STATS = Path("results/datagen/roundtrip_stats.json")
 DEV_FRACTION = 0.10
 SEED = 0
 
@@ -163,7 +164,26 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--embedder", choices=["granite", "fake"], default="granite")
     parser.add_argument("--device", default=None)
     parser.add_argument("--bench-api-names", default=str(DEFAULT_BENCH_API_NAMES))
+    parser.add_argument("--stage", choices=["filter", "split", "all"], default="all",
+                        help="filter: filters + leakage -> filtered.jsonl; split: --examples (default "
+                             "verified.jsonl, after roundtrip.py) -> train/dev; all: both, no round trip")
+    parser.add_argument("--examples", default=None, help="split stage input (default: <out-dir>/verified.jsonl)")
+    parser.add_argument("--roundtrip-stats", default=str(DEFAULT_ROUNDTRIP_STATS))
     args = parser.parse_args(argv)
+    out_dir = Path(args.out_dir)
+    if args.stage in ("filter", "all"):
+        examples = filter_stage(args)
+        if args.stage == "filter":
+            return 0
+    else:
+        src = Path(args.examples) if args.examples else out_dir / "verified.jsonl"
+        examples = [json.loads(l) for l in src.read_text(encoding="utf-8").splitlines() if l.strip()]
+    split_stage(args, examples)
+    return 0
+
+
+def filter_stage(args) -> list[dict]:
+    """Quality filters + instruction leakage -> <out-dir>/filtered.jsonl; stats (filter part)."""
 
     recs = {json.loads(l)["id"]: json.loads(l) for l in Path(args.candidates).read_text(encoding="utf-8").splitlines() if l.strip()}
     raw = [json.loads(l) for l in Path(args.instructions).read_text(encoding="utf-8").splitlines() if l.strip()]
@@ -218,12 +238,8 @@ def main(argv: list[str] | None = None) -> int:
     closest = sorted(survivors, key=lambda ec: -ec[1]["cosine"])[:N_CLOSEST_SURVIVING]
     examples = [e for e, _ in survivors]
 
-    train, dev = grouped_split(examples)
     out_dir = Path(args.out_dir)
-    train_sha = _write_jsonl(out_dir / "train.jsonl", train)
-    dev_sha = _write_jsonl(out_dir / "dev.jsonl", dev)
-    assert not ({e["page"] for e in train} & {e["page"] for e in dev})
-
+    filtered_sha = _write_jsonl(out_dir / "filtered.jsonl", examples)
     report = {
         "n_candidates": len(recs),
         "n_instruction_pairs": len(raw),
@@ -241,19 +257,42 @@ def main(argv: list[str] | None = None) -> int:
             "dropped_examples": dropped,
             "closest_surviving": [pair(e, c["nearest"], c["cosine"]) for e, c in closest],
         },
-        "all": summarize(examples),
-        "train": {**summarize(train), "sha256": train_sha},
-        "dev": {**summarize(dev), "sha256": dev_sha},
-        "split": {"grouped_by": "page", "dev_fraction_target": DEV_FRACTION, "seed": SEED},
+        "after_filters_and_leakage": {**summarize(examples), "sha256": filtered_sha},
     }
     Path(args.stats).parent.mkdir(parents=True, exist_ok=True)
     Path(args.stats).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"filters dropped {dict(problems)} (unparsed {n_unparsed})")
     print(f"leakage: threshold {threshold} (benchmark NN cosines {calibration['nn_cosine_distribution']}); "
           f"dropped {len(dropped)}; kept above threshold with a different API set {above}")
+    print(f"{len(examples)} examples -> {out_dir / 'filtered.jsonl'}")
+    return examples
+
+
+def split_stage(args, examples: list[dict]) -> None:
+    """Page-grouped train/dev split of the (verified) examples; adds to the stats."""
+
+    out_dir = Path(args.out_dir)
+    train, dev = grouped_split(examples)
+    train_sha = _write_jsonl(out_dir / "train.jsonl", train)
+    dev_sha = _write_jsonl(out_dir / "dev.jsonl", dev)
+    assert not ({e["page"] for e in train} & {e["page"] for e in dev})
+
+    report = json.loads(Path(args.stats).read_text(encoding="utf-8"))
+    rt = Path(args.roundtrip_stats)
+    if args.stage == "split" and rt.exists():
+        r = json.loads(rt.read_text(encoding="utf-8"))
+        report["roundtrip"] = {k: r[k] for k in ("solver_model", "n", "kept", "retention", "reasons")}
+    else:
+        report.pop("roundtrip", None)
+    report.update({
+        "all": summarize(examples),
+        "train": {**summarize(train), "sha256": train_sha},
+        "dev": {**summarize(dev), "sha256": dev_sha},
+        "split": {"grouped_by": "page", "dev_fraction_target": DEV_FRACTION, "seed": SEED},
+    })
+    Path(args.stats).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"train {len(train)} / dev {len(dev)} examples ({report['train']['n_pages']} / {report['dev']['n_pages']} pages)")
     print(f"Wrote {out_dir / 'train.jsonl'}, {out_dir / 'dev.jsonl'}, {args.stats}")
-    return 0
 
 
 if __name__ == "__main__":
