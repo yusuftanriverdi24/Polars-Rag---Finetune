@@ -116,3 +116,89 @@ def test_prompt_length_guard():
         generate_script.check_prompt_lengths(CountingModel(), long, max_new_tokens=50)
     # Models without a token counter (the CPU mock) are not checked.
     assert generate_script.check_prompt_lengths(object(), long, max_new_tokens=50) is None
+
+
+# --- Arm B2: draft -> retrieve -> answer -----------------------------------------------
+
+
+class _FakeRetriever:
+    meta = {"embedder": "fake"}
+
+    def __init__(self):
+        self.queries = []
+
+    def count(self, text):
+        return len(text.split())
+
+    def retrieve(self, query, *, k, budget_tokens):
+        from polars_llm.rag.retrieve import Retrieved
+
+        self.queries.append(query)
+        return [Retrieved("api:DataFrame.unpivot", "api", "polars.DataFrame.unpivot", "", ["DataFrame.unpivot"],
+                          "Unpivot.", 2)]
+
+
+def test_draft_mode_queries_with_instruction_plus_draft_code(tmp_path):
+    tasks = load_tasks("benchmark/tasks.jsonl")[:2]
+    drafts = {t.id: {"output": f"```python\ndef solve(df):\n    return df  # {t.id}\n```", "latency_s": 2.0}
+              for t in tasks}
+    fake = _FakeRetriever()
+    contexts, retrieved, meta = generate_script.retrieve_contexts(
+        tasks, tmp_path, k=5, budget_tokens=2000, query_mode="draft", drafts=drafts, retriever=fake
+    )
+    assert fake.queries[0] == f"{tasks[0].instruction.strip()}\n\ndef solve(df):\n    return df  # {tasks[0].id}"
+    assert meta["query_mode"] == "draft" and set(meta["retrieval_latency_s"]) == {t.id for t in tasks}
+    assert retrieved[tasks[1].id][0]["id"] == "api:DataFrame.unpivot"
+
+    import pytest
+
+    with pytest.raises(ValueError, match="draft"):
+        generate_script.retrieve_contexts(
+            tasks, tmp_path, k=5, budget_tokens=2000, query_mode="draft", drafts={}, retriever=fake
+        )
+
+
+def test_instruction_mode_query_is_the_instruction(tmp_path):
+    tasks = load_tasks("benchmark/tasks.jsonl")[:1]
+    fake = _FakeRetriever()
+    generate_script.retrieve_contexts(tasks, tmp_path, k=5, budget_tokens=2000, retriever=fake)
+    assert fake.queries == [tasks[0].instruction]
+
+
+def test_b2_records_draft_and_retrieval_latency_in_cost(tmp_path):
+    tasks = load_tasks("benchmark/tasks.jsonl")[:2]
+    model = make_reference_mock(tasks)
+    generate_script.run_generation(
+        tasks, model, "B2", tmp_path,
+        context_map={t.id: "[1] x\ny" for t in tasks},
+        retrieved_map={t.id: [] for t in tasks},
+        retrieval_latency={tasks[0].id: 0.25, tasks[1].id: 0.25},
+        draft_latency={tasks[0].id: 3.0, tasks[1].id: 1.0},
+    )  # fmt: skip
+    lines = [json.loads(l) for l in (tmp_path / "B2" / "generations.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert lines[0]["draft_latency_s"] == 3.0 and lines[1]["retrieval_latency_s"] == 0.25
+    cost = json.loads((tmp_path / "B2" / "generation_meta.json").read_text(encoding="utf-8"))["cost"]
+    assert cost["draft_latency_s"] == 4.0 and cost["retrieval_latency_s"] == 0.5
+    assert cost["end_to_end_latency_s"] == round(4.5 + cost["generation_latency_s"], 3)
+
+
+def test_draft_provenance_check():
+    import pytest
+
+    from polars_llm.prompts import prompt_fingerprint
+
+    ok = {"model": "Qwen/Qwen3.5-4B", "adapter": None, "prompt": prompt_fingerprint()}
+    generate_script.check_draft_provenance(ok, "Qwen/Qwen3.5-4B", None)
+    for bad in (
+        {**ok, "model": "other/model"},
+        {**ok, "adapter": "lora"},
+        {**ok, "rag": {"k": 5}},
+        {**ok, "prompt": {"template_sha256": "x"}},
+    ):
+        with pytest.raises(ValueError, match="zero-shot"):
+            generate_script.check_draft_provenance(bad, "Qwen/Qwen3.5-4B", None)
+
+
+def test_stored_arm_a_generations_are_valid_drafts():
+    meta = json.loads(Path("results/A/generation_meta.json").read_text(encoding="utf-8"))
+    generate_script.check_draft_provenance(meta, "Qwen/Qwen3.5-4B", None)

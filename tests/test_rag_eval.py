@@ -109,3 +109,42 @@ def test_evaluate_core_and_non_core_recall():
     assert row["recall_non_core"] == 0.5  # DataFrame.join found, Expr.over missing
     assert row["missing"] == ["Expr.over"]
     assert row["retrieved"][0]["id"] == "a"
+
+
+# --- Arm B2 selection rules ---------------------------------------------------------
+
+
+def _cfg(variant, nc, all_, budget=2000, k=5, mode="instruction"):
+    return {"variant": variant, "query_mode": mode, "k": k, "budget_tokens": budget,
+            "recall": all_, "recall_non_core": nc}
+
+
+def test_choose_best_by_non_core_recall_then_tiebreaks():
+    from polars_llm.rag.eval_retrieval_v2 import choose_best
+
+    assert choose_best([_cfg("a", 0.30, 0.5), _cfg("b", 0.35, 0.1)])["variant"] == "b"
+    # Equal non-core -> higher all-names recall.
+    assert choose_best([_cfg("a", 0.3, 0.2), _cfg("b", 0.3, 0.25)])["variant"] == "b"
+    # Then the smaller budget, then the smaller k, then the instruction query.
+    assert choose_best([_cfg("a", 0.3, 0.2, budget=3000), _cfg("a", 0.3, 0.2, budget=2000)])["budget_tokens"] == 2000
+    assert choose_best([_cfg("a", 0.3, 0.2, k=8), _cfg("a", 0.3, 0.2, k=5)])["k"] == 5
+    assert choose_best([_cfg("c", 0.3, 0.2, mode="draft"), _cfg("a", 0.3, 0.2)])["query_mode"] == "instruction"
+
+
+def test_better_embedder_uses_grid_mean_and_prefers_granite_on_ties():
+    from polars_llm.rag.eval_retrieval_v2 import better_embedder
+
+    def grid(*vals):
+        return [{"recall_non_core": {"overall": v}} for v in vals]
+
+    assert better_embedder(grid(0.3, 0.3), grid(0.2, 0.5)) == "qwen3"
+    assert better_embedder(grid(0.3, 0.3), grid(0.1, 0.5)) == "granite"
+    assert better_embedder(grid(0.3), grid(0.3)) == "granite"
+
+
+def test_required_max_seq_length():
+    from polars_llm.rag.eval_retrieval_v2 import required_max_seq_length
+
+    assert required_max_seq_length(2347) == 4096
+    assert required_max_seq_length(4400) == 5632  # 4400 + 768 = 5168 -> next multiple of 512
+    assert required_max_seq_length(4096 - 768) == 4096

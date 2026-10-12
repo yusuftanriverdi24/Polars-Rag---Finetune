@@ -153,3 +153,102 @@ def test_hybrid_retrieval_end_to_end(tiny_index):
     selected = r.retrieve("convert names to uppercase", k=1, budget_tokens=1000)
     assert [c.id for c in selected] == ["api:Expr.str.to_uppercase"]
     assert selected[0].summary()["title"] == "polars.Expr.str.to_uppercase"
+
+
+# --- Arm B2: embedder registry + draft-code query ---------------------------------
+
+
+class RecordingEmbedder(FakeEmbedder):
+    def __init__(self):
+        self.prompts = []
+
+    def encode(self, texts, prompt=None, **kwargs):
+        self.prompts.append(prompt)
+        return super().encode(texts)
+
+
+def test_index_records_embedder_and_retriever_uses_its_query_instruction(tmp_path):
+    from polars_llm.rag.index import EMBEDDERS, QWEN3_QUERY_INSTRUCTION, build_index
+    from polars_llm.rag.retrieve import Retriever
+
+    path = tmp_path / "chunks.jsonl"
+    write_chunks([Chunk("api:DataFrame.join", "api", "d.rst", "polars.DataFrame.join", "Joining",
+                        ["DataFrame.join"], "Join two dataframes.", 4)], path)
+    meta = build_index(path, tmp_path / "idx", embedder=FakeEmbedder(), embedder_key="qwen3")
+    assert meta["embedder"] == "qwen3"
+    assert meta["embed_model"] == EMBEDDERS["qwen3"]["model"]
+    assert meta["query_instruction"] == QWEN3_QUERY_INSTRUCTION
+    # Model-card format: "Instruct: <one sentence>\nQuery:" (the query follows directly).
+    assert QWEN3_QUERY_INSTRUCTION.startswith("Instruct: ") and QWEN3_QUERY_INSTRUCTION.endswith("\nQuery:")
+
+    emb = RecordingEmbedder()
+    r = Retriever(tmp_path / "idx", count=count, embedder=emb)
+    r.candidates("join two frames")
+    assert emb.prompts == [QWEN3_QUERY_INSTRUCTION]
+
+
+def test_v1_index_meta_without_embedder_key_maps_to_granite(tiny_index):
+    from polars_llm.rag.index import EMBED_MODEL, embedder_key_for
+    from polars_llm.rag.retrieve import Retriever
+
+    assert embedder_key_for({"embed_model": EMBED_MODEL}) == "granite"
+    emb = RecordingEmbedder()
+    Retriever(tiny_index[0], count=count, embedder=emb).candidates("join")
+    assert emb.prompts == [None]  # granite: raw query, no instruction
+
+
+def test_draft_query_appends_the_drafts_code_only():
+    from polars_llm.rag.retrieve import draft_query
+
+    draft = "Here you go:\n```python\ndef solve(df):\n    return df.unpivot(index='id')\n```\nHope it helps."
+    q = draft_query("Reshape the table from wide to long. ", draft)
+    assert q == "Reshape the table from wide to long.\n\ndef solve(df):\n    return df.unpivot(index='id')"
+
+
+def test_draft_query_falls_back_to_instruction_without_code():
+    from polars_llm.rag.retrieve import build_query, draft_query
+
+    assert draft_query("Do X.", None) == "Do X."
+    assert draft_query("Do X.", "") == "Do X."
+    assert draft_query("Do X.", "```python\n\n```") == "Do X."
+    assert build_query("instruction", "Do X.", "```python\nx = 1\n```") == "Do X."
+    with pytest.raises(ValueError):
+        build_query("hyde", "Do X.")
+
+
+def test_draft_query_brings_in_the_api_vocabulary(tmp_path):
+    from polars_llm.rag.index import build_index
+    from polars_llm.rag.retrieve import Retriever, build_query
+
+    path = tmp_path / "chunks.jsonl"
+    write_chunks([
+        Chunk("api:DataFrame.unpivot", "api", "d.rst", "polars.DataFrame.unpivot", "Reshape",
+              ["DataFrame.unpivot"], "Unpivot a DataFrame from wide to long format.\n\n"
+              ">>> df.unpivot(index='a', on=['b', 'c'], variable_name='month')", 20),
+        Chunk("api:DataFrame.product", "api", "d.rst", "polars.DataFrame.product", "Aggregation",
+              ["DataFrame.product"], "Aggregate the columns to their product value per product.", 9),
+    ], path)  # fmt: skip
+    build_index(path, tmp_path / "idx", embedder=FakeEmbedder())
+    r = Retriever(tmp_path / "idx", count=count, embedder=FakeEmbedder())
+    instruction = "Turn the per-product columns into one row per product and month."
+    draft = "```python\ndef solve(df):\n    return df.unpivot(index='store', variable_name='month')\n```"
+    def fts_rank(query):
+        return {c.id: c.fts_rank for c in r.candidates(query)}["api:DataFrame.unpivot"]
+
+    # The column name "product" pulls in DataFrame.product; the draft's code
+    # moves DataFrame.unpivot to the top of the BM25 ranking.
+    assert r.retrieve(build_query("instruction", instruction), k=1)[0].id == "api:DataFrame.product"
+    assert fts_rank(build_query("instruction", instruction)) == 2
+    assert fts_rank(build_query("draft", instruction, draft)) == 1
+
+
+def test_load_drafts(tmp_path):
+    import json
+
+    from polars_llm.rag.retrieve import load_drafts
+
+    p = tmp_path / "generations.jsonl"
+    p.write_text("".join(json.dumps({"task_id": t, "output": o, "latency_s": 1.5}) + "\n"
+                         for t, o in [("a_001", "x"), ("a_002", "y")]), encoding="utf-8")
+    d = load_drafts(p)
+    assert d["a_002"]["output"] == "y" and d["a_001"]["latency_s"] == 1.5

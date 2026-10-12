@@ -1,7 +1,10 @@
 """Hybrid retrieval: dense + BM25, fused with reciprocal rank fusion.
 
 The query is the task **instruction only** (no setup code / signature), so
-retrieval sees exactly what a user would type.
+retrieval sees exactly what a user would type. Arm B2 can instead use a
+*draft-code* query (HyDE-style, ``draft_query``): the instruction followed by
+the code of the model's own zero-shot answer, so the query speaks the API's
+vocabulary (``unpivot``, ``group_by``) instead of the task's.
 
 1. Dense: exact cosine search over the chunk vectors (top ``N_CANDIDATES``).
 2. Sparse: LanceDB native BM25 full-text search over ``fts_text``
@@ -24,7 +27,15 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from .chunk import TokenCounter
-from .index import DEFAULT_INDEX_DIR, TABLE_NAME, embed_query, load_embedder, read_index_meta
+from .index import (
+    DEFAULT_INDEX_DIR,
+    EMBEDDERS,
+    TABLE_NAME,
+    embed_query,
+    embedder_key_for,
+    load_embedder,
+    read_index_meta,
+)
 
 DEFAULT_K = 5
 DEFAULT_BUDGET_TOKENS = 2000
@@ -103,6 +114,37 @@ def pack_within_budget(
     return selected
 
 
+QUERY_MODES = ("instruction", "draft")
+
+
+def draft_query(instruction: str, draft_output: str | None) -> str:
+    """Instruction + the code of a draft answer (the model's own zero-shot
+    output). Falls back to the instruction alone when the draft has no code."""
+
+    from ..bench.extract import extract_code
+
+    code = extract_code(draft_output).strip()
+    return f"{instruction.strip()}\n\n{code}" if code else instruction.strip()
+
+
+def load_drafts(path: Path) -> dict[str, dict]:
+    """task_id -> generation record (``output``, ``latency_s``, ...) from a generations.jsonl."""
+
+    import json
+
+    with Path(path).open(encoding="utf-8") as fh:
+        records = [json.loads(line) for line in fh if line.strip()]
+    return {r["task_id"]: r for r in records}
+
+
+def build_query(mode: str, instruction: str, draft_output: str | None = None) -> str:
+    if mode == "instruction":
+        return instruction
+    if mode == "draft":
+        return draft_query(instruction, draft_output)
+    raise ValueError(f"unknown query mode {mode!r}; expected one of {QUERY_MODES}")
+
+
 _FTS_UNSAFE = re.compile(r"[^\w\s]")
 
 
@@ -128,12 +170,14 @@ class Retriever:
         self.index_dir = Path(index_dir)
         self.meta = read_index_meta(self.index_dir)
         self.table = lancedb.connect(str(self.index_dir)).open_table(TABLE_NAME)
-        self.embedder = embedder or load_embedder(device)
+        self.embedder_key = embedder_key_for(self.meta)
+        self.query_instruction = EMBEDDERS[self.embedder_key]["query_instruction"]
+        self.embedder = embedder or load_embedder(device, self.embedder_key)
         self.count = count or load_token_counter()
 
     def candidates(self, query: str, n: int = N_CANDIDATES) -> list[Retrieved]:
         cols = ["id", "kind", "title", "section", "api_names", "text", "n_tokens"]
-        qvec = embed_query(self.embedder, query)
+        qvec = embed_query(self.embedder, query, self.query_instruction)
         dense = (
             self.table.search(qvec, query_type="vector")
             .distance_type("cosine")
