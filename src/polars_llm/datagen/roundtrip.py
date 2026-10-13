@@ -67,6 +67,7 @@ from ..bench.compare import compare_frames
 from ..bench.executor import compute_expected, run_solution
 from ..bench.extract import extract_code
 from ..bench.schema import Task
+from ..io import read_jsonl, write_jsonl
 from ..prompts.template import build_messages, prompt_fingerprint
 from .build_sft import make_example
 from .instructions import (
@@ -391,14 +392,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=None)
     args = parser.parse_args(argv)
 
-    examples = [json.loads(l) for l in Path(args.examples).read_text(encoding="utf-8").splitlines() if l.strip()]
+    examples = read_jsonl(args.examples)
     if args.limit:
         examples = examples[: args.limit]
-    candidates = {}
-    for line in Path(args.candidates).read_text(encoding="utf-8").splitlines():
-        if line.strip():
-            c = json.loads(line)
-            candidates[c["id"]] = c
+    candidates = {c["id"]: c for c in read_jsonl(args.candidates)}
     canaries = load_canaries(Path(args.canaries), candidates)
 
     def context(e):
@@ -458,9 +455,7 @@ def main(argv: list[str] | None = None) -> int:
                                               "solver_code": extract_code(outputs[e["id"]]),
                                               "api_mismatch": api_mismatch(e, extract_code(outputs[e["id"]]))
                                               if verdicts[e["id"]]["kept"] else None} for e in everything])):
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("w", encoding="utf-8", newline="\n") as fh:
-            fh.writelines(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in rows)
+        write_jsonl(path, rows, sort_keys=True)
 
     stats = {
         **settings,

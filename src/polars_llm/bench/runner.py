@@ -30,6 +30,7 @@ from pathlib import Path
 
 import polars as pl
 
+from ..io import jsonl_lines
 from .classify import classify
 from .compare import compare_frames
 from .executor import DEFAULT_TIMEOUT_S, ExecutionResult, compute_expected, run_solution
@@ -147,15 +148,11 @@ def score(
 
 def _load_outputs(path: str | Path) -> list[tuple[str, str]]:
     out: list[tuple[str, str]] = []
-    with Path(path).open(encoding="utf-8") as fh:
-        for lineno, raw in enumerate(fh, start=1):
-            line = raw.strip()
-            if not line:
-                continue
-            obj = json.loads(line)
-            if "id" not in obj or "output" not in obj:
-                raise ValueError(f"{path}:{lineno}: each line needs 'id' and 'output'")
-            out.append((str(obj["id"]), str(obj["output"])))
+    for lineno, line in jsonl_lines(path):
+        obj = json.loads(line)
+        if "id" not in obj or "output" not in obj:
+            raise ValueError(f"{path}:{lineno}: each line needs 'id' and 'output'")
+        out.append((str(obj["id"]), str(obj["output"])))
     return out
 
 

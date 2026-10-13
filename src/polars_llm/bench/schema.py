@@ -30,6 +30,8 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from ..io import jsonl_lines
+
 VALID_DIFFICULTIES = frozenset({"easy", "medium", "hard"})
 VALID_CATEGORIES = frozenset(
     {
@@ -161,23 +163,22 @@ def load_tasks(path: str | Path) -> list[Task]:
     path = Path(path)
     tasks: list[Task] = []
     seen: set[str] = set()
-    with path.open(encoding="utf-8") as fh:
-        for lineno, raw in enumerate(fh, start=1):
-            line = raw.strip()
-            if not line or line.startswith("#"):
-                continue
-            try:
-                obj = json.loads(line)
-            except json.JSONDecodeError as exc:
-                raise ValueError(f"{path}:{lineno}: invalid JSON: {exc}") from exc
-            try:
-                task = Task.from_dict(obj)
-            except ValueError as exc:
-                raise ValueError(f"{path}:{lineno}: {exc}") from exc
-            if task.id in seen:
-                raise ValueError(f"{path}:{lineno}: duplicate task id {task.id!r}")
-            seen.add(task.id)
-            tasks.append(task)
+    for lineno, raw in jsonl_lines(path):
+        line = raw.strip()
+        if line.startswith("#"):
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"{path}:{lineno}: invalid JSON: {exc}") from exc
+        try:
+            task = Task.from_dict(obj)
+        except ValueError as exc:
+            raise ValueError(f"{path}:{lineno}: {exc}") from exc
+        if task.id in seen:
+            raise ValueError(f"{path}:{lineno}: duplicate task id {task.id!r}")
+        seen.add(task.id)
+        tasks.append(task)
     return tasks
 
 

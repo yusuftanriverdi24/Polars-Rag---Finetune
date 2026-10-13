@@ -177,67 +177,65 @@ def test_checkpoint_with_other_settings_is_refused(tmp_path):
         load_checkpoint(ckpt, {**SETTINGS, "writer_prompt_sha256": "different"})
 
 
-def _rows(ids):
-    return [{"id": i, "raw": "", "instructions": None, **SETTINGS} for i in ids]
+def _rows(ids, raw=""):
+    return [{"id": i, "raw": raw, "instructions": None, **SETTINGS} for i in ids]
 
 
-def test_bad_last_line_is_skipped_without_rewriting_but_a_bad_middle_line_is_dropped(tmp_path):
+SEPARATORS = "a\u2028b\u2029c\x85d"  # str.splitlines() splits on all three; ensure_ascii=False leaves them raw
+
+
+def test_unicode_line_separators_round_trip_through_the_checkpoint(tmp_path):
+    ckpt = tmp_path / "ckpt.jsonl"
+    ins.append_rows(ckpt, _rows(["c0"]) + _rows(["c1"], raw=SEPARATORS) + _rows(["c2"]), log=lambda _: None)
+    assert "\u2028" in ckpt.read_text(encoding="utf-8")  # still written raw: existing files and hashes unchanged
+    before = ckpt.read_bytes()
+    rows = load_checkpoint(ckpt, SETTINGS, log=pytest.fail)  # nothing unreadable, nothing logged
+    assert list(rows) == ["c0", "c1", "c2"] and rows["c1"]["raw"] == SEPARATORS
+    assert ckpt.read_bytes() == before
+
+
+def test_cut_off_last_line_is_skipped_without_rewriting(tmp_path):
     ckpt = tmp_path / "ckpt.jsonl"
     ins.append_rows(ckpt, _rows(["c0", "c1"]))
     with ckpt.open("a", encoding="utf-8", newline="\n") as fh:
-        fh.write('{"id": "c2", "raw": "not yet vis')  # last append only partly visible (Drive FUSE)
+        fh.write('{"id": "c2", "raw": "killed mid-wri')
     before, logs = ckpt.read_bytes(), []
     assert list(load_checkpoint(ckpt, SETTINGS, log=logs.append)) == ["c0", "c1"]
-    assert ckpt.read_bytes() == before and "last line" in logs[0]  # file left as it is
+    assert ckpt.read_bytes() == before  # never rewritten on load
+    assert "1 unreadable line(s)" in logs[0] and "line 3" in logs[0] and "['c2']" in logs[0]
 
-    # A real crash: the next append ends the cut-off line first, so it becomes a middle line and is dropped.
-    ins.append_rows(ckpt, _rows(["c3"]))
-    assert list(load_checkpoint(ckpt, SETTINGS, log=logs.append)) == ["c0", "c1", "c3"]
-    assert [json.loads(line)["id"] for line in ckpt.read_text(encoding="utf-8").splitlines()] == ["c0", "c1", "c3"]
-    assert "dropped 1" in logs[-1]
+    # Resuming: the cut-off tail (never a complete row) is cut before appending, so nothing is glued onto it.
+    ins.append_rows(ckpt, _rows(["c2", "c3"]), log=logs.append)
+    assert list(load_checkpoint(ckpt, SETTINGS, log=pytest.fail)) == ["c0", "c1", "c2", "c3"]
 
 
-def test_rows_hidden_on_reread_come_from_the_session(tmp_path, monkeypatch):
+def test_unreadable_middle_line_is_an_error_and_the_file_is_untouched(tmp_path):
+    ckpt = tmp_path / "ckpt.jsonl"
+    ins.append_rows(ckpt, _rows(["c0"]))
+    with ckpt.open("a", encoding="utf-8", newline="\n") as fh:
+        fh.write('{"id": "c1", "raw": "half\n"x"}\n')  # what splitlines() used to make of a row
+    ins.append_rows(ckpt, _rows(["c2"]))
+    before = ckpt.read_bytes()
+    with pytest.raises(SystemExit, match=r"2 unreadable line\(s\) .*line 2, 3.*\['c1'\].*left untouched"):
+        load_checkpoint(ckpt, SETTINGS)
+    assert ckpt.read_bytes() == before
+
+
+def test_session_rows_are_merged_and_a_missing_id_fails_with_the_ids(tmp_path, monkeypatch):
     real_load = ins.load_checkpoint
-
-    def fuse_lag(path, settings, **kw):  # the re-read sees the last line cut off
-        if not path.exists():
-            return {}
-        lagged = tmp_path / "lagged.jsonl"
-        lagged.write_text(path.read_text(encoding="utf-8")[:-20], encoding="utf-8")
-        return real_load(lagged, settings, **kw)
-
-    monkeypatch.setattr(ins, "load_checkpoint", fuse_lag)
-    calls = []
-
-    def write_batch(batch):
-        calls.append([r["id"] for r in batch])
-        return [(_reply(r), 0.1) for r in batch]
-
-    done, run = ins.generate_all(RECS, write_batch, checkpoint=tmp_path / "ck.jsonl", settings=SETTINGS,
-                                 batch_size=4, log=lambda _: None)
+    monkeypatch.setattr(ins, "load_checkpoint", lambda path, settings, **kw: {
+        k: v for k, v in real_load(path, settings, **kw).items() if k != "c9"})  # the re-read misses c9
+    done, run = ins.generate_all(RECS, lambda b: [(_reply(r), 0.1) for r in b], checkpoint=tmp_path / "a.jsonl",
+                                 settings=SETTINGS, batch_size=4, log=lambda _: None)
     assert list(done) == [r["id"] for r in RECS] and done["c9"]["instructions"]["concise"] == "concise c9"
-    assert len(calls) == 3 and run["n_written"] == 10 and "rows" not in run  # nothing generated twice
-    assert list(real_load(tmp_path / "ck.jsonl", SETTINGS)) == [r["id"] for r in RECS]
+    assert run["n_written"] == 10 and "rows" not in run
 
-
-def test_missing_ids_are_generated_again_then_fail_with_the_ids(tmp_path):
-    calls = []
-
-    def drops_c9_once(batch):
-        calls.append([r["id"] for r in batch])
-        return [(_reply(r), 0.1) for r in batch if not (r["id"] == "c9" and len(calls) == 3)]
-
-    done, run = ins.generate_all(RECS, drops_c9_once, checkpoint=tmp_path / "a.jsonl", settings=SETTINGS,
-                                 batch_size=4, log=lambda _: None)
-    assert calls[-1] == ["c9"] and list(done) == [r["id"] for r in RECS] and run["n_written"] == 10
-
-    def always_drops_c9(batch):
+    def drops_c9(batch):  # e.g. a model wrapper returning fewer outputs than prompts
         return [(_reply(r), 0.1) for r in batch if r["id"] != "c9"]
 
-    with pytest.raises(SystemExit, match=r"1 id\(s\) still missing .* after 3 rounds: \['c9'\]"):
-        ins.generate_all(RECS, always_drops_c9, checkpoint=tmp_path / "b.jsonl", settings=SETTINGS,
-                         batch_size=4, log=lambda _: None)
+    with pytest.raises(SystemExit, match=r"1 id\(s\) have no row .*\['c9'\]"):
+        ins.generate_all(RECS, drops_c9, checkpoint=tmp_path / "b.jsonl", settings=SETTINGS, batch_size=4,
+                         log=lambda _: None)
 
 
 def test_cli_mock_resume_writes_candidate_order(tmp_path):

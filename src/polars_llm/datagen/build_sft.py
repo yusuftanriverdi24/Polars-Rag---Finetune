@@ -36,6 +36,7 @@ import random
 from pathlib import Path
 
 from ..bench.schema import Task, load_tasks
+from ..io import read_jsonl
 from .instructions import DEFAULT_CANDIDATES, DEFAULT_OUT as DEFAULT_RAW, STYLES, instruction_problems
 from .leakage import calibrate_instruction_threshold, instruction_api_leaks, non_core
 
@@ -177,7 +178,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
     else:
         src = Path(args.examples) if args.examples else out_dir / "verified.jsonl"
-        examples = [json.loads(l) for l in src.read_text(encoding="utf-8").splitlines() if l.strip()]
+        examples = read_jsonl(src)
     split_stage(args, examples)
     return 0
 
@@ -185,8 +186,8 @@ def main(argv: list[str] | None = None) -> int:
 def filter_stage(args) -> list[dict]:
     """Quality filters + instruction leakage -> <out-dir>/filtered.jsonl; stats (filter part)."""
 
-    recs = {json.loads(l)["id"]: json.loads(l) for l in Path(args.candidates).read_text(encoding="utf-8").splitlines() if l.strip()}
-    raw = [json.loads(l) for l in Path(args.instructions).read_text(encoding="utf-8").splitlines() if l.strip()]
+    recs = {r["id"]: r for r in read_jsonl(args.candidates)}
+    raw = read_jsonl(args.instructions)
 
     problems: collections.Counter = collections.Counter()
     problems_by_style: dict[str, collections.Counter] = {s: collections.Counter() for s in STYLES}

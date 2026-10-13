@@ -48,6 +48,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Callable, Iterable
 
+from ..io import read_jsonl
+
 CORPUS_DIR = Path("data/raw/polars-2.0.0")
 DEFAULT_OUT = Path("data/rag/chunks.jsonl")
 DEFAULT_STATS = Path("results/rag/chunk_stats.json")
@@ -881,8 +883,7 @@ def write_chunks(chunks: list[Chunk], path: Path) -> str:
 
 
 def read_chunks(path: Path = DEFAULT_OUT) -> list[Chunk]:
-    with path.open(encoding="utf-8") as fh:
-        return [Chunk.from_dict(json.loads(line)) for line in fh if line.strip()]
+    return [Chunk.from_dict(d) for d in read_jsonl(path)]
 
 
 def main(argv: list[str] | None = None) -> int:

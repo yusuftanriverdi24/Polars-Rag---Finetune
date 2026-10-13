@@ -36,6 +36,7 @@ import time
 from pathlib import Path
 
 from ..bench.schema import load_tasks
+from ..io import read_jsonl
 from ..rag.chunk import read_chunks, resolve_object
 from ..rag.eval_retrieval import CORE_NAMES, build_code_map, solution_api_names
 from .convert import Candidate, docstring_program, program_candidates, user_guide_program
@@ -263,7 +264,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.refresh_context:
         out = Path(args.out)
-        records = [json.loads(l) for l in out.read_text(encoding="utf-8").splitlines() if l.strip()]
+        records = read_jsonl(out)
         context_report = attach_doc_context(records, Path(args.v2_chunks))
         with out.open("w", encoding="utf-8", newline="\n") as fh:
             fh.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in records)

@@ -20,19 +20,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from polars_llm.bench.runner import score  # noqa: E402
 from polars_llm.bench.schema import load_tasks  # noqa: E402
+from polars_llm.io import jsonl_lines  # noqa: E402
 
 
 def _load_generations(path: Path) -> list[tuple[str, str]]:
     outputs: list[tuple[str, str]] = []
-    with path.open(encoding="utf-8") as fh:
-        for lineno, raw in enumerate(fh, start=1):
-            line = raw.strip()
-            if not line:
-                continue
-            obj = json.loads(line)
-            if "task_id" not in obj or "output" not in obj:
-                raise ValueError(f"{path}:{lineno}: each line needs 'task_id' and 'output'")
-            outputs.append((str(obj["task_id"]), str(obj["output"])))
+    for lineno, line in jsonl_lines(path):
+        obj = json.loads(line)
+        if "task_id" not in obj or "output" not in obj:
+            raise ValueError(f"{path}:{lineno}: each line needs 'task_id' and 'output'")
+        outputs.append((str(obj["task_id"]), str(obj["output"])))
     return outputs
 
 

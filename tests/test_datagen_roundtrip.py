@@ -124,21 +124,11 @@ def test_mock_cli_with_resume_and_canaries(tmp_path):
     assert not any(k.startswith("canary:") for k in kept)  # canaries never enter the data
 
 
-def test_mock_cli_survives_a_last_row_hidden_on_reread(tmp_path, monkeypatch):
-    # The A100 crash: the re-read of the Drive checkpoint missed the last appended row -> KeyError.
-    from polars_llm.datagen import instructions as ins
-
-    real_load = ins.load_checkpoint
-
-    def fuse_lag(path, settings, **kw):
-        if not path.exists():
-            return {}
-        lagged = tmp_path / "lagged.jsonl"
-        lagged.write_text(path.read_text(encoding="utf-8")[:-20], encoding="utf-8")
-        return real_load(lagged, settings, **kw)
-
-    monkeypatch.setattr(ins, "load_checkpoint", fuse_lag)
-    monkeypatch.setattr(roundtrip, "load_checkpoint", fuse_lag)
+def test_mock_cli_keeps_solver_output_with_unicode_line_separators(tmp_path, monkeypatch):
+    # The A100 crash: a solver output with U+2028 was split by splitlines(), dropped from the checkpoint -> KeyError.
+    solve_batch = roundtrip.MockSolver.solve_batch
+    monkeypatch.setattr(roundtrip.MockSolver, "solve_batch", lambda self, items: [
+        (text.replace("```python\n", "```python\n# a\u2028b\u2029c\x85d\n", 1), t) for text, t in solve_batch(self, items)])
     exs = [{**EX, "id": f"c{i}__concise", "candidate_id": f"c{i}"} for i in range(3)]
     (tmp_path / "f.jsonl").write_text("".join(json.dumps(e) + "\n" for e in exs), encoding="utf-8")
     cand = {k: EX[k] for k in ("difficulty", "category", "setup_code", "signature", "reference_solution", "check",
@@ -147,14 +137,15 @@ def test_mock_cli_survives_a_last_row_hidden_on_reread(tmp_path, monkeypatch):
         "".join(json.dumps({**cand, "id": f"c{i}", "api_names": [], "doc_context": "[1] doc"}) + "\n" for i in range(3)),
         encoding="utf-8")
     (tmp_path / "canaries.json").write_text("[]", encoding="utf-8")
-    assert roundtrip.main(["--model", "mock", "--examples", str(tmp_path / "f.jsonl"),
-                           "--candidates", str(tmp_path / "cands.jsonl"), "--canaries", str(tmp_path / "canaries.json"),
-                           "--checkpoint", str(tmp_path / "ck.jsonl"), "--out", str(tmp_path / "v.jsonl"),
-                           "--results", str(tmp_path / "r.jsonl"), "--stats", str(tmp_path / "s.json"),
-                           "--batch-size", "2", "--workers", "1"]) == 0
-    results = [json.loads(l)["id"] for l in (tmp_path / "r.jsonl").read_text(encoding="utf-8").splitlines()]
-    assert results == [e["id"] for e in exs]
-    assert json.loads((tmp_path / "s.json").read_text(encoding="utf-8"))["this_session"]["n_written"] == 3
+    common = ["--model", "mock", "--examples", str(tmp_path / "f.jsonl"), "--candidates", str(tmp_path / "cands.jsonl"),
+              "--canaries", str(tmp_path / "canaries.json"), "--checkpoint", str(tmp_path / "ck.jsonl"),
+              "--out", str(tmp_path / "v.jsonl"), "--results", str(tmp_path / "r.jsonl"),
+              "--stats", str(tmp_path / "s.json"), "--batch-size", "2", "--workers", "1"]
+    assert roundtrip.main(common) == 0
+    assert roundtrip.main(common) == 0  # resume from the complete checkpoint: nothing lost, nothing regenerated
+    results = [json.loads(l) for l in (tmp_path / "r.jsonl").read_text(encoding="utf-8").split("\n") if l]
+    assert [r["id"] for r in results] == [e["id"] for e in exs] and "\u2028" in results[0]["solver_code"]
+    assert json.loads((tmp_path / "s.json").read_text(encoding="utf-8"))["this_session"]["n_resumed"] == 3
 
 
 def test_answer_in_context_aborts(tmp_path):

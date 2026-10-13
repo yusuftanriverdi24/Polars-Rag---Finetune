@@ -14,16 +14,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
+from polars_llm.io import read_jsonl  # noqa: E402
 
 
 def compare(generations: Path, evaluation: Path) -> dict:
-    gen = {}
-    with generations.open(encoding="utf-8") as fh:
-        for line in fh:
-            if line.strip():
-                rec = json.loads(line)
-                gen[rec["task_id"]] = [r["id"] for r in rec.get("retrieved", [])]
+    gen = {rec["task_id"]: [r["id"] for r in rec.get("retrieved", [])] for rec in read_jsonl(generations)}
     ev = {t["id"]: [r["id"] for r in t["retrieved"]] for t in json.loads(evaluation.read_text(encoding="utf-8"))["default"]["tasks"]}
     common = sorted(set(gen) & set(ev))
     identical = [t for t in common if gen[t] == ev[t]]

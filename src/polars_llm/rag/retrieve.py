@@ -26,6 +26,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from ..io import read_jsonl
 from .chunk import TokenCounter
 from .index import (
     DEFAULT_INDEX_DIR,
@@ -130,11 +131,7 @@ def draft_query(instruction: str, draft_output: str | None) -> str:
 def load_drafts(path: Path) -> dict[str, dict]:
     """task_id -> generation record (``output``, ``latency_s``, ...) from a generations.jsonl."""
 
-    import json
-
-    with Path(path).open(encoding="utf-8") as fh:
-        records = [json.loads(line) for line in fh if line.strip()]
-    return {r["task_id"]: r for r in records}
+    return {r["task_id"]: r for r in read_jsonl(path)}
 
 
 def build_query(mode: str, instruction: str, draft_output: str | None = None) -> str:
