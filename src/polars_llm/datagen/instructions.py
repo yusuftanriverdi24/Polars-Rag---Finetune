@@ -40,6 +40,12 @@ Robust generation (``write_with_checkpoint``):
   and ``max_new_tokens``; a checkpoint written with other settings is refused
   rather than mixed. Once every candidate is done, ``--out`` is written in
   candidate order, independent of how the run was interrupted.
+* **Drive (FUSE) lag.** A re-read right after an append can see the last line
+  only partly. So an unreadable *last* line is skipped in memory and the file
+  is left alone (only a bad line in the middle triggers a rewrite), the rows
+  generated in this session are merged over the re-read checkpoint, and any
+  id still missing is generated again (``generate_all``, at most
+  ``MAX_COMPLETION_ROUNDS`` rounds) before the run fails with the ids.
 
 CLI (GPU)::
 
@@ -70,6 +76,7 @@ DEFAULT_OUT = Path("data/sft/instructions_raw.jsonl")
 DEFAULT_META = Path("results/datagen/instructions_meta.json")
 DEFAULT_CHECKPOINT = Path("data/sft/instructions_checkpoint.jsonl")
 ALLOC_CONF = "expandable_segments:True"
+MAX_COMPLETION_ROUNDS = 3
 # Starting batch size from the GPU memory free after loading the writer: keep
 # RESERVE_GB free and budget GB_PER_SEQUENCE per prompt (~1-1.5k prompt tokens
 # + 400 new; prefill dominates, especially on the torch fallback of the
@@ -358,43 +365,56 @@ def write_out(path: Path, recs: list[dict], done: dict[str, dict]) -> list[dict]
     return rows
 
 
-def load_checkpoint(path: Path, settings: dict) -> dict[str, dict]:
-    """Rows already written, by id. An unreadable line (a crash mid-write) is
-    dropped and the file rewritten without it; rows written with other
-    settings abort the run."""
+def load_checkpoint(path: Path, settings: dict, log: Callable[[str], None] = print) -> dict[str, dict]:
+    """Rows already written, by id; rows written with other settings abort the
+    run. An unreadable line in the middle (a crash mid-write, later appended
+    to) is dropped and the file rewritten without it. An unreadable *last*
+    line is only skipped here: on Google Drive (FUSE) it can be a complete
+    append that is not fully visible yet, and a rewrite would delete it."""
 
     if not path.exists():
         return {}
     done: dict[str, dict] = {}
-    bad = 0
-    for line in path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
+    lines = [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    bad = []
+    for n, line in enumerate(lines):
         try:
             row = json.loads(line)
             row_id = row["id"]
         except (json.JSONDecodeError, TypeError, KeyError):
-            bad += 1
+            bad.append(n)
             continue
         mismatch = {k: (row.get(k), v) for k, v in settings.items() if row.get(k) != v}
         if mismatch:
             raise SystemExit(f"checkpoint {path} was written with other settings {mismatch}; "
                              "use a new --checkpoint path (rows are never mixed)")
         done.setdefault(row_id, row)
-    if bad:
+    if bad and bad[-1] == len(lines) - 1:
+        log(f"checkpoint: skipped an unreadable last line of {path} (cut off, or not yet visible); "
+            "file left as it is")
+    if any(n < len(lines) - 1 for n in bad):
         tmp = path.with_name(path.name + ".tmp")
         with tmp.open("w", encoding="utf-8", newline="\n") as fh:
             fh.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in done.values())
         os.replace(tmp, path)
-        print(f"checkpoint: dropped {bad} unreadable line(s) from {path}")
+        log(f"checkpoint: dropped {len(bad)} unreadable line(s) from {path}")
     return done
 
 
 def append_rows(path: Path, rows: list[dict]) -> None:
-    """Append and force to disk, so a disconnect can't lose a finished batch."""
+    """Append and force to disk, so a disconnect can't lose a finished batch.
+    A last line cut off by a crash is ended first, so the new rows are not
+    glued onto it (it becomes a bad middle line, dropped on the next load)."""
 
     path.parent.mkdir(parents=True, exist_ok=True)
+    cut_off = False
+    if path.exists() and path.stat().st_size:
+        with path.open("rb") as fh:
+            fh.seek(-1, os.SEEK_END)
+            cut_off = fh.read(1) != b"\n"
     with path.open("a", encoding="utf-8", newline="\n") as fh:
+        if cut_off:
+            fh.write("\n")
         fh.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in rows)
         fh.flush()
         os.fsync(fh.fileno())
@@ -415,7 +435,8 @@ def write_with_checkpoint(
     batch size on CUDA OOM. ``make_row(item, text)`` gives the row fields
     (default: the writer's raw text + parsed requests). Shared by the
     instruction writer and the round-trip solver. Returns run stats
-    (resumed/new counts, OOM events)."""
+    (resumed/new counts, OOM events) and, under ``"rows"``, the rows generated
+    in this call by id (not to rely on re-reading them from a Drive checkpoint)."""
 
     if make_row is None:
         def make_row(item, text):
@@ -426,6 +447,7 @@ def write_with_checkpoint(
     log(f"checkpoint {checkpoint}: {len(recs) - len(todo)} of {len(recs)} candidates already written, "
         f"{len(todo)} to go")
     stats = {"n_resumed": len(recs) - len(todo), "n_written": 0, "initial_batch_size": batch_size, "oom_events": []}
+    written: dict[str, dict] = {}
     i = 0
     while i < len(todo):
         batch = todo[i : i + batch_size]
@@ -451,11 +473,53 @@ def write_with_checkpoint(
             for r, (text, latency) in zip(batch, out)
         ]
         append_rows(checkpoint, rows)
+        written.update((row["id"], row) for row in rows)
         i += len(batch)
         stats["n_written"] += len(rows)
         log(f"  {stats['n_resumed'] + i}/{len(recs)} written (batch size {batch_size})")
     stats["final_batch_size"] = batch_size
+    stats["rows"] = written
     return stats
+
+
+def generate_all(
+    recs: list[dict],
+    write_batch: Callable[[list[dict]], list[tuple[str, float]]],
+    *,
+    checkpoint: Path,
+    settings: dict,
+    batch_size: int,
+    log: Callable[[str], None] = print,
+    max_rounds: int = MAX_COMPLETION_ROUNDS,
+    **kwargs,
+) -> tuple[dict[str, dict], dict]:
+    """``write_with_checkpoint`` until every id in ``recs`` has a row: this
+    session's rows are merged over the re-read checkpoint, and ids still
+    missing are generated again (at most ``max_rounds`` rounds in all).
+    Returns ``(rows by id, run stats)``; fails listing the missing ids."""
+
+    done: dict[str, dict] = {}
+    run: dict = {}
+    for round_no in range(1, max_rounds + 1):
+        todo = [r for r in recs if r["id"] not in done]
+        if round_no > 1:
+            log(f"round {round_no}: {len(todo)} id(s) missing after the merge, generating them again: "
+                f"{[r['id'] for r in todo][:10]}")
+        stats = write_with_checkpoint(todo, write_batch, checkpoint=checkpoint, settings=settings,
+                                      batch_size=batch_size, log=log, **kwargs)
+        session_rows = stats.pop("rows")
+        done = {**done, **load_checkpoint(checkpoint, settings, log=log), **session_rows}
+        if not run:
+            run = stats
+        else:
+            run["n_written"] += stats["n_written"]
+            run["oom_events"] += stats["oom_events"]
+            run["final_batch_size"] = stats["final_batch_size"]
+        batch_size = stats["final_batch_size"]
+        if all(r["id"] in done for r in recs):
+            return done, run
+    missing = [r["id"] for r in recs if r["id"] not in done]
+    raise SystemExit(f"{len(missing)} id(s) still missing from {checkpoint} after {max_rounds} rounds: {missing}")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -524,12 +588,12 @@ def main(argv: list[str] | None = None) -> int:
         free_memory = writer.free_memory
 
     t0 = time.perf_counter()
-    run = write_with_checkpoint(recs, write_batch, checkpoint=checkpoint, settings=settings, batch_size=batch_size,
-                                free_memory=free_memory)
+    done, run = generate_all(recs, write_batch, checkpoint=checkpoint, settings=settings, batch_size=batch_size,
+                             free_memory=free_memory)
     wall = time.perf_counter() - t0
 
     # The final file, in candidate order, whatever the interruption history.
-    rows = write_out(out, recs, load_checkpoint(checkpoint, settings))
+    rows = write_out(out, recs, done)
     n_parsed = sum(row["instructions"] is not None for row in rows)
     batch_sizes = sorted({row["batch_size"] for row in rows})
     meta = {

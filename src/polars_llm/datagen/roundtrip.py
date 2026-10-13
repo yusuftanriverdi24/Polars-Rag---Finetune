@@ -18,7 +18,7 @@ reproduce the reference output:
   solver knows the API, and the solver cannot copy the answer from the doc.
 * **Decoding:** greedy, thinking off; adaptive batching (start from free GPU
   memory, halve on CUDA OOM) and checkpoint/resume on Google Drive, exactly
-  as for the instruction writer (``instructions.write_with_checkpoint``).
+  as for the instruction writer (``instructions.generate_all``).
 * **Check:** the solver's code runs in the sandbox; its output must equal the
   reference output under the **candidate's own check flags**, as in the
   benchmark (``ignore_row_order`` only where the reference itself has no
@@ -75,10 +75,10 @@ from .instructions import (
     GB_PER_SEQUENCE,
     WRITER_MODEL,
     WRITER_REVISION,
+    generate_all,
     gpu_info,
     initial_batch_size,
     load_checkpoint,
-    write_with_checkpoint,
 )
 from .leakage import non_core
 from .oracle import answer_in_context
@@ -439,11 +439,10 @@ def main(argv: list[str] | None = None) -> int:
               else "GPU: none")
         print(f"solver {solver.name}; starting batch size {batch_size} ({source})")
         t0 = time.perf_counter()
-        run = write_with_checkpoint(items, solver.solve_batch, checkpoint=checkpoint, settings=settings,
-                                    batch_size=batch_size, free_memory=getattr(solver, "free_memory", lambda: None),
-                                    make_row=make_row)
+        done, run = generate_all(items, solver.solve_batch, checkpoint=checkpoint, settings=settings,
+                                 batch_size=batch_size, free_memory=getattr(solver, "free_memory", lambda: None),
+                                 make_row=make_row)
         wall = time.perf_counter() - t0
-        done = load_checkpoint(checkpoint, settings)
     else:
         print(f"checkpoint {checkpoint} already has all {len(everything)} solver outputs: model not loaded")
 

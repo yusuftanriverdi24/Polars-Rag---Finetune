@@ -124,6 +124,39 @@ def test_mock_cli_with_resume_and_canaries(tmp_path):
     assert not any(k.startswith("canary:") for k in kept)  # canaries never enter the data
 
 
+def test_mock_cli_survives_a_last_row_hidden_on_reread(tmp_path, monkeypatch):
+    # The A100 crash: the re-read of the Drive checkpoint missed the last appended row -> KeyError.
+    from polars_llm.datagen import instructions as ins
+
+    real_load = ins.load_checkpoint
+
+    def fuse_lag(path, settings, **kw):
+        if not path.exists():
+            return {}
+        lagged = tmp_path / "lagged.jsonl"
+        lagged.write_text(path.read_text(encoding="utf-8")[:-20], encoding="utf-8")
+        return real_load(lagged, settings, **kw)
+
+    monkeypatch.setattr(ins, "load_checkpoint", fuse_lag)
+    monkeypatch.setattr(roundtrip, "load_checkpoint", fuse_lag)
+    exs = [{**EX, "id": f"c{i}__concise", "candidate_id": f"c{i}"} for i in range(3)]
+    (tmp_path / "f.jsonl").write_text("".join(json.dumps(e) + "\n" for e in exs), encoding="utf-8")
+    cand = {k: EX[k] for k in ("difficulty", "category", "setup_code", "signature", "reference_solution", "check",
+                               "source", "page", "multi_step")}
+    (tmp_path / "cands.jsonl").write_text(
+        "".join(json.dumps({**cand, "id": f"c{i}", "api_names": [], "doc_context": "[1] doc"}) + "\n" for i in range(3)),
+        encoding="utf-8")
+    (tmp_path / "canaries.json").write_text("[]", encoding="utf-8")
+    assert roundtrip.main(["--model", "mock", "--examples", str(tmp_path / "f.jsonl"),
+                           "--candidates", str(tmp_path / "cands.jsonl"), "--canaries", str(tmp_path / "canaries.json"),
+                           "--checkpoint", str(tmp_path / "ck.jsonl"), "--out", str(tmp_path / "v.jsonl"),
+                           "--results", str(tmp_path / "r.jsonl"), "--stats", str(tmp_path / "s.json"),
+                           "--batch-size", "2", "--workers", "1"]) == 0
+    results = [json.loads(l)["id"] for l in (tmp_path / "r.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert results == [e["id"] for e in exs]
+    assert json.loads((tmp_path / "s.json").read_text(encoding="utf-8"))["this_session"]["n_written"] == 3
+
+
 def test_answer_in_context_aborts(tmp_path):
     (tmp_path / "f.jsonl").write_text(json.dumps(EX) + "\n", encoding="utf-8")
     leaky = {**{k: EX[k] for k in ("reference_solution",)}, "id": "c1", "doc_context": ">>> " + GOOD}

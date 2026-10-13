@@ -177,6 +177,69 @@ def test_checkpoint_with_other_settings_is_refused(tmp_path):
         load_checkpoint(ckpt, {**SETTINGS, "writer_prompt_sha256": "different"})
 
 
+def _rows(ids):
+    return [{"id": i, "raw": "", "instructions": None, **SETTINGS} for i in ids]
+
+
+def test_bad_last_line_is_skipped_without_rewriting_but_a_bad_middle_line_is_dropped(tmp_path):
+    ckpt = tmp_path / "ckpt.jsonl"
+    ins.append_rows(ckpt, _rows(["c0", "c1"]))
+    with ckpt.open("a", encoding="utf-8", newline="\n") as fh:
+        fh.write('{"id": "c2", "raw": "not yet vis')  # last append only partly visible (Drive FUSE)
+    before, logs = ckpt.read_bytes(), []
+    assert list(load_checkpoint(ckpt, SETTINGS, log=logs.append)) == ["c0", "c1"]
+    assert ckpt.read_bytes() == before and "last line" in logs[0]  # file left as it is
+
+    # A real crash: the next append ends the cut-off line first, so it becomes a middle line and is dropped.
+    ins.append_rows(ckpt, _rows(["c3"]))
+    assert list(load_checkpoint(ckpt, SETTINGS, log=logs.append)) == ["c0", "c1", "c3"]
+    assert [json.loads(line)["id"] for line in ckpt.read_text(encoding="utf-8").splitlines()] == ["c0", "c1", "c3"]
+    assert "dropped 1" in logs[-1]
+
+
+def test_rows_hidden_on_reread_come_from_the_session(tmp_path, monkeypatch):
+    real_load = ins.load_checkpoint
+
+    def fuse_lag(path, settings, **kw):  # the re-read sees the last line cut off
+        if not path.exists():
+            return {}
+        lagged = tmp_path / "lagged.jsonl"
+        lagged.write_text(path.read_text(encoding="utf-8")[:-20], encoding="utf-8")
+        return real_load(lagged, settings, **kw)
+
+    monkeypatch.setattr(ins, "load_checkpoint", fuse_lag)
+    calls = []
+
+    def write_batch(batch):
+        calls.append([r["id"] for r in batch])
+        return [(_reply(r), 0.1) for r in batch]
+
+    done, run = ins.generate_all(RECS, write_batch, checkpoint=tmp_path / "ck.jsonl", settings=SETTINGS,
+                                 batch_size=4, log=lambda _: None)
+    assert list(done) == [r["id"] for r in RECS] and done["c9"]["instructions"]["concise"] == "concise c9"
+    assert len(calls) == 3 and run["n_written"] == 10 and "rows" not in run  # nothing generated twice
+    assert list(real_load(tmp_path / "ck.jsonl", SETTINGS)) == [r["id"] for r in RECS]
+
+
+def test_missing_ids_are_generated_again_then_fail_with_the_ids(tmp_path):
+    calls = []
+
+    def drops_c9_once(batch):
+        calls.append([r["id"] for r in batch])
+        return [(_reply(r), 0.1) for r in batch if not (r["id"] == "c9" and len(calls) == 3)]
+
+    done, run = ins.generate_all(RECS, drops_c9_once, checkpoint=tmp_path / "a.jsonl", settings=SETTINGS,
+                                 batch_size=4, log=lambda _: None)
+    assert calls[-1] == ["c9"] and list(done) == [r["id"] for r in RECS] and run["n_written"] == 10
+
+    def always_drops_c9(batch):
+        return [(_reply(r), 0.1) for r in batch if r["id"] != "c9"]
+
+    with pytest.raises(SystemExit, match=r"1 id\(s\) still missing .* after 3 rounds: \['c9'\]"):
+        ins.generate_all(RECS, always_drops_c9, checkpoint=tmp_path / "b.jsonl", settings=SETTINGS,
+                         batch_size=4, log=lambda _: None)
+
+
 def test_cli_mock_resume_writes_candidate_order(tmp_path):
     cands = tmp_path / "cands.jsonl"
     rec = {k: v for k, v in REC.items() if k != "id"}
