@@ -1,0 +1,731 @@
+audit_id,id,sample,api_mismatch,category,multi_step,reason,detail,instruction,setup_code,reference_solution,solver_code,audit_label,claude_label,claude_note
+K01,user_guide_expressions_expression_expansion_py__cfb0d95046__descriptive,kept,True,select_filter,True,match,,"From the input table `df`, I need a new table that includes only the columns for the stock ticker, the company name, the day's high price, and the year's high price. Please ensure the final output lists these columns in the exact sequence of `ticker`, `company_name`, `day_high`, and `year_high`, keeping all original rows intact.","import polars as pl
+df = pl.DataFrame(
+    {  # As of 14th October 2024, ~3pm UTC
+        ""ticker"": [""AAPL"", ""NVDA"", ""MSFT"", ""GOOG"", ""AMZN""],
+        ""company_name"": [""Apple"", ""NVIDIA"", ""Microsoft"", ""Alphabet (Google)"", ""Amazon""],
+        ""price"": [229.9, 138.93, 420.56, 166.41, 188.4],
+        ""day_high"": [231.31, 139.6, 424.04, 167.62, 189.83],
+        ""day_low"": [228.6, 136.3, 417.52, 164.78, 188.44],
+        ""year_high"": [237.23, 140.76, 468.35, 193.31, 201.2],
+        ""year_low"": [164.08, 39.23, 324.39, 121.46, 118.35],
+    }
+)
+inputs = {""df"": df}","import polars.selectors as cs
+
+def solve(df: pl.DataFrame) -> pl.DataFrame:
+    result = df.select(cs.string() | cs.ends_with(""_high""))
+    return result","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(
+        pl.col(""ticker""),
+        pl.col(""company_name""),
+        pl.col(""day_high""),
+        pl.col(""year_high""),
+    )",,output_equivalent_mismatch,"request names the 4 output columns; reference selects them by dtype/suffix (cs.string() | cs.ends_with('_high')), which the request never mentions"
+K02,Expr_struct_field__527c79b5bb__descriptive,kept,True,list_struct,True,match,,"Take the input table `df` and extract the values from the `aaa` column and the `bbb` column. Combine these two columns into a single result table where the `aaa` column appears first, followed immediately by the `bbb` column, preserving the original row order.","df = pl.DataFrame(
+    {
+        ""aaa"": [1, 2],
+        ""bbb"": [""ab"", ""cd""],
+        ""ccc"": [True, None],
+        ""ddd"": [[1, 2], [3]],
+    }
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    df = df.select(pl.struct(""aaa"", ""bbb"", ""ccc"", ""ddd"").alias(""struct_col""))
+    return df.select(pl.col(""struct_col"").struct.field(""aaa"", ""bbb""))","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(""aaa"", ""bbb"")",,output_equivalent_mismatch,"request is a plain column selection; reference packs a struct and extracts fields (struct.field), not described"
+K03,selectors_time__0d800a17e5__descriptive,kept,True,select_filter,False,match,,"Take the input table `df` and extract just the time values from the column labeled `tm`. The resulting table should contain only this one column, named `tm`, and the rows should appear in the same order as they were in the original input.","from datetime import date, datetime, time
+df = pl.DataFrame(
+    {
+        ""dtm"": [datetime(2001, 5, 7, 10, 25), datetime(2031, 12, 31, 0, 30)],
+        ""dt"": [date(1999, 12, 31), date(2024, 8, 9)],
+        ""tm"": [time(0, 0, 0), time(23, 59, 59)],
+    },
+)
+inputs = {""df"": df}","import polars.selectors as cs
+
+def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(cs.time())","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.col(""tm""))",,output_equivalent_mismatch,'extract the time values from column tm' reads as selecting tm by name; the reference selects by dtype (cs.time())
+K04,union__b33b82fce9__descriptive,kept,True,select_filter,False,match,,"Create a new table by placing the columns from `df_h1` next to the columns from `df_h2` so that every row from both inputs appears together. The resulting table should contain five columns in this specific sequence: `l1`, `l2`, `r1`, `r2`, and `r3`. Ensure that the data from the first input aligns with the first two columns and the data from the second input aligns with the last three columns.","df_h1 = pl.DataFrame({""l1"": [1, 2], ""l2"": [3, 4]})
+df_h2 = pl.DataFrame({""r1"": [5, 6], ""r2"": [7, 8], ""r3"": [9, 10]})
+inputs = {""df_h1"": df_h1, ""df_h2"": df_h2}","def solve(df_h1: pl.DataFrame, df_h2: pl.DataFrame) -> pl.DataFrame:
+    return pl.union([df_h1, df_h2], how=""horizontal_extend"")","def solve(df_h1: pl.DataFrame, df_h2: pl.DataFrame) -> pl.DataFrame:
+    return pl.concat([df_h1, df_h2], how=""horizontal"")",,correct,horizontal concatenation is described; pl.union(how='horizontal_extend') and concat(how='horizontal') are the same operation here
+K05,DataFrame_drop__5b26fe80fe__descriptive,kept,True,select_filter,True,match,,"Start with the input table `df` and remove every column that contains numbers. The final result should be a table with only one column named `ham` containing the string values a, b, and c in that specific order.","df = pl.DataFrame(
+    {
+        ""foo"": [1, 2, 3],
+        ""bar"": [6.0, 7.0, 8.0],
+        ""ham"": [""a"", ""b"", ""c""],
+    }
+)
+inputs = {""df"": df}","import polars.selectors as cs
+
+def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.drop(cs.numeric())","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.col(""ham""))",,correct,"'remove every column that contains numbers' describes drop(cs.numeric()); the solver took a shortcut, but the request is faithful"
+K06,last__6667d2f96b__concise,kept,False,select_filter,False,match,,"Please return a new table containing only the last column from the input table `df`, keeping all rows in their original order.","df = pl.DataFrame(
+    {
+        ""a"": [1, 8, 3],
+        ""b"": [4, 5, 2],
+        ""c"": [""foo"", ""bar"", ""baz""],
+    }
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.last())","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.last())",,correct,
+K07,LazyFrame_match_to_schema__f83a2b62f2__descriptive,kept,False,lazy,True,match,,"Start with the input table `other` which contains a single column `a` with integer values. Create a new column named `b` by taking the values from column `a` and casting them to strings. The final output should be a table with exactly two columns, `a` and `b`, appearing in that specific order, where `a` remains as integers and `b` contains the string representations of those same numbers.","other = pl.LazyFrame({""a"": [1, 2, 3]})
+inputs = {""other"": other}","def solve(other: pl.LazyFrame) -> pl.DataFrame:
+    return (
+        other
+        .match_to_schema(
+            {""a"": pl.Int64, ""b"": pl.String},
+            missing_columns={""b"": pl.col.a.cast(pl.String)},
+        )
+        .collect()
+    )","def solve(other: pl.LazyFrame) -> pl.DataFrame:
+    return (
+        other
+        .with_columns(b=pl.col(""a"").cast(pl.Utf8))
+        .select(""a"", ""b"")
+        .collect()
+    )",,output_equivalent_mismatch,request describes adding a cast column; match_to_schema(missing_columns=...) is not conveyed (not flagged because 'cast' is shared)
+K08,LazyFrame_explode__1c769a320f__concise,kept,False,reshape,False,match,,"Take the input table `lf` and expand the `numbers` column so that each number in a list becomes its own row, keeping the associated `letters` value, resulting in a table with `letters` and `numbers` columns in that order.","lf = pl.LazyFrame(
+    {
+        ""letters"": [""a"", ""a"", ""b"", ""c""],
+        ""numbers"": [[1], [2, 3], [4, 5], [6, 7, 8]],
+    }
+)
+inputs = {""lf"": lf}","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
+    return lf.explode(""numbers"").collect()","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
+    return lf.select(""letters"", ""numbers"").explode(""numbers"").collect()",,correct,
+K09,Expr_str_starts_with__5f04484856__concise,kept,False,string,False,match,,"Filter the `df` table to keep only rows where the `fruits` column starts with 'app', and return the `fruits` and `prefix` columns in that order.","df = pl.DataFrame(
+    {""fruits"": [""apple"", ""mango"", ""banana""], ""prefix"": [""app"", ""na"", ""ba""]}
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.filter(pl.col(""fruits"").str.starts_with(""app""))","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.filter(pl.col(""fruits"").str.starts_with(""app"")).select([""fruits"", ""prefix""])",,correct,
+K10,Expr_list_len__1deca37110__descriptive,kept,False,list_struct,False,match,,"Take the input table `df` and create a new column called `len` that contains the number of elements found in each list stored in the `a` column. The final result should have two columns in this specific order: `a` followed by `len`, with the row count matching the original input.","df = pl.DataFrame({""a"": [[1, 2, None], [5]]})
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(len=pl.col(""a"").list.len())","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(pl.col(""a"").list.len().alias(""len"")).select(""a"", ""len"")",,correct,
+K11,LazyGroupBy_median__9598fc6e37__concise,kept,False,group_by,True,match,,"Take the input table `ldf`, group the rows by the `d` column, and calculate the median for the `a` and `b` columns within each group. Return the result with columns `d`, `a`, and `b` in that order, keeping the original sequence of groups.","ldf = pl.DataFrame(
+    {
+        ""a"": [1, 2, 2, 3, 4, 5],
+        ""b"": [0.5, 0.5, 4, 10, 13, 14],
+        ""d"": [""Apple"", ""Banana"", ""Apple"", ""Apple"", ""Banana"", ""Banana""],
+    }
+).lazy()
+inputs = {""ldf"": ldf}","def solve(ldf: pl.LazyFrame) -> pl.DataFrame:
+    return ldf.group_by(""d"", maintain_order=True).median().collect()","def solve(ldf: pl.LazyFrame) -> pl.DataFrame:
+    return (
+        ldf
+        .group_by(""d"")
+        .agg(
+            a=pl.col(""a"").median(),
+            b=pl.col(""b"").median()
+        )
+        .sort(""d"")
+        .collect()
+    )",,correct,'keeping the original sequence of groups' = maintain_order=True; the solver's sort matches only by chance
+K12,Expr_replace_strict__92b9cdc7c5__concise,kept,False,select_filter,False,match,,"Add a new column named `replaced` to the existing `df` table that maps the values in column `a` to their corresponding integers (x to 1, y to 2, z to 3), keeping the original `a` column first.","df = pl.DataFrame({""a"": [""x"", ""y"", ""z""]})
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    mapping = {""x"": 1, ""y"": 2, ""z"": 3}
+    return df.with_columns(replaced=pl.col(""a"").replace_strict(mapping))","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col(""a"").replace_strict({""x"": 1, ""y"": 2, ""z"": 3}, default=0).alias(""replaced"")
+    )",,correct,
+K13,user_guide_transformations_joins_py__1d50e16009__concise,kept,False,join,False,match,,"Join the `df_trades` table with the `df_quotes` table using the `time` column and `stock` column as keys, matching each trade to the most recent quote within a 1-minute window before or at the trade time, and return the `time`, `stock`, `trade`, and `quote` columns in that order.","import polars as pl
+from datetime import datetime
+df_trades = pl.DataFrame(
+    {
+        ""time"": [
+            datetime(2020, 1, 1, 9, 1, 0),
+            datetime(2020, 1, 1, 9, 1, 0),
+            datetime(2020, 1, 1, 9, 3, 0),
+            datetime(2020, 1, 1, 9, 6, 0),
+        ],
+        ""stock"": [""A"", ""B"", ""B"", ""C""],
+        ""trade"": [101, 299, 301, 500],
+    }
+)
+df_quotes = pl.DataFrame(
+    {
+        ""time"": [
+            datetime(2020, 1, 1, 9, 0, 0),
+            datetime(2020, 1, 1, 9, 2, 0),
+            datetime(2020, 1, 1, 9, 4, 0),
+            datetime(2020, 1, 1, 9, 6, 0),
+        ],
+        ""stock"": [""A"", ""B"", ""C"", ""A""],
+        ""quote"": [100, 300, 501, 102],
+    }
+)
+inputs = {""df_trades"": df_trades, ""df_quotes"": df_quotes}","def solve(df_trades: pl.DataFrame, df_quotes: pl.DataFrame) -> pl.DataFrame:
+    df_asof_tolerance_join = df_trades.join_asof(
+        df_quotes, on=""time"", by=""stock"", tolerance=""1m"", check_sortedness=False
+    )
+    return df_asof_tolerance_join","def solve(df_trades: pl.DataFrame, df_quotes: pl.DataFrame) -> pl.DataFrame:
+    return df_trades.join_asof(
+        df_quotes,
+        on=""time"",
+        by=""stock"",
+        tolerance=""1m"",
+        suffix=""_right"",
+    ).select([""time"", ""stock"", ""trade"", ""quote""])",,correct,
+K14,Expr_rolling_std_by__d1f01bab90__descriptive,kept,False,window,True,match,,"Start by adding a sequential row index to the `df_temporal` table. Next, compute the rolling standard deviation of this new index, using the `date` column to define a 2-hour window that includes both the current and previous rows. The final table should contain three columns in this specific order: `index`, `date`, and `rolling_row_std`, with the rows sorted by the index value.","from datetime import timedelta, datetime
+start = datetime(2001, 1, 1)
+stop = datetime(2001, 1, 2)
+df_temporal = pl.DataFrame(
+    {""date"": pl.datetime_range(start, stop, ""1h"", eager=True)}
+)
+inputs = {""df_temporal"": df_temporal}","def solve(df_temporal: pl.DataFrame) -> pl.DataFrame:
+    df_temporal = df_temporal.with_row_index()
+    return (
+        df_temporal.with_columns(
+            rolling_row_std=pl.col(""index"").rolling_std_by(
+                ""date"", window_size=""2h"", closed=""both""
+            )
+        )
+    )","def solve(df_temporal: pl.DataFrame) -> pl.DataFrame:
+    return (
+        df_temporal
+        .with_row_index(""index"")
+        .select([
+            pl.col(""index""),
+            pl.col(""date""),
+            pl.col(""index"").rolling_std_by(
+                pl.col(""date""),
+                window_size=""2h"",
+                closed=""both"",
+                ddof=1
+            ).alias(""rolling_row_std"")
+        ])
+        .sort(""index"")
+    )",,correct,closed='both' described loosely as 'includes both the current and previous rows'
+K15,LazyFrame_join_asof__d9874d339f__concise,kept,False,lazy,False,match,,"Sort the `gdp2` table by `country` and then by `date`, keeping all original columns in the order `country`, `date`, and `gdp`.","from datetime import date
+gdp_dates = pl.date_range(  # fmt: skip
+    date(2016, 1, 1), date(2020, 1, 1), ""1y"", eager=True
+)
+gdp2 = pl.LazyFrame(
+    {
+        ""country"": [""Germany""] * 5 + [""Netherlands""] * 5,
+        ""date"": pl.concat([gdp_dates, gdp_dates]),
+        ""gdp"": [4164, 4411, 4566, 4696, 4827, 784, 833, 914, 910, 909],
+    }
+)
+inputs = {""gdp2"": gdp2}","def solve(gdp2: pl.LazyFrame) -> pl.DataFrame:
+    gdp2 = gdp2.sort(""country"", ""date"")
+    return gdp2.collect()","def solve(gdp2: pl.LazyFrame) -> pl.DataFrame:
+    return gdp2.sort([""country"", ""date""]).select([""country"", ""date"", ""gdp""]).collect()",,correct,sort only (a setup step of a join_asof example); request matches the code
+K16,Expr_bin_starts_with__1f7a83d831__concise,kept,False,select_filter,False,match,,"Create a new table with columns `name`, `starts_with_lit`, and `starts_with_expr` in that order, where the boolean columns indicate if the binary `code` starts with the literal bytes `\xff` or the column `prefix` respectively.","colors = pl.DataFrame(
+    {
+        ""name"": [""black"", ""yellow"", ""blue""],
+        ""code"": [b""\x00\x00\x00"", b""\xff\xff\x00"", b""\x00\x00\xff""],
+        ""prefix"": [b""\x00"", b""\xff\x00"", b""\x00\x00""],
+    }
+)
+inputs = {""colors"": colors}","def solve(colors: pl.DataFrame) -> pl.DataFrame:
+    return (
+        colors.select(
+            ""name"",
+            pl.col(""code"").bin.starts_with(b""\xff"").alias(""starts_with_lit""),
+            pl.col(""code"")
+            .bin.starts_with(pl.col(""prefix""))
+            .alias(""starts_with_expr""),
+        )
+    )","import polars as pl
+
+def solve(colors: pl.DataFrame) -> pl.DataFrame:
+    return colors.select(
+        ""name"",
+        starts_with_lit=pl.col(""code"").bin.starts_with(b""\xff""),
+        starts_with_expr=pl.col(""code"").bin.starts_with(pl.col(""prefix""))
+    )",,correct,
+K17,Expr_list_agg__ab796a452f__descriptive,kept,False,list_struct,True,match,,"Please create a new table based on the input `df` that includes the original `a` column and a new column called `null_count`. For each row, calculate the total number of missing values contained within the list stored in the `a` column. The final output should have two columns in this specific order: `a` followed by `null_count`, with the row order matching the input.","df = pl.DataFrame({""a"": [[1, None], [42, 13], [None, None]]})
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(null_count=pl.col.a.list.agg(pl.element().null_count()))","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(
+        a=pl.col(""a""),
+        null_count=pl.col(""a"").list.agg(pl.element().is_null().sum())
+    )",,correct,
+K18,Expr_bin_starts_with__1f7a83d831__descriptive,kept,False,select_filter,False,match,,"Please generate a table containing the `name` column followed by two new boolean columns named `starts_with_lit` and `starts_with_expr`. The `starts_with_lit` column should be true if the binary value in the `code` column begins with the specific byte sequence `\xff`, and the `starts_with_expr` column should be true if the binary value in `code` begins with the value found in the `prefix` column for that same row. Ensure the final output includes the `name`, `starts_with_lit`, and `starts_with_expr` columns in that exact sequence.","colors = pl.DataFrame(
+    {
+        ""name"": [""black"", ""yellow"", ""blue""],
+        ""code"": [b""\x00\x00\x00"", b""\xff\xff\x00"", b""\x00\x00\xff""],
+        ""prefix"": [b""\x00"", b""\xff\x00"", b""\x00\x00""],
+    }
+)
+inputs = {""colors"": colors}","def solve(colors: pl.DataFrame) -> pl.DataFrame:
+    return (
+        colors.select(
+            ""name"",
+            pl.col(""code"").bin.starts_with(b""\xff"").alias(""starts_with_lit""),
+            pl.col(""code"")
+            .bin.starts_with(pl.col(""prefix""))
+            .alias(""starts_with_expr""),
+        )
+    )","def solve(colors: pl.DataFrame) -> pl.DataFrame:
+    return colors.select(
+        ""name"",
+        starts_with_lit=pl.col(""code"").bin.starts_with(b""\xff""),
+        starts_with_expr=pl.col(""code"").bin.starts_with(pl.col(""prefix""))
+    )",,correct,
+K19,Expr_first__16a612f287__concise,kept,False,select_filter,False,match,,Take the first non-null value from column `a` in the input table `df` and return it as a single-row table with a column named `a`.,"df = pl.DataFrame({""a"": [None, 1, 2]})
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.col(""a"").first(ignore_nulls=True))","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.col(""a"").first(ignore_nulls=True)).rename({""a"": ""a""})",,correct,
+K20,datetime__906d14ed26__descriptive,kept,False,datetime,False,match,,"Create a new column called `datetime` in the `df` table that represents a specific point in time using the year 2024 along with the values from the `month`, `day`, `hour`, and `minute` columns. Ensure this new column is formatted with the Australia/Sydney timezone. The final table should contain the original `month`, `day`, `hour`, and `minute` columns followed immediately by the new `datetime` column, maintaining the original row order.","df = pl.DataFrame(
+    {
+        ""month"": [1, 2, 3],
+        ""day"": [4, 5, 6],
+        ""hour"": [12, 13, 14],
+        ""minute"": [15, 30, 45],
+    }
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return (
+        df.with_columns(
+            pl.datetime(
+                2024,
+                pl.col(""month""),
+                pl.col(""day""),
+                pl.col(""hour""),
+                pl.col(""minute""),
+                time_zone=""Australia/Sydney"",
+            ).alias(""datetime"")
+        )
+    )","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.datetime(
+            year=2024,
+            month=pl.col(""month""),
+            day=pl.col(""day""),
+            hour=pl.col(""hour""),
+            minute=pl.col(""minute""),
+            time_zone=""Australia/Sydney""
+        ).alias(""datetime"")
+    )",,correct,
+R01,Expr_dt_add_business_days__b3f3d1deb4__concise,rejected,,datetime,False,wrong_values,"DataFrames are different (value mismatch for column ""result"")
+[left]: shape: (2,)
+Series: 'result' [date]
+[
+	2020-01-13
+	2020-01-14
+]
+[right]: shape: (2,)
+Series: 'result' [date]
+[
+	2020-01-10
+	2020-01-13
+]","Add a new column named `result` to the `df` table that contains the date five business days after each date in the `start` column, skipping weekends and the specific holidays of January 3rd and 6th, 2020. The final table should have the `start` column followed by the `result` column.","from datetime import date
+from datetime import date
+df = pl.DataFrame({""start"": [date(2020, 1, 1), date(2020, 1, 2)]})
+inputs = {""df"": df}","from datetime import date
+from datetime import date
+
+def solve(df: pl.DataFrame) -> pl.DataFrame:
+    holidays = [date(2020, 1, 3), date(2020, 1, 6)]
+    return (
+        df.with_columns(
+            result=pl.col(""start"").dt.add_business_days(5, holidays=holidays)
+        )
+    )","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col(""start"").dt.add_business_days(
+            n=5,
+            week_mask=(True, True, True, True, False, False, False),
+            holidays=[date(2020, 1, 3), date(2020, 1, 6)],
+            roll=""forward""
+        ).alias(""result"")
+    )",,correct,false rejection: solver passed a Mon-Thu week_mask
+R02,selectors_digit__08aaba7d7c__descriptive,rejected,,reshape,True,wrong_row_count,"got 4, expected 2","Start with the `df` table and calculate the total `value` for every distinct pair of `key` and `year`. After aggregating these sums, filter the result to keep only the `key` column. The final output should be a table with a single column named `key` containing the unique keys in the order they first appear in the aggregated data.","import polars as pl
+df = pl.DataFrame(
+    {
+        ""key"": [""aaa"", ""bbb"", ""aaa"", ""bbb"", ""bbb""],
+        ""year"": [2001, 2001, 2025, 2025, 2001],
+        ""value"": [-25, 100, 75, -15, -5],
+    }
+)
+inputs = {""df"": df}","import polars.selectors as cs
+
+def solve(df: pl.DataFrame) -> pl.DataFrame:
+    df = df.pivot(
+        values=""value"",
+        index=""key"",
+        on=""year"",
+        aggregate_function=""sum"",
+    )
+    return df.select(~cs.digit())","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return (
+        df
+        .group_by([""key"", ""year""])
+        .agg(pl.col(""value"").sum())
+        .select(pl.col(""key""))
+    )",,output_equivalent_mismatch,"request describes a group_by + key list; reference is pivot + ~cs.digit(), not described; rejection is right"
+R03,user_guide_expressions_user_defined_functions_py__6d22a2815e__concise,rejected,,group_by,True,error:TypeError,"`map` with `returns_scalar=False` must return a Series; found 'list'.
+
+If `returns_scalar` is set to `True`, a returned value can be a scalar value.
+
+This error occurred in the following expression:
+	col(""values"").python_udf()
+while evaluating this larger expression:
+	col(""values"").python_udf().impl","Group the rows in `df` by the `keys` column and calculate the difference between each `values` entry and the mean of that group, returning a table with `keys` and `values` columns where `values` contains the calculated differences as a list.","import polars as pl
+df = pl.DataFrame(
+    {
+        ""keys"": [""a"", ""a"", ""b"", ""b""],
+        ""values"": [10, 7, 1, 23],
+    }
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    def diff_from_mean(series):
+        # This will be very slow for non-trivial Series, since it's all Python
+        # code:
+        total = 0
+        for value in series:
+            total += value
+        mean = total / len(series)
+        return pl.Series([value - mean for value in series])
+    out = df.group_by(""keys"").agg(
+        pl.col(""values"").map_batches(diff_from_mean, return_dtype=pl.Float64)
+    )
+    return out","import polars as pl
+
+def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.group_by(""keys"").agg(
+        pl.col(""values"").map_batches(
+            lambda s: (s - s.mean()).to_list(),
+            return_dtype=pl.List(pl.Float64)
+        ).alias(""values"")
+    )",,correct,false rejection: map_batches misuse (returns list)
+R04,LazyFrame_getitem__18e1cd92d6__descriptive,rejected,,lazy,False,error:SyntaxError,"invalid syntax (<solution>, line 2)","Please extract the rows from the input table `lf` that appear at even indices, starting with the first row. The resulting table should contain only the columns `a` and `b`, listed in that specific order. Ensure the final output preserves the original row order for the selected even-indexed entries.","lf = pl.LazyFrame({""a"": [1, 2, 3], ""b"": [4, 5, 6]})
+inputs = {""lf"": lf}","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
+    return lf[::2].collect()","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
+    return lf.filter(pl.int_range(0, pl.len()).%2 == 0).select([""a"", ""b""]).collect()",,correct,false rejection: solver SyntaxError
+R05,Expr_arg_min__19f512b470__descriptive,rejected,,select_filter,False,error:AttributeError,'DataFrame' object has no attribute 'to_frame',"Take the input table `df` and identify the row index where the value in column `a` is at its minimum. Create a new table with exactly one row and one column named `a` that contains this index value, ensuring the column appears first.","df = pl.DataFrame(
+    {
+        ""a"": [20, 10, 30],
+    }
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.col(""a"").arg_min())","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.col(""a"").arg_min().alias(""a"")).to_frame().select(pl.col(""a""))",,correct,false rejection: solver calls DataFrame.to_frame()
+R06,head__d5da4ec49a__concise,rejected,,select_filter,False,wrong_row_count,"got 1, expected 3",Take the first row of the input table `df` and return only the value from column `a`.,"df = pl.DataFrame(
+    {
+        ""a"": [1, 8, 3],
+        ""b"": [4, 5, 2],
+        ""c"": [""foo"", ""bar"", ""foo""],
+    }
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.head(""a""))","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(""a"").head(1)",,wrong,"pl.head('a') returns the first 10 rows (3 here), not the first row"
+R07,DataFrame_rolling__8406b84730__concise,rejected,,window,False,error:TypeError,'ExprListNameSpace' object is not callable,"For each row in `df`, create a new column `aggregated` containing the list of `int` values from the current row and the two preceding rows based on the `int` column, keeping the original `int` column and ordering the result by `int`.","df = pl.DataFrame({""int"": [0, 4, 5, 6, 8], ""value"": [1, 4, 2, 4, 1]})
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.rolling(""int"", period=""3i"").agg(pl.col(""int"").alias(""aggregated""))","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.sort(""int"").rolling(
+        index_column=""int"",
+        period=""3i"",
+        offset=""1i"",
+        closed=""right""
+    ).agg(pl.col(""value"").list()).with_columns(
+        pl.col(""value"").list().alias(""aggregated"")
+    )",,wrong,"period='3i' is an integer window (int-3, int], not 'the current row and the two preceding rows'"
+R08,Series_set__9dbd86a464__concise,rejected,,select_filter,True,error:TypeError,"passing Expr objects to the DataFrame constructor is not supported
+
+Hint: Try evaluating the expression first using `select`, or if you meant to create an Object column containing expressions, pass a list of Expr objects instead.","Create a single column named `literal` containing the values from `s`, but replace the value 2 with 10.","s = pl.Series(""a"", [1, 2, 3])
+inputs = {""s"": s}","def solve(s: pl.Series) -> pl.DataFrame:
+    return (
+        s.to_frame().select(
+            pl.when(pl.col(""a"") == 2).then(10).otherwise(pl.col(""a""))
+        )
+    )","def solve(s: pl.Series) -> pl.DataFrame:
+    return pl.DataFrame({""literal"": pl.when(s == 2).then(10).otherwise(s)})",,correct,false rejection: solver passed an Expr to the DataFrame constructor
+R09,DataFrame_join_asof__8f21b04269__descriptive,rejected,,join,True,error:ColumnNotFoundError,"unable to find column ""date_right""; valid columns: [""date"", ""population"", ""gdp""]","For every row in the `population` table, find the latest date in the `gdp` table that is less than or equal to the current population date. Attach the GDP value and that specific date from the `gdp` table to the corresponding population row. The final result should contain four columns named `date`, `population`, `date_right`, and `gdp` in that exact sequence, with the rows sorted by the `date` column.","from datetime import date
+gdp = pl.DataFrame(
+    {
+        ""date"": pl.date_range(
+            date(2016, 1, 1),
+            date(2020, 1, 1),
+            ""1y"",
+            eager=True,
+        ),
+        ""gdp"": [4164, 4411, 4566, 4696, 4827],
+    }
+)
+population = pl.DataFrame(
+    {
+        ""date"": [date(2016, 3, 1), date(2018, 8, 1), date(2019, 1, 1)],
+        ""population"": [82.19, 82.66, 83.12],
+    }
+)
+inputs = {""gdp"": gdp, ""population"": population}","def solve(gdp: pl.DataFrame, population: pl.DataFrame) -> pl.DataFrame:
+    population = population.sort(""date"")
+    return population.join_asof(gdp, on=""date"", strategy=""backward"", coalesce=False)","def solve(gdp: pl.DataFrame, population: pl.DataFrame) -> pl.DataFrame:
+    return (
+        population
+        .join_asof(
+            gdp,
+            left_on=""date"",
+            right_on=""date"",
+            strategy=""backward"",
+            suffix=""_right"",
+        )
+        .select(
+            ""date"",
+            ""population"",
+            ""date_right"",
+            ""gdp"",
+        )
+        .sort(""date"")
+    )",,correct,false rejection: same as the join_asof canary (solver omits coalesce=False)
+R10,LazyFrame_with_columns__9f64ae1c42__concise,rejected,,lazy,False,wrong_columns,"got ['a', 'b', 'c', 'a_sq', 'b_half', 'not_c'], expected ['a', 'b', 'c', 'a^2', 'b/2', 'not c']","Take the input table `lf` and add three new columns: `a^2` containing the square of `a`, `b/2` containing half of `b`, and `not c` containing the opposite boolean value of `c`. Keep the original columns `a`, `b`, and `c` in their original positions, followed by the new columns in the order `a^2`, `b/2`, and `not c`.","lf = pl.LazyFrame(
+    {
+        ""a"": [1, 2, 3, 4],
+        ""b"": [0.5, 4, 10, 13],
+        ""c"": [True, True, False, True],
+    }
+)
+inputs = {""lf"": lf}","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
+    return (
+        lf.with_columns(
+            [
+                (pl.col(""a"") ** 2).alias(""a^2""),
+                (pl.col(""b"") / 2).alias(""b/2""),
+                (pl.col(""c"").not_()).alias(""not c""),
+            ]
+        ).collect()
+    )","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
+    return lf.with_columns(
+        a_sq=pl.col(""a"") ** 2,
+        b_half=pl.col(""b"") / 2,
+        not_c=~pl.col(""c"")
+    ).collect()",,correct,false rejection: solver ignored the requested column names
+R11,map_groups__6f5921f4a5__descriptive,rejected,,group_by,True,wrong_row_count,"got 3, expected 2","Start with the input table `df` and organize the data by the `group` column. For each group, compute a new value for every row by taking the ratio of that row's 'a' value to the total sum of 'a' values within the same group, and then add the corresponding 'b' value to this ratio. Collect these calculated values into a list for each group and place them in a new column called `my_custom_aggregation`. The final output should contain the `group` column followed by the `my_custom_aggregation` column, with the rows sorted in ascending order by the group.","df = pl.DataFrame(
+    {
+        ""group"": [1, 1, 2],
+        ""a"": [1, 3, 3],
+        ""b"": [5, 6, 7],
+    }
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return (
+        (
+            df.group_by(""group"").agg(
+                pl.map_groups(
+                    exprs=[""a"", ""b""],
+                    function=lambda list_of_series: (
+                        list_of_series[0] / list_of_series[0].sum() + list_of_series[1]
+                    ),
+                    return_dtype=pl.Float64,
+                ).alias(""my_custom_aggregation"")
+            )
+        ).sort(""group"")
+    )","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return (
+        df
+        .with_columns(
+            pl.col(""a"").sum().over(""group"").alias(""group_sum_a"")
+        )
+        .with_columns(
+            (pl.col(""a"") / pl.col(""group_sum_a"") + pl.col(""b"")).over(""group"").alias(""my_custom_aggregation"")
+        )
+        .select(""group"", ""my_custom_aggregation"")
+        .sort(""group"")
+    )",,correct,false rejection: solver did not aggregate into a list
+R12,Expr_str_contains__1558fcc06d__descriptive,rejected,,string,False,wrong_values,"DataFrames are different (value mismatch for column ""insensitive_match"")
+[left]: shape: (3,)
+Series: 'insensitive_match' [bool]
+[
+	true
+	false
+	false
+]
+[right]: shape: (3,)
+Series: 'insensitive_match' [bool]
+[
+	true
+	true
+	true
+]","Create a new table by taking the existing `other` table and adding two additional boolean columns based on the text in the `s` column. The first new column, `default_match`, should be true only when the string explicitly contains the uppercase sequence 'AA'. The second new column, `insensitive_match`, should be true whenever the string contains 'AA' regardless of whether the letters are uppercase or lowercase. Ensure the final output lists the columns in the order: `s`, `default_match`, and `insensitive_match`.","other = pl.DataFrame({""s"": [""AAA"", ""aAa"", ""aaa""]})
+inputs = {""other"": other}","def solve(other: pl.DataFrame) -> pl.DataFrame:
+    return (
+        other.with_columns(
+            default_match=pl.col(""s"").str.contains(""AA""),
+            insensitive_match=pl.col(""s"").str.contains(""(?i)AA""),
+        )
+    )","def solve(other: pl.DataFrame) -> pl.DataFrame:
+    return other.with_columns(
+        default_match=pl.col(""s"").str.contains(""AA"", literal=True),
+        insensitive_match=pl.col(""s"").str.contains(""AA"", literal=False, strict=False)
+    ).select([""s"", ""default_match"", ""insensitive_match""])",,correct,false rejection: solver does not know the (?i) flag
+R13,Expr_over__e21c434c3c__descriptive,rejected,,window,True,error:AttributeError,'str' object has no attribute 'keys',"For every unique value in column `a`, identify the first two entries from column `c` and repeat those values to create new rows. The resulting table should have a single column named `c_first_2` containing these values in the order they appear in the original data, grouped first by `a` and then by the position within the first two items.","df = pl.DataFrame(
+    {
+        ""a"": [""a"", ""a"", ""b"", ""b"", ""b""],
+        ""b"": [1, 2, 3, 5, 3],
+        ""c"": [5, 4, 3, 2, 1],
+    }
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return (
+        df.select(
+            c_first_2=pl.col(""c"").head(2).over(""a"", mapping_strategy=""explode"")
+        )
+    )","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return (
+        df
+        .with_columns(
+            pl.col(""c"")
+            .over(""a"")
+            .rank(method=""ordinal"")
+            .alias(""rank"")
+        )
+        .filter(pl.col(""rank"") <= 2)
+        .select(""c"")
+        .rename(""c_first_2"")
+    )",,ambiguous,'repeat those values to create new rows' does not clearly describe head(2).over(mapping_strategy='explode')
+R14,DataFrame_shift__d22ed69365__concise,rejected,,window,False,wrong_values,"DataFrames are different (value mismatch for column ""a"")
+[left]: shape: (4,)
+Series: 'a' [i128]
+[
+	null
+	null
+	1
+	2
+]
+[right]: shape: (4,)
+Series: 'a' [i128]
+[
+	3
+	4
+	null
+	null
+]","Take the input table `df` and shift all rows down by two positions, filling the new top rows with nulls, keeping the column order as `a` followed by `b`.","df = pl.DataFrame(
+    {
+        ""a"": [1, 2, 3, 4],
+        ""b"": [5, 6, 7, 8],
+    }
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.shift(-2)","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.shift(2)",,wrong,"shift(-2) shifts up and fills the bottom; the request says down, with nulls on top"
+R15,std__fdc475e91f__descriptive,rejected,,select_filter,False,error:ColumnNotFoundError,"""std"" not found",Compute the standard deviation for the values in the `a` column of the input table `df`. The final output should be a table with exactly one row and one column. Ensure the single output column is named `a` and appears in that order.,"df = pl.DataFrame(
+    {
+        ""a"": [1, 8, 3],
+        ""b"": [4, 5, 2],
+        ""c"": [""foo"", ""bar"", ""foo""],
+    }
+)
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.std(""a""))","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(pl.col(""a"").std()).rename({""std"": ""a""})",,correct,false rejection: solver renames a non-existent 'std' column
+R16,Expr_to_physical__a8cc5cc394__concise,rejected,,select_filter,True,wrong_values,"DataFrames are different (dtypes do not match, differences only)
+[left]: [(""vals"", String)]
+[right]: [(""vals"", Categorical)]","Create a new table with two columns: `vals` as a categorical type and `vals_physical` as its underlying integer representation, keeping the original row order.","other = pl.DataFrame({""vals"": [""a"", ""x"", None, ""a""]})
+inputs = {""other"": other}","def solve(other: pl.DataFrame) -> pl.DataFrame:
+    return (
+        other.with_columns(
+            pl.col(""vals"").cast(pl.Categorical),
+            pl.col(""vals"")
+            .cast(pl.Categorical)
+            .to_physical()
+            .alias(""vals_physical""),
+        )
+    )","def solve(other: pl.DataFrame) -> pl.DataFrame:
+    return other.select(
+        vals=other[""vals""],
+        vals_physical=other[""vals""].cast(pl.Categorical).to_physical()
+    )",,correct,false rejection: solver did not cast vals to Categorical
+R17,int_ranges__2c05406663__concise,rejected,,select_filter,False,error:ShapeError,non-scalar stop passed to `int_range`,Create a new table with the `end` column followed by an `int_range` column that contains a list of integers from 0 up to and including the value in `end` for each row.,"df = pl.DataFrame({""start"": [1, -1], ""end"": [3, 2]})
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.select(""end"", int_range=pl.int_ranges(""end""))","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col(""end"").alias(""end""),
+        pl.int_range(pl.lit(0), pl.col(""end"") + 1, dtype=pl.Int64).alias(""int_range"")
+    )",,wrong,int_ranges('end') excludes end; the request says 'up to and including'
+R18,LazyFrame_fill_null__f7bf5cfad8__concise,rejected,,lazy,False,error:TypeError,LazyFrame.fill_null() got an unexpected keyword argument 'subset',"Take the input table `lf` and replace any missing values in columns `a` and `b` with 99, then return the result as a table with columns `a` and `b` in that order.","lf = pl.LazyFrame(
+    {
+        ""a"": [1, 2, None, 4],
+        ""b"": [0.5, 4, None, 13],
+    }
+)
+inputs = {""lf"": lf}","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
+    return lf.fill_null(99).collect()","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
+    return lf.fill_null(99, subset=[""a"", ""b""]).select([""a"", ""b""]).collect()",,correct,false rejection: LazyFrame.fill_null has no subset argument
+R19,LazyFrame_join_asof__da4d290a74__concise,rejected,,join,True,wrong_values,"DataFrames are different (value mismatch for column ""gdp"")
+[left]: shape: (6,)
+Series: 'gdp' [i128]
+[
+	4164
+	4566
+	4566
+	784
+	914
+	914
+]
+[right]: shape: (6,)
+Series: 'gdp' [i128]
+[
+	4164
+	4696
+	4696
+	784
+	910
+	910
+]","Join the `pop2` table with the `gdp2` table by matching the `country` and finding the nearest available `date` for each population record, then return the `country`, `date`, `population`, and `gdp` columns in that order.","from datetime import date
+gdp_dates = pl.date_range(  # fmt: skip
+    date(2016, 1, 1), date(2020, 1, 1), ""1y"", eager=True
+)
+gdp2 = pl.LazyFrame(
+    {
+        ""country"": [""Germany""] * 5 + [""Netherlands""] * 5,
+        ""date"": pl.concat([gdp_dates, gdp_dates]),
+        ""gdp"": [4164, 4411, 4566, 4696, 4827, 784, 833, 914, 910, 909],
+    }
+)
+pop2 = pl.LazyFrame(
+    {
+        ""country"": [""Germany""] * 3 + [""Netherlands""] * 3,
+        ""date"": [
+            date(2016, 3, 1),
+            date(2018, 8, 1),
+            date(2019, 1, 1),
+            date(2016, 3, 1),
+            date(2018, 8, 1),
+            date(2019, 1, 1),
+        ],
+        ""population"": [82.19, 82.66, 83.12, 17.11, 17.32, 17.40],
+    }
+)
+inputs = {""gdp2"": gdp2, ""pop2"": pop2}","def solve(gdp2: pl.LazyFrame, pop2: pl.LazyFrame) -> pl.DataFrame:
+    gdp2 = gdp2.sort(""country"", ""date"")
+    pop2 = pop2.sort(""country"", ""date"")
+    return pop2.join_asof(gdp2, by=""country"", on=""date"", strategy=""nearest"").collect()","def solve(gdp2: pl.LazyFrame, pop2: pl.LazyFrame) -> pl.DataFrame:
+    return (
+        pop2
+        .join_asof(
+            gdp2,
+            left_on=""date"",
+            right_on=""date"",
+            by=""country"",
+            strategy=""backward"",
+            allow_exact_matches=False,
+        )
+        .select([""country"", ""date"", ""population"", ""gdp""])
+        .collect()
+    )",,correct,false rejection: request says 'nearest'; solver used backward
+R20,Expr_cum_max__b594a181ce__descriptive,rejected,,window,True,error:ColumnNotFoundError,"unable to find column ""cum_max""; valid columns: [""values""]","Create a new table that includes the original `values` column followed by two new columns named `cum_max` and `cum_max_all_filled`. The `cum_max` column should show the cumulative maximum of the `values` as you move down the rows, leaving nulls where the input is null. The `cum_max_all_filled` column should calculate the same cumulative maximum but ensure that any null results are replaced with the most recent non-null value found above them.","df = pl.DataFrame({""values"": [None, 10, None, 8, 9, None, 16, None]})
+inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return (
+        df.with_columns(
+            pl.col(""values"").cum_max().alias(""cum_max""),
+            pl.col(""values"")
+            .cum_max()
+            .fill_null(strategy=""forward"")
+            .alias(""cum_max_all_filled""),
+        )
+    )","def solve(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col(""values"").cum_max().alias(""cum_max""),
+        pl.col(""values"").cum_max().fill_null(pl.col(""cum_max"").shift(1).fill_null(pl.col(""values"").shift(1).fill_null(0))).alias(""cum_max_all_filled"")
+    )",,correct,false rejection: solver referenced cum_max inside the same with_columns

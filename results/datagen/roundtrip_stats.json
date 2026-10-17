@@ -1,0 +1,712 @@
+{
+  "solver_model": "Qwen/Qwen3.5-9B",
+  "solver_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "prompt_template_sha256": "220286ef6aa46ec318dbbd647dcf6aabf09bc97443df6b327d4c6d1903ea103a",
+  "max_new_tokens": 768,
+  "decoding": "greedy",
+  "context": "oracle: the example's source doc chunk(s) without the example (no Examples section / own code block), RAG prompt template",
+  "check": "sandbox output == reference output under the candidate's own check flags (as the benchmark)",
+  "answer_in_context": {
+    "n_candidates": 1180,
+    "with_answer_in_context": 0,
+    "ids": []
+  },
+  "n_without_doc_context": 2,
+  "gpu": null,
+  "batch_size_source": "none (checkpoint complete)",
+  "batch_sizes_used": [
+    5,
+    16
+  ],
+  "this_session": {
+    "n_resumed": 2293,
+    "n_written": 0,
+    "oom_events": [],
+    "generation_wall_time_s": 0.0,
+    "check_wall_time_s": 138.3
+  },
+  "generation_time_s_all_sessions": 1784.2,
+  "canaries": {
+    "n": 6,
+    "passed": 5,
+    "all_passed": false,
+    "results": [
+      {
+        "id": "canary:selectors_struct__cf94837ba5__concise",
+        "label": "output_equivalent_mismatch",
+        "expected": "keep",
+        "actual": "keep",
+        "reason": "match",
+        "passed": true
+      },
+      {
+        "id": "canary:when__a6fc5bc1e2__descriptive",
+        "label": "wrong",
+        "expected": "reject",
+        "actual": "reject",
+        "reason": "error:InvalidOperationError",
+        "passed": true
+      },
+      {
+        "id": "canary:user_guide_expressions_folds_py__48ddc86538__concise",
+        "label": "ambiguous",
+        "expected": "reject",
+        "actual": "reject",
+        "reason": "wrong_columns",
+        "passed": true
+      },
+      {
+        "id": "canary:max_horizontal__c69237b6f3__concise",
+        "label": "correct",
+        "expected": "keep",
+        "actual": "keep",
+        "reason": "match",
+        "passed": true
+      },
+      {
+        "id": "canary:LazyFrame_join_asof__489e1d4bd9__descriptive",
+        "label": "correct",
+        "expected": "keep",
+        "actual": "reject",
+        "reason": "error:ColumnNotFoundError",
+        "passed": false
+      },
+      {
+        "id": "canary:DataFrame_drop__5b26fe80fe__descriptive",
+        "label": "correct",
+        "expected": "keep",
+        "actual": "keep",
+        "reason": "match",
+        "passed": true
+      }
+    ]
+  },
+  "n": 2287,
+  "kept": 1428,
+  "retention": 0.624,
+  "reasons": {
+    "match": 1428,
+    "error:AttributeError": 170,
+    "wrong_values": 167,
+    "error:TypeError": 123,
+    "wrong_row_count": 71,
+    "wrong_columns": 68,
+    "error:ColumnNotFoundError": 57,
+    "error:InvalidOperationError": 46,
+    "wrong_row_order": 38,
+    "error:ShapeError": 32,
+    "error:DuplicateError": 20,
+    "error:ComputeError": 16,
+    "error:ValueError": 14,
+    "error:SchemaError": 10,
+    "error:SyntaxError": 8,
+    "wrong_column_order": 5,
+    "error:AttributeRemovedError": 4,
+    "error:PanicException": 3,
+    "error:IndentationError": 2,
+    "error:StructFieldNotFoundError": 2,
+    "error:NameError": 1,
+    "error:OutOfBoundsError": 1,
+    "error:ArgumentRemovedError": 1
+  },
+  "by_source": {
+    "docstring": {
+      "n": 2092,
+      "kept": 1342,
+      "retention": 0.641
+    },
+    "user_guide": {
+      "n": 195,
+      "kept": 86,
+      "retention": 0.441
+    }
+  },
+  "by_style": {
+    "concise": {
+      "n": 1109,
+      "kept": 693,
+      "retention": 0.625
+    },
+    "descriptive": {
+      "n": 1178,
+      "kept": 735,
+      "retention": 0.624
+    }
+  },
+  "by_category": {
+    "datetime": {
+      "n": 129,
+      "kept": 89,
+      "retention": 0.69
+    },
+    "group_by": {
+      "n": 77,
+      "kept": 26,
+      "retention": 0.338
+    },
+    "join": {
+      "n": 105,
+      "kept": 70,
+      "retention": 0.667
+    },
+    "lazy": {
+      "n": 187,
+      "kept": 129,
+      "retention": 0.69
+    },
+    "list_struct": {
+      "n": 175,
+      "kept": 138,
+      "retention": 0.789
+    },
+    "reshape": {
+      "n": 75,
+      "kept": 34,
+      "retention": 0.453
+    },
+    "select_filter": {
+      "n": 1140,
+      "kept": 726,
+      "retention": 0.637
+    },
+    "string": {
+      "n": 194,
+      "kept": 118,
+      "retention": 0.608
+    },
+    "window": {
+      "n": 205,
+      "kept": 98,
+      "retention": 0.478
+    }
+  },
+  "by_multi_step": {
+    "False": {
+      "n": 1651,
+      "kept": 1147,
+      "retention": 0.695
+    },
+    "True": {
+      "n": 636,
+      "kept": 281,
+      "retention": 0.442
+    }
+  },
+  "by_check_flags": {
+    "ignore_row_order": {
+      "n": 10,
+      "kept": 0,
+      "retention": 0.0
+    },
+    "row_order_checked": {
+      "n": 2277,
+      "kept": 1428,
+      "retention": 0.627
+    }
+  },
+  "both_styles_of_a_candidate": {
+    "candidates_with_both": 1107,
+    "both_kept": 581,
+    "one_kept": 233,
+    "none_kept": 293
+  },
+  "decision_rules": {
+    "reshape_retention": 0.453,
+    "reshape_below_half_overall": false,
+    "error_share_of_rejections": 0.594,
+    "retry_with_error_message": false,
+    "audit": "manual: label audit_kept; >= 3/20 wrong -> filter insufficient"
+  },
+  "api_mismatch": {
+    "report_only": "kept requests whose solver code uses none of the reference's non-core API names (static name match); not a filter",
+    "n_kept_with_non_core_names": 1394,
+    "count": 226,
+    "share": 0.162,
+    "by_category": {
+      "datetime": {
+        "n_kept": 89,
+        "api_mismatch": 7
+      },
+      "group_by": {
+        "n_kept": 26,
+        "api_mismatch": 2
+      },
+      "join": {
+        "n_kept": 70,
+        "api_mismatch": 1
+      },
+      "lazy": {
+        "n_kept": 125,
+        "api_mismatch": 20
+      },
+      "list_struct": {
+        "n_kept": 138,
+        "api_mismatch": 8
+      },
+      "reshape": {
+        "n_kept": 34,
+        "api_mismatch": 1
+      },
+      "select_filter": {
+        "n_kept": 696,
+        "api_mismatch": 184
+      },
+      "string": {
+        "n_kept": 118,
+        "api_mismatch": 3
+      },
+      "window": {
+        "n_kept": 98,
+        "api_mismatch": 0
+      }
+    }
+  },
+  "audit_kept": [
+    {
+      "id": "user_guide_expressions_expression_expansion_py__cfb0d95046__descriptive",
+      "category": "select_filter",
+      "instruction": "From the input table `df`, I need a new table that includes only the columns for the stock ticker, the company name, the day's high price, and the year's high price. Please ensure the final output lists these columns in the exact sequence of `ticker`, `company_name`, `day_high`, and `year_high`, keeping all original rows intact.",
+      "reference_solution": "import polars.selectors as cs\n\ndef solve(df: pl.DataFrame) -> pl.DataFrame:\n    result = df.select(cs.string() | cs.ends_with(\"_high\"))\n    return result",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(\n        pl.col(\"ticker\"),\n        pl.col(\"company_name\"),\n        pl.col(\"day_high\"),\n        pl.col(\"year_high\"),\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": true,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_struct_field__527c79b5bb__descriptive",
+      "category": "list_struct",
+      "instruction": "Take the input table `df` and extract the values from the `aaa` column and the `bbb` column. Combine these two columns into a single result table where the `aaa` column appears first, followed immediately by the `bbb` column, preserving the original row order.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    df = df.select(pl.struct(\"aaa\", \"bbb\", \"ccc\", \"ddd\").alias(\"struct_col\"))\n    return df.select(pl.col(\"struct_col\").struct.field(\"aaa\", \"bbb\"))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(\"aaa\", \"bbb\")",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": true,
+      "audit_label": null
+    },
+    {
+      "id": "selectors_time__0d800a17e5__descriptive",
+      "category": "select_filter",
+      "instruction": "Take the input table `df` and extract just the time values from the column labeled `tm`. The resulting table should contain only this one column, named `tm`, and the rows should appear in the same order as they were in the original input.",
+      "reference_solution": "import polars.selectors as cs\n\ndef solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(cs.time())",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"tm\"))",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": true,
+      "audit_label": null
+    },
+    {
+      "id": "union__b33b82fce9__descriptive",
+      "category": "select_filter",
+      "instruction": "Create a new table by placing the columns from `df_h1` next to the columns from `df_h2` so that every row from both inputs appears together. The resulting table should contain five columns in this specific sequence: `l1`, `l2`, `r1`, `r2`, and `r3`. Ensure that the data from the first input aligns with the first two columns and the data from the second input aligns with the last three columns.",
+      "reference_solution": "def solve(df_h1: pl.DataFrame, df_h2: pl.DataFrame) -> pl.DataFrame:\n    return pl.union([df_h1, df_h2], how=\"horizontal_extend\")",
+      "solver_code": "def solve(df_h1: pl.DataFrame, df_h2: pl.DataFrame) -> pl.DataFrame:\n    return pl.concat([df_h1, df_h2], how=\"horizontal\")",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": true,
+      "audit_label": null
+    },
+    {
+      "id": "DataFrame_drop__5b26fe80fe__descriptive",
+      "category": "select_filter",
+      "instruction": "Start with the input table `df` and remove every column that contains numbers. The final result should be a table with only one column named `ham` containing the string values a, b, and c in that specific order.",
+      "reference_solution": "import polars.selectors as cs\n\ndef solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.drop(cs.numeric())",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"ham\"))",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": true,
+      "audit_label": null
+    },
+    {
+      "id": "last__6667d2f96b__concise",
+      "category": "select_filter",
+      "instruction": "Please return a new table containing only the last column from the input table `df`, keeping all rows in their original order.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.last())",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.last())",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "LazyFrame_match_to_schema__f83a2b62f2__descriptive",
+      "category": "lazy",
+      "instruction": "Start with the input table `other` which contains a single column `a` with integer values. Create a new column named `b` by taking the values from column `a` and casting them to strings. The final output should be a table with exactly two columns, `a` and `b`, appearing in that specific order, where `a` remains as integers and `b` contains the string representations of those same numbers.",
+      "reference_solution": "def solve(other: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        other\n        .match_to_schema(\n            {\"a\": pl.Int64, \"b\": pl.String},\n            missing_columns={\"b\": pl.col.a.cast(pl.String)},\n        )\n        .collect()\n    )",
+      "solver_code": "def solve(other: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        other\n        .with_columns(b=pl.col(\"a\").cast(pl.Utf8))\n        .select(\"a\", \"b\")\n        .collect()\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "LazyFrame_explode__1c769a320f__concise",
+      "category": "reshape",
+      "instruction": "Take the input table `lf` and expand the `numbers` column so that each number in a list becomes its own row, keeping the associated `letters` value, resulting in a table with `letters` and `numbers` columns in that order.",
+      "reference_solution": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.explode(\"numbers\").collect()",
+      "solver_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.select(\"letters\", \"numbers\").explode(\"numbers\").collect()",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_str_starts_with__5f04484856__concise",
+      "category": "string",
+      "instruction": "Filter the `df` table to keep only rows where the `fruits` column starts with 'app', and return the `fruits` and `prefix` columns in that order.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"fruits\").str.starts_with(\"app\"))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"fruits\").str.starts_with(\"app\")).select([\"fruits\", \"prefix\"])",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_list_len__1deca37110__descriptive",
+      "category": "list_struct",
+      "instruction": "Take the input table `df` and create a new column called `len` that contains the number of elements found in each list stored in the `a` column. The final result should have two columns in this specific order: `a` followed by `len`, with the row count matching the original input.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(len=pl.col(\"a\").list.len())",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"a\").list.len().alias(\"len\")).select(\"a\", \"len\")",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "LazyGroupBy_median__9598fc6e37__concise",
+      "category": "group_by",
+      "instruction": "Take the input table `ldf`, group the rows by the `d` column, and calculate the median for the `a` and `b` columns within each group. Return the result with columns `d`, `a`, and `b` in that order, keeping the original sequence of groups.",
+      "reference_solution": "def solve(ldf: pl.LazyFrame) -> pl.DataFrame:\n    return ldf.group_by(\"d\", maintain_order=True).median().collect()",
+      "solver_code": "def solve(ldf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        ldf\n        .group_by(\"d\")\n        .agg(\n            a=pl.col(\"a\").median(),\n            b=pl.col(\"b\").median()\n        )\n        .sort(\"d\")\n        .collect()\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_replace_strict__92b9cdc7c5__concise",
+      "category": "select_filter",
+      "instruction": "Add a new column named `replaced` to the existing `df` table that maps the values in column `a` to their corresponding integers (x to 1, y to 2, z to 3), keeping the original `a` column first.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    mapping = {\"x\": 1, \"y\": 2, \"z\": 3}\n    return df.with_columns(replaced=pl.col(\"a\").replace_strict(mapping))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"a\").replace_strict({\"x\": 1, \"y\": 2, \"z\": 3}, default=0).alias(\"replaced\")\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "user_guide_transformations_joins_py__1d50e16009__concise",
+      "category": "join",
+      "instruction": "Join the `df_trades` table with the `df_quotes` table using the `time` column and `stock` column as keys, matching each trade to the most recent quote within a 1-minute window before or at the trade time, and return the `time`, `stock`, `trade`, and `quote` columns in that order.",
+      "reference_solution": "def solve(df_trades: pl.DataFrame, df_quotes: pl.DataFrame) -> pl.DataFrame:\n    df_asof_tolerance_join = df_trades.join_asof(\n        df_quotes, on=\"time\", by=\"stock\", tolerance=\"1m\", check_sortedness=False\n    )\n    return df_asof_tolerance_join",
+      "solver_code": "def solve(df_trades: pl.DataFrame, df_quotes: pl.DataFrame) -> pl.DataFrame:\n    return df_trades.join_asof(\n        df_quotes,\n        on=\"time\",\n        by=\"stock\",\n        tolerance=\"1m\",\n        suffix=\"_right\",\n    ).select([\"time\", \"stock\", \"trade\", \"quote\"])",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_rolling_std_by__d1f01bab90__descriptive",
+      "category": "window",
+      "instruction": "Start by adding a sequential row index to the `df_temporal` table. Next, compute the rolling standard deviation of this new index, using the `date` column to define a 2-hour window that includes both the current and previous rows. The final table should contain three columns in this specific order: `index`, `date`, and `rolling_row_std`, with the rows sorted by the index value.",
+      "reference_solution": "def solve(df_temporal: pl.DataFrame) -> pl.DataFrame:\n    df_temporal = df_temporal.with_row_index()\n    return (\n        df_temporal.with_columns(\n            rolling_row_std=pl.col(\"index\").rolling_std_by(\n                \"date\", window_size=\"2h\", closed=\"both\"\n            )\n        )\n    )",
+      "solver_code": "def solve(df_temporal: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df_temporal\n        .with_row_index(\"index\")\n        .select([\n            pl.col(\"index\"),\n            pl.col(\"date\"),\n            pl.col(\"index\").rolling_std_by(\n                pl.col(\"date\"),\n                window_size=\"2h\",\n                closed=\"both\",\n                ddof=1\n            ).alias(\"rolling_row_std\")\n        ])\n        .sort(\"index\")\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "LazyFrame_join_asof__d9874d339f__concise",
+      "category": "lazy",
+      "instruction": "Sort the `gdp2` table by `country` and then by `date`, keeping all original columns in the order `country`, `date`, and `gdp`.",
+      "reference_solution": "def solve(gdp2: pl.LazyFrame) -> pl.DataFrame:\n    gdp2 = gdp2.sort(\"country\", \"date\")\n    return gdp2.collect()",
+      "solver_code": "def solve(gdp2: pl.LazyFrame) -> pl.DataFrame:\n    return gdp2.sort([\"country\", \"date\"]).select([\"country\", \"date\", \"gdp\"]).collect()",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_bin_starts_with__1f7a83d831__concise",
+      "category": "select_filter",
+      "instruction": "Create a new table with columns `name`, `starts_with_lit`, and `starts_with_expr` in that order, where the boolean columns indicate if the binary `code` starts with the literal bytes `\\xff` or the column `prefix` respectively.",
+      "reference_solution": "def solve(colors: pl.DataFrame) -> pl.DataFrame:\n    return (\n        colors.select(\n            \"name\",\n            pl.col(\"code\").bin.starts_with(b\"\\xff\").alias(\"starts_with_lit\"),\n            pl.col(\"code\")\n            .bin.starts_with(pl.col(\"prefix\"))\n            .alias(\"starts_with_expr\"),\n        )\n    )",
+      "solver_code": "import polars as pl\n\ndef solve(colors: pl.DataFrame) -> pl.DataFrame:\n    return colors.select(\n        \"name\",\n        starts_with_lit=pl.col(\"code\").bin.starts_with(b\"\\xff\"),\n        starts_with_expr=pl.col(\"code\").bin.starts_with(pl.col(\"prefix\"))\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_list_agg__ab796a452f__descriptive",
+      "category": "list_struct",
+      "instruction": "Please create a new table based on the input `df` that includes the original `a` column and a new column called `null_count`. For each row, calculate the total number of missing values contained within the list stored in the `a` column. The final output should have two columns in this specific order: `a` followed by `null_count`, with the row order matching the input.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(null_count=pl.col.a.list.agg(pl.element().null_count()))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(\n        a=pl.col(\"a\"),\n        null_count=pl.col(\"a\").list.agg(pl.element().is_null().sum())\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_bin_starts_with__1f7a83d831__descriptive",
+      "category": "select_filter",
+      "instruction": "Please generate a table containing the `name` column followed by two new boolean columns named `starts_with_lit` and `starts_with_expr`. The `starts_with_lit` column should be true if the binary value in the `code` column begins with the specific byte sequence `\\xff`, and the `starts_with_expr` column should be true if the binary value in `code` begins with the value found in the `prefix` column for that same row. Ensure the final output includes the `name`, `starts_with_lit`, and `starts_with_expr` columns in that exact sequence.",
+      "reference_solution": "def solve(colors: pl.DataFrame) -> pl.DataFrame:\n    return (\n        colors.select(\n            \"name\",\n            pl.col(\"code\").bin.starts_with(b\"\\xff\").alias(\"starts_with_lit\"),\n            pl.col(\"code\")\n            .bin.starts_with(pl.col(\"prefix\"))\n            .alias(\"starts_with_expr\"),\n        )\n    )",
+      "solver_code": "def solve(colors: pl.DataFrame) -> pl.DataFrame:\n    return colors.select(\n        \"name\",\n        starts_with_lit=pl.col(\"code\").bin.starts_with(b\"\\xff\"),\n        starts_with_expr=pl.col(\"code\").bin.starts_with(pl.col(\"prefix\"))\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_first__16a612f287__concise",
+      "category": "select_filter",
+      "instruction": "Take the first non-null value from column `a` in the input table `df` and return it as a single-row table with a column named `a`.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"a\").first(ignore_nulls=True))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"a\").first(ignore_nulls=True)).rename({\"a\": \"a\"})",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "datetime__906d14ed26__descriptive",
+      "category": "datetime",
+      "instruction": "Create a new column called `datetime` in the `df` table that represents a specific point in time using the year 2024 along with the values from the `month`, `day`, `hour`, and `minute` columns. Ensure this new column is formatted with the Australia/Sydney timezone. The final table should contain the original `month`, `day`, `hour`, and `minute` columns followed immediately by the new `datetime` column, maintaining the original row order.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df.with_columns(\n            pl.datetime(\n                2024,\n                pl.col(\"month\"),\n                pl.col(\"day\"),\n                pl.col(\"hour\"),\n                pl.col(\"minute\"),\n                time_zone=\"Australia/Sydney\",\n            ).alias(\"datetime\")\n        )\n    )",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.datetime(\n            year=2024,\n            month=pl.col(\"month\"),\n            day=pl.col(\"day\"),\n            hour=pl.col(\"hour\"),\n            minute=pl.col(\"minute\"),\n            time_zone=\"Australia/Sydney\"\n        ).alias(\"datetime\")\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    }
+  ],
+  "audit_kept_strata": {
+    "api_mismatch": 5,
+    "other": 15
+  },
+  "audit_rejected": [
+    {
+      "id": "Expr_dt_add_business_days__b3f3d1deb4__concise",
+      "category": "datetime",
+      "instruction": "Add a new column named `result` to the `df` table that contains the date five business days after each date in the `start` column, skipping weekends and the specific holidays of January 3rd and 6th, 2020. The final table should have the `start` column followed by the `result` column.",
+      "reference_solution": "from datetime import date\nfrom datetime import date\n\ndef solve(df: pl.DataFrame) -> pl.DataFrame:\n    holidays = [date(2020, 1, 3), date(2020, 1, 6)]\n    return (\n        df.with_columns(\n            result=pl.col(\"start\").dt.add_business_days(5, holidays=holidays)\n        )\n    )",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"start\").dt.add_business_days(\n            n=5,\n            week_mask=(True, True, True, True, False, False, False),\n            holidays=[date(2020, 1, 3), date(2020, 1, 6)],\n            roll=\"forward\"\n        ).alias(\"result\")\n    )",
+      "reason": "wrong_values",
+      "detail": "DataFrames are different (value mismatch for column \"result\")\n[left]: shape: (2,)\nSeries: 'result' [date]\n[\n\t2020-01-13\n\t2020-01-14\n]\n[right]: shape: (2,)\nSeries: 'result' [date]\n[\n\t2020-01-10\n\t2020-01-13\n]",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "selectors_digit__08aaba7d7c__descriptive",
+      "category": "reshape",
+      "instruction": "Start with the `df` table and calculate the total `value` for every distinct pair of `key` and `year`. After aggregating these sums, filter the result to keep only the `key` column. The final output should be a table with a single column named `key` containing the unique keys in the order they first appear in the aggregated data.",
+      "reference_solution": "import polars.selectors as cs\n\ndef solve(df: pl.DataFrame) -> pl.DataFrame:\n    df = df.pivot(\n        values=\"value\",\n        index=\"key\",\n        on=\"year\",\n        aggregate_function=\"sum\",\n    )\n    return df.select(~cs.digit())",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .group_by([\"key\", \"year\"])\n        .agg(pl.col(\"value\").sum())\n        .select(pl.col(\"key\"))\n    )",
+      "reason": "wrong_row_count",
+      "detail": "got 4, expected 2",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "user_guide_expressions_user_defined_functions_py__6d22a2815e__concise",
+      "category": "group_by",
+      "instruction": "Group the rows in `df` by the `keys` column and calculate the difference between each `values` entry and the mean of that group, returning a table with `keys` and `values` columns where `values` contains the calculated differences as a list.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    def diff_from_mean(series):\n        # This will be very slow for non-trivial Series, since it's all Python\n        # code:\n        total = 0\n        for value in series:\n            total += value\n        mean = total / len(series)\n        return pl.Series([value - mean for value in series])\n    out = df.group_by(\"keys\").agg(\n        pl.col(\"values\").map_batches(diff_from_mean, return_dtype=pl.Float64)\n    )\n    return out",
+      "solver_code": "import polars as pl\n\ndef solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"keys\").agg(\n        pl.col(\"values\").map_batches(\n            lambda s: (s - s.mean()).to_list(),\n            return_dtype=pl.List(pl.Float64)\n        ).alias(\"values\")\n    )",
+      "reason": "error:TypeError",
+      "detail": "`map` with `returns_scalar=False` must return a Series; found 'list'.\n\nIf `returns_scalar` is set to `True`, a returned value can be a scalar value.\n\nThis error occurred in the following expression:\n\tcol(\"values\").python_udf()\nwhile evaluating this larger expression:\n\tcol(\"values\").python_udf().impl",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "LazyFrame_getitem__18e1cd92d6__descriptive",
+      "category": "lazy",
+      "instruction": "Please extract the rows from the input table `lf` that appear at even indices, starting with the first row. The resulting table should contain only the columns `a` and `b`, listed in that specific order. Ensure the final output preserves the original row order for the selected even-indexed entries.",
+      "reference_solution": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf[::2].collect()",
+      "solver_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.filter(pl.int_range(0, pl.len()).%2 == 0).select([\"a\", \"b\"]).collect()",
+      "reason": "error:SyntaxError",
+      "detail": "invalid syntax (<solution>, line 2)",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_arg_min__19f512b470__descriptive",
+      "category": "select_filter",
+      "instruction": "Take the input table `df` and identify the row index where the value in column `a` is at its minimum. Create a new table with exactly one row and one column named `a` that contains this index value, ensuring the column appears first.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"a\").arg_min())",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"a\").arg_min().alias(\"a\")).to_frame().select(pl.col(\"a\"))",
+      "reason": "error:AttributeError",
+      "detail": "'DataFrame' object has no attribute 'to_frame'",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "head__d5da4ec49a__concise",
+      "category": "select_filter",
+      "instruction": "Take the first row of the input table `df` and return only the value from column `a`.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.head(\"a\"))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(\"a\").head(1)",
+      "reason": "wrong_row_count",
+      "detail": "got 1, expected 3",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "DataFrame_rolling__8406b84730__concise",
+      "category": "window",
+      "instruction": "For each row in `df`, create a new column `aggregated` containing the list of `int` values from the current row and the two preceding rows based on the `int` column, keeping the original `int` column and ordering the result by `int`.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.rolling(\"int\", period=\"3i\").agg(pl.col(\"int\").alias(\"aggregated\"))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.sort(\"int\").rolling(\n        index_column=\"int\",\n        period=\"3i\",\n        offset=\"1i\",\n        closed=\"right\"\n    ).agg(pl.col(\"value\").list()).with_columns(\n        pl.col(\"value\").list().alias(\"aggregated\")\n    )",
+      "reason": "error:TypeError",
+      "detail": "'ExprListNameSpace' object is not callable",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "Series_set__9dbd86a464__concise",
+      "category": "select_filter",
+      "instruction": "Create a single column named `literal` containing the values from `s`, but replace the value 2 with 10.",
+      "reference_solution": "def solve(s: pl.Series) -> pl.DataFrame:\n    return (\n        s.to_frame().select(\n            pl.when(pl.col(\"a\") == 2).then(10).otherwise(pl.col(\"a\"))\n        )\n    )",
+      "solver_code": "def solve(s: pl.Series) -> pl.DataFrame:\n    return pl.DataFrame({\"literal\": pl.when(s == 2).then(10).otherwise(s)})",
+      "reason": "error:TypeError",
+      "detail": "passing Expr objects to the DataFrame constructor is not supported\n\nHint: Try evaluating the expression first using `select`, or if you meant to create an Object column containing expressions, pass a list of Expr objects instead.",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "DataFrame_join_asof__8f21b04269__descriptive",
+      "category": "join",
+      "instruction": "For every row in the `population` table, find the latest date in the `gdp` table that is less than or equal to the current population date. Attach the GDP value and that specific date from the `gdp` table to the corresponding population row. The final result should contain four columns named `date`, `population`, `date_right`, and `gdp` in that exact sequence, with the rows sorted by the `date` column.",
+      "reference_solution": "def solve(gdp: pl.DataFrame, population: pl.DataFrame) -> pl.DataFrame:\n    population = population.sort(\"date\")\n    return population.join_asof(gdp, on=\"date\", strategy=\"backward\", coalesce=False)",
+      "solver_code": "def solve(gdp: pl.DataFrame, population: pl.DataFrame) -> pl.DataFrame:\n    return (\n        population\n        .join_asof(\n            gdp,\n            left_on=\"date\",\n            right_on=\"date\",\n            strategy=\"backward\",\n            suffix=\"_right\",\n        )\n        .select(\n            \"date\",\n            \"population\",\n            \"date_right\",\n            \"gdp\",\n        )\n        .sort(\"date\")\n    )",
+      "reason": "error:ColumnNotFoundError",
+      "detail": "unable to find column \"date_right\"; valid columns: [\"date\", \"population\", \"gdp\"]",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "LazyFrame_with_columns__9f64ae1c42__concise",
+      "category": "lazy",
+      "instruction": "Take the input table `lf` and add three new columns: `a^2` containing the square of `a`, `b/2` containing half of `b`, and `not c` containing the opposite boolean value of `c`. Keep the original columns `a`, `b`, and `c` in their original positions, followed by the new columns in the order `a^2`, `b/2`, and `not c`.",
+      "reference_solution": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        lf.with_columns(\n            [\n                (pl.col(\"a\") ** 2).alias(\"a^2\"),\n                (pl.col(\"b\") / 2).alias(\"b/2\"),\n                (pl.col(\"c\").not_()).alias(\"not c\"),\n            ]\n        ).collect()\n    )",
+      "solver_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.with_columns(\n        a_sq=pl.col(\"a\") ** 2,\n        b_half=pl.col(\"b\") / 2,\n        not_c=~pl.col(\"c\")\n    ).collect()",
+      "reason": "wrong_columns",
+      "detail": "got ['a', 'b', 'c', 'a_sq', 'b_half', 'not_c'], expected ['a', 'b', 'c', 'a^2', 'b/2', 'not c']",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "map_groups__6f5921f4a5__descriptive",
+      "category": "group_by",
+      "instruction": "Start with the input table `df` and organize the data by the `group` column. For each group, compute a new value for every row by taking the ratio of that row's 'a' value to the total sum of 'a' values within the same group, and then add the corresponding 'b' value to this ratio. Collect these calculated values into a list for each group and place them in a new column called `my_custom_aggregation`. The final output should contain the `group` column followed by the `my_custom_aggregation` column, with the rows sorted in ascending order by the group.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        (\n            df.group_by(\"group\").agg(\n                pl.map_groups(\n                    exprs=[\"a\", \"b\"],\n                    function=lambda list_of_series: (\n                        list_of_series[0] / list_of_series[0].sum() + list_of_series[1]\n                    ),\n                    return_dtype=pl.Float64,\n                ).alias(\"my_custom_aggregation\")\n            )\n        ).sort(\"group\")\n    )",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .with_columns(\n            pl.col(\"a\").sum().over(\"group\").alias(\"group_sum_a\")\n        )\n        .with_columns(\n            (pl.col(\"a\") / pl.col(\"group_sum_a\") + pl.col(\"b\")).over(\"group\").alias(\"my_custom_aggregation\")\n        )\n        .select(\"group\", \"my_custom_aggregation\")\n        .sort(\"group\")\n    )",
+      "reason": "wrong_row_count",
+      "detail": "got 3, expected 2",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_str_contains__1558fcc06d__descriptive",
+      "category": "string",
+      "instruction": "Create a new table by taking the existing `other` table and adding two additional boolean columns based on the text in the `s` column. The first new column, `default_match`, should be true only when the string explicitly contains the uppercase sequence 'AA'. The second new column, `insensitive_match`, should be true whenever the string contains 'AA' regardless of whether the letters are uppercase or lowercase. Ensure the final output lists the columns in the order: `s`, `default_match`, and `insensitive_match`.",
+      "reference_solution": "def solve(other: pl.DataFrame) -> pl.DataFrame:\n    return (\n        other.with_columns(\n            default_match=pl.col(\"s\").str.contains(\"AA\"),\n            insensitive_match=pl.col(\"s\").str.contains(\"(?i)AA\"),\n        )\n    )",
+      "solver_code": "def solve(other: pl.DataFrame) -> pl.DataFrame:\n    return other.with_columns(\n        default_match=pl.col(\"s\").str.contains(\"AA\", literal=True),\n        insensitive_match=pl.col(\"s\").str.contains(\"AA\", literal=False, strict=False)\n    ).select([\"s\", \"default_match\", \"insensitive_match\"])",
+      "reason": "wrong_values",
+      "detail": "DataFrames are different (value mismatch for column \"insensitive_match\")\n[left]: shape: (3,)\nSeries: 'insensitive_match' [bool]\n[\n\ttrue\n\tfalse\n\tfalse\n]\n[right]: shape: (3,)\nSeries: 'insensitive_match' [bool]\n[\n\ttrue\n\ttrue\n\ttrue\n]",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_over__e21c434c3c__descriptive",
+      "category": "window",
+      "instruction": "For every unique value in column `a`, identify the first two entries from column `c` and repeat those values to create new rows. The resulting table should have a single column named `c_first_2` containing these values in the order they appear in the original data, grouped first by `a` and then by the position within the first two items.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df.select(\n            c_first_2=pl.col(\"c\").head(2).over(\"a\", mapping_strategy=\"explode\")\n        )\n    )",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df\n        .with_columns(\n            pl.col(\"c\")\n            .over(\"a\")\n            .rank(method=\"ordinal\")\n            .alias(\"rank\")\n        )\n        .filter(pl.col(\"rank\") <= 2)\n        .select(\"c\")\n        .rename(\"c_first_2\")\n    )",
+      "reason": "error:AttributeError",
+      "detail": "'str' object has no attribute 'keys'",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "DataFrame_shift__d22ed69365__concise",
+      "category": "window",
+      "instruction": "Take the input table `df` and shift all rows down by two positions, filling the new top rows with nulls, keeping the column order as `a` followed by `b`.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.shift(-2)",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.shift(2)",
+      "reason": "wrong_values",
+      "detail": "DataFrames are different (value mismatch for column \"a\")\n[left]: shape: (4,)\nSeries: 'a' [i128]\n[\n\tnull\n\tnull\n\t1\n\t2\n]\n[right]: shape: (4,)\nSeries: 'a' [i128]\n[\n\t3\n\t4\n\tnull\n\tnull\n]",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "std__fdc475e91f__descriptive",
+      "category": "select_filter",
+      "instruction": "Compute the standard deviation for the values in the `a` column of the input table `df`. The final output should be a table with exactly one row and one column. Ensure the single output column is named `a` and appears in that order.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.std(\"a\"))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"a\").std()).rename({\"std\": \"a\"})",
+      "reason": "error:ColumnNotFoundError",
+      "detail": "\"std\" not found",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_to_physical__a8cc5cc394__concise",
+      "category": "select_filter",
+      "instruction": "Create a new table with two columns: `vals` as a categorical type and `vals_physical` as its underlying integer representation, keeping the original row order.",
+      "reference_solution": "def solve(other: pl.DataFrame) -> pl.DataFrame:\n    return (\n        other.with_columns(\n            pl.col(\"vals\").cast(pl.Categorical),\n            pl.col(\"vals\")\n            .cast(pl.Categorical)\n            .to_physical()\n            .alias(\"vals_physical\"),\n        )\n    )",
+      "solver_code": "def solve(other: pl.DataFrame) -> pl.DataFrame:\n    return other.select(\n        vals=other[\"vals\"],\n        vals_physical=other[\"vals\"].cast(pl.Categorical).to_physical()\n    )",
+      "reason": "wrong_values",
+      "detail": "DataFrames are different (dtypes do not match, differences only)\n[left]: [(\"vals\", String)]\n[right]: [(\"vals\", Categorical)]",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "int_ranges__2c05406663__concise",
+      "category": "select_filter",
+      "instruction": "Create a new table with the `end` column followed by an `int_range` column that contains a list of integers from 0 up to and including the value in `end` for each row.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(\"end\", int_range=pl.int_ranges(\"end\"))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"end\").alias(\"end\"),\n        pl.int_range(pl.lit(0), pl.col(\"end\") + 1, dtype=pl.Int64).alias(\"int_range\")\n    )",
+      "reason": "error:ShapeError",
+      "detail": "non-scalar stop passed to `int_range`",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "LazyFrame_fill_null__f7bf5cfad8__concise",
+      "category": "lazy",
+      "instruction": "Take the input table `lf` and replace any missing values in columns `a` and `b` with 99, then return the result as a table with columns `a` and `b` in that order.",
+      "reference_solution": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.fill_null(99).collect()",
+      "solver_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.fill_null(99, subset=[\"a\", \"b\"]).select([\"a\", \"b\"]).collect()",
+      "reason": "error:TypeError",
+      "detail": "LazyFrame.fill_null() got an unexpected keyword argument 'subset'",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "LazyFrame_join_asof__da4d290a74__concise",
+      "category": "join",
+      "instruction": "Join the `pop2` table with the `gdp2` table by matching the `country` and finding the nearest available `date` for each population record, then return the `country`, `date`, `population`, and `gdp` columns in that order.",
+      "reference_solution": "def solve(gdp2: pl.LazyFrame, pop2: pl.LazyFrame) -> pl.DataFrame:\n    gdp2 = gdp2.sort(\"country\", \"date\")\n    pop2 = pop2.sort(\"country\", \"date\")\n    return pop2.join_asof(gdp2, by=\"country\", on=\"date\", strategy=\"nearest\").collect()",
+      "solver_code": "def solve(gdp2: pl.LazyFrame, pop2: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        pop2\n        .join_asof(\n            gdp2,\n            left_on=\"date\",\n            right_on=\"date\",\n            by=\"country\",\n            strategy=\"backward\",\n            allow_exact_matches=False,\n        )\n        .select([\"country\", \"date\", \"population\", \"gdp\"])\n        .collect()\n    )",
+      "reason": "wrong_values",
+      "detail": "DataFrames are different (value mismatch for column \"gdp\")\n[left]: shape: (6,)\nSeries: 'gdp' [i128]\n[\n\t4164\n\t4566\n\t4566\n\t784\n\t914\n\t914\n]\n[right]: shape: (6,)\nSeries: 'gdp' [i128]\n[\n\t4164\n\t4696\n\t4696\n\t784\n\t910\n\t910\n]",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_cum_max__b594a181ce__descriptive",
+      "category": "window",
+      "instruction": "Create a new table that includes the original `values` column followed by two new columns named `cum_max` and `cum_max_all_filled`. The `cum_max` column should show the cumulative maximum of the `values` as you move down the rows, leaving nulls where the input is null. The `cum_max_all_filled` column should calculate the same cumulative maximum but ensure that any null results are replaced with the most recent non-null value found above them.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df.with_columns(\n            pl.col(\"values\").cum_max().alias(\"cum_max\"),\n            pl.col(\"values\")\n            .cum_max()\n            .fill_null(strategy=\"forward\")\n            .alias(\"cum_max_all_filled\"),\n        )\n    )",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"values\").cum_max().alias(\"cum_max\"),\n        pl.col(\"values\").cum_max().fill_null(pl.col(\"cum_max\").shift(1).fill_null(pl.col(\"values\").shift(1).fill_null(0))).alias(\"cum_max_all_filled\")\n    )",
+      "reason": "error:ColumnNotFoundError",
+      "detail": "unable to find column \"cum_max\"; valid columns: [\"values\"]",
+      "api_mismatch": null,
+      "audit_label": null
+    }
+  ]
+}

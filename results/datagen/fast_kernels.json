@@ -1,0 +1,24 @@
+{
+  "env": {
+    "torch": "2.11.0+cu130",
+    "cuda": "13.0",
+    "cxx11_abi": true,
+    "python": "3.13.15"
+  },
+  "causal_conv1d": {
+    "path": "skipped: no prebuilt wheel for this torch/CUDA/python",
+    "wanted": "+cu13torch2.11cxx11abiTRUE-cp313-cp313-linux_x86_64.whl"
+  },
+  "flash_linear_attention": {
+    "path": "prebuilt wheel",
+    "packages": [
+      "flash-linear-attention==0.5.2",
+      "fla-core==0.5.2"
+    ]
+  },
+  "transformers_sees": {
+    "is_causal_conv1d_available": false,
+    "is_flash_linear_attention_available": true
+  },
+  "linear_attention": "partial: only flash_linear_attention (the rest on the torch fallback)"
+}

@@ -1,0 +1,511 @@
+{
+  "n_candidates": 1191,
+  "n_instruction_pairs": 1191,
+  "n_unparsed_writer_outputs": 1,
+  "filter_problems": {
+    "missing_columns": 66,
+    "names_method": 21,
+    "code": 3,
+    "too_long": 5
+  },
+  "filter_problems_by_style": {
+    "concise": {
+      "missing_columns": 66,
+      "names_method": 10,
+      "code": 2,
+      "too_long": 5
+    },
+    "descriptive": {
+      "names_method": 11,
+      "code": 1
+    }
+  },
+  "n_after_filters": 2287,
+  "instruction_leakage": {
+    "rule": "drop iff cosine >= calibrated threshold AND same non-core API set as that benchmark task",
+    "embedder": "granite",
+    "calibration": {
+      "rule": "max nearest-neighbour cosine between distinct benchmark tasks",
+      "threshold": 0.9755,
+      "n_benchmark_tasks": 120,
+      "nn_cosine_distribution": {
+        "min": 0.8478,
+        "mean": 0.9138,
+        "p50": 0.9094,
+        "p90": 0.9493,
+        "p95": 0.9596,
+        "p99": 0.9747,
+        "max": 0.9755
+      },
+      "closest_benchmark_pairs": [
+        {
+          "a": "list_struct_007",
+          "b": "list_struct_012",
+          "cosine": 0.9755
+        },
+        {
+          "a": "reshape_001",
+          "b": "reshape_003",
+          "cosine": 0.971
+        },
+        {
+          "a": "datetime_003",
+          "b": "datetime_013",
+          "cosine": 0.9679
+        },
+        {
+          "a": "lazy_010",
+          "b": "lazy_004",
+          "cosine": 0.9591
+        },
+        {
+          "a": "list_struct_010",
+          "b": "list_struct_002",
+          "cosine": 0.9545
+        }
+      ]
+    },
+    "threshold": 0.9755,
+    "dropped": 0,
+    "kept_above_threshold_different_api_set": 0,
+    "dropped_examples": [],
+    "closest_surviving": [
+      {
+        "id": "fold__2ef86ea727__concise",
+        "instruction": "Create a new column named `sum` that contains the total of all numeric values in each row of `df`, keeping the original row order.",
+        "benchmark_task": "list_struct_004",
+        "benchmark_instruction": "Each row's `nums` column is a list of integers. Add a column `total` holding the sum of each list. Keep all rows and the original order.",
+        "cosine": 0.9382,
+        "api_names": [
+          "fold"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.sum"
+        ]
+      },
+      {
+        "id": "reduce__ed7766465e__concise",
+        "instruction": "Create a new column named `sum` that contains the total of all numeric values in each row of `df`, keeping the original row order.",
+        "benchmark_task": "list_struct_004",
+        "benchmark_instruction": "Each row's `nums` column is a list of integers. Add a column `total` holding the sum of each list. Keep all rows and the original order.",
+        "cosine": 0.9382,
+        "api_names": [
+          "reduce"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.sum"
+        ]
+      },
+      {
+        "id": "Expr_list_sort__376d379d8c__descriptive",
+        "instruction": "Take the input table `df` and add a new column called `sort` that holds the elements of each list in the `a` column arranged in ascending order. The final result should include the original `a` column followed by the new `sort` column, preserving the row order from the input.",
+        "benchmark_task": "list_struct_008",
+        "benchmark_instruction": "Each row's `nums` column is a list of integers. Add a column `sorted` that holds the same list sorted in ascending order. Keep all rows and the original order.",
+        "cosine": 0.9349,
+        "api_names": [
+          "Expr.list.sort"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.sort"
+        ]
+      },
+      {
+        "id": "element__b1cf3affd9__descriptive",
+        "instruction": "Take the input table `df` which contains columns `a` and `b`, and create a new column called `a_b_doubled`. For each row, combine the values from `a` and `b` into a single list, then multiply every number in that list by two. The final output should have three columns in this specific order: `a`, `b`, and `a_b_doubled`, keeping the original row order intact.",
+        "benchmark_task": "list_struct_011",
+        "benchmark_instruction": "Each row's `nums` column is a list of integers. Add a column `doubled_sum` equal to the sum of each list after doubling every element. Keep all rows and the original order.",
+        "cosine": 0.9344,
+        "api_names": [
+          "Expr.list.eval",
+          "concat_list",
+          "element"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.eval",
+          "Expr.list.sum",
+          "element"
+        ]
+      },
+      {
+        "id": "Expr_top_k_by__c4c3cdf5fb__concise",
+        "instruction": "Group the data in `df` by column `c`, then for each group keep only the two rows with the highest values in column `a`, and finally list the columns `c`, `a`, and `b` in that order.",
+        "benchmark_task": "window_011",
+        "benchmark_instruction": "For each `category`, keep only the two rows with the highest `value`. Preserve the original row order and keep all columns.",
+        "cosine": 0.9339,
+        "api_names": [
+          "DataFrame.explode",
+          "DataFrame.group_by",
+          "Expr.exclude",
+          "Expr.top_k_by",
+          "GroupBy.agg",
+          "all"
+        ],
+        "benchmark_api_names": [
+          "Expr.over",
+          "Expr.rank"
+        ]
+      },
+      {
+        "id": "Expr_dt_month_start__9029c39567__concise",
+        "instruction": "Take the `df` table and return a new table with a single column named `dates` containing the first day of each month from the original dates, keeping the original time component.",
+        "benchmark_task": "datetime_008",
+        "benchmark_instruction": "Add a column `month_start` holding, for each date `d`, the first day of that date's month. Keep all rows and the original order.",
+        "cosine": 0.9331,
+        "api_names": [
+          "Expr.dt.month_start"
+        ],
+        "benchmark_api_names": [
+          "Expr.dt.truncate"
+        ]
+      },
+      {
+        "id": "Expr_dt_day__2125900306__descriptive",
+        "instruction": "Take the input table `df` and create three additional columns based on the values in the `date` column. The first new column, `weekday`, should represent the day of the week for each date. The second new column, `day_of_month`, should contain the day number within the month. The third new column, `day_of_year`, should contain the day number within the year. The final table must include the original `date` column followed immediately by these three new columns in the order: `date`, `weekday`, `day_of_month`, and `day_of_year`.",
+        "benchmark_task": "datetime_013",
+        "benchmark_instruction": "The year, month and day are stored in three separate integer columns. Add a column `weekday` holding the ISO weekday number (Monday 1 ... Sunday 7) of the date they describe. Keep all rows and the original order.",
+        "cosine": 0.9326,
+        "api_names": [
+          "Expr.dt.day",
+          "Expr.dt.ordinal_day",
+          "Expr.dt.weekday"
+        ],
+        "benchmark_api_names": [
+          "Expr.dt.weekday",
+          "date"
+        ]
+      },
+      {
+        "id": "Expr_list_sum__7c74ab5d27__descriptive",
+        "instruction": "Take the input table `df` and calculate the sum of the numbers inside each list found in the `values` column. Create a new column called `sum` to hold these calculated totals while preserving the original `values` column. The final result should have two columns in this specific order: `values` followed by `sum`, with each row corresponding to the original input rows.",
+        "benchmark_task": "list_struct_004",
+        "benchmark_instruction": "Each row's `nums` column is a list of integers. Add a column `total` holding the sum of each list. Keep all rows and the original order.",
+        "cosine": 0.9326,
+        "api_names": [
+          "Expr.list.sum"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.sum"
+        ]
+      },
+      {
+        "id": "Expr_list_max__e834b210ef__descriptive",
+        "instruction": "Take the input table `df` and create a new column called `max` that holds the highest number found within each list in the `values` column. The final result should have two columns in this specific order: `values` followed by `max`, with the row count remaining unchanged.",
+        "benchmark_task": "list_struct_009",
+        "benchmark_instruction": "Each row's `scores` column is a list of numbers. Add a column `best` holding the maximum value in each list. Keep all rows and the original order.",
+        "cosine": 0.9319,
+        "api_names": [
+          "Expr.list.max"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.max"
+        ]
+      },
+      {
+        "id": "Expr_arr_sum__33c5992240__descriptive",
+        "instruction": "Start with the input table `df` which has one column named `a` containing lists of integers. For each row, compute the total sum of the numbers found within the list in column `a`. Create a new table that contains only one column, named `a`, which holds these calculated sums in the same order as the original rows.",
+        "benchmark_task": "list_struct_004",
+        "benchmark_instruction": "Each row's `nums` column is a list of integers. Add a column `total` holding the sum of each list. Keep all rows and the original order.",
+        "cosine": 0.9296,
+        "api_names": [
+          "Expr.arr.sum"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.sum"
+        ]
+      },
+      {
+        "id": "Expr_list_sort__40bfd3d818__descriptive",
+        "instruction": "Take the input table `df` and create a new column called `sort` that contains the same list data as the `a` column but with the numbers arranged from largest to smallest. Keep the original `a` column unchanged and place it before the new `sort` column in the final result. The output should have two columns: `a` followed by `sort`, with the rows matching the input order.",
+        "benchmark_task": "list_struct_008",
+        "benchmark_instruction": "Each row's `nums` column is a list of integers. Add a column `sorted` that holds the same list sorted in ascending order. Keep all rows and the original order.",
+        "cosine": 0.9294,
+        "api_names": [
+          "Expr.list.sort"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.sort"
+        ]
+      },
+      {
+        "id": "Expr_dt_time__43ab2098e5__descriptive",
+        "instruction": "Take the input table `df` and create a new column called `time` that extracts the hour, minute, and second from the existing `datetime` column. The final result should have two columns in this specific order: `datetime` followed by `time`, preserving all original rows.",
+        "benchmark_task": "datetime_006",
+        "benchmark_instruction": "The `ts` column holds timestamps like '2023-01-01 09:30:00'. Parse them and add a column `hour` with the hour of day (0-23). Keep all rows and the original order.",
+        "cosine": 0.9283,
+        "api_names": [
+          "Expr.dt.time"
+        ],
+        "benchmark_api_names": [
+          "Expr.dt.hour",
+          "Expr.str.to_datetime"
+        ]
+      },
+      {
+        "id": "reduce__ed7766465e__descriptive",
+        "instruction": "For every row in the input table `df`, calculate the sum of all the numbers present in that specific row. Present the result as a new table with a single column named `sum` containing these totals, ensuring the rows appear in the same order as they did in the original data.",
+        "benchmark_task": "list_struct_004",
+        "benchmark_instruction": "Each row's `nums` column is a list of integers. Add a column `total` holding the sum of each list. Keep all rows and the original order.",
+        "cosine": 0.9277,
+        "api_names": [
+          "reduce"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.sum"
+        ]
+      },
+      {
+        "id": "Expr_arr_max__13fb2188c0__descriptive",
+        "instruction": "Take the input table `df` which contains a column `a` where each cell holds a list of integers. For every row, identify the largest number inside the list stored in column `a`. Create a new table that has exactly one column named `a` in that order, populated with these maximum values, preserving the original row order.",
+        "benchmark_task": "list_struct_009",
+        "benchmark_instruction": "Each row's `scores` column is a list of numbers. Add a column `best` holding the maximum value in each list. Keep all rows and the original order.",
+        "cosine": 0.9275,
+        "api_names": [
+          "Expr.arr.max"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.max"
+        ]
+      },
+      {
+        "id": "date__4c233fd8cf__concise",
+        "instruction": "Filter the `df` table to keep only rows where the `end` date is after June 1, 2024, and return the `start` and `end` columns in that order.",
+        "benchmark_task": "datetime_004",
+        "benchmark_instruction": "Keep only the rows whose date `d` falls in the first half of 2023 (between 1 January and 30 June 2023, inclusive).",
+        "cosine": 0.9272,
+        "api_names": [
+          "date"
+        ],
+        "benchmark_api_names": [
+          "Expr.is_between",
+          "date"
+        ]
+      },
+      {
+        "id": "datetime__583218622c__concise",
+        "instruction": "Filter the `df` table to keep only rows where the `end` date is after June 1, 2024, and return the `start` and `end` columns in that order.",
+        "benchmark_task": "datetime_004",
+        "benchmark_instruction": "Keep only the rows whose date `d` falls in the first half of 2023 (between 1 January and 30 June 2023, inclusive).",
+        "cosine": 0.9272,
+        "api_names": [
+          "datetime"
+        ],
+        "benchmark_api_names": [
+          "Expr.is_between",
+          "date"
+        ]
+      },
+      {
+        "id": "Expr_dt_month__7c0382ead8__concise",
+        "instruction": "Add a new column named `month` to the existing `date` column in `df` containing the month number for each row, keeping the original `date` column first.",
+        "benchmark_task": "datetime_008",
+        "benchmark_instruction": "Add a column `month_start` holding, for each date `d`, the first day of that date's month. Keep all rows and the original order.",
+        "cosine": 0.926,
+        "api_names": [
+          "Expr.dt.month"
+        ],
+        "benchmark_api_names": [
+          "Expr.dt.truncate"
+        ]
+      },
+      {
+        "id": "Expr_dt_total_days__f9f4261f79__concise",
+        "instruction": "Create a new table with the original `date` column and a new `days_diff` column showing the number of days since the previous date, keeping the rows in their original order.",
+        "benchmark_task": "datetime_007",
+        "benchmark_instruction": "Each row has a `start` and `end` date. Add a column `days` holding the number of whole days from `start` to `end`. Keep all rows and the original order.",
+        "cosine": 0.9259,
+        "api_names": [
+          "Expr.diff",
+          "Expr.dt.total_days"
+        ],
+        "benchmark_api_names": [
+          "Expr.dt.total_days"
+        ]
+      },
+      {
+        "id": "Expr_dt_month_start__9029c39567__descriptive",
+        "instruction": "Please take the input table `df` and create a new table that contains only one column named `dates`. For every row in the original table, transform the date value to represent the start of its corresponding month while preserving the original time of day. Ensure the final output is a table with exactly one column in the order `dates`, sorted chronologically by the transformed dates.",
+        "benchmark_task": "datetime_008",
+        "benchmark_instruction": "Add a column `month_start` holding, for each date `d`, the first day of that date's month. Keep all rows and the original order.",
+        "cosine": 0.9249,
+        "api_names": [
+          "Expr.dt.month_start"
+        ],
+        "benchmark_api_names": [
+          "Expr.dt.truncate"
+        ]
+      },
+      {
+        "id": "Expr_list_sort__376d379d8c__concise",
+        "instruction": "Create a new column named `sort` containing the sorted version of each list in the `a` column from `df`, and return the table with columns `a` and `sort` in that order.",
+        "benchmark_task": "list_struct_008",
+        "benchmark_instruction": "Each row's `nums` column is a list of integers. Add a column `sorted` that holds the same list sorted in ascending order. Keep all rows and the original order.",
+        "cosine": 0.9237,
+        "api_names": [
+          "Expr.list.sort"
+        ],
+        "benchmark_api_names": [
+          "Expr.list.sort"
+        ]
+      }
+    ]
+  },
+  "after_filters_and_leakage": {
+    "n": 2287,
+    "n_candidates": 1180,
+    "n_pages": 638,
+    "by_style": {
+      "concise": 1109,
+      "descriptive": 1178
+    },
+    "by_source": {
+      "docstring": 2092,
+      "user_guide": 195
+    },
+    "by_category": {
+      "datetime": 129,
+      "group_by": 77,
+      "join": 105,
+      "lazy": 187,
+      "list_struct": 175,
+      "reshape": 75,
+      "select_filter": 1140,
+      "string": 194,
+      "window": 205
+    },
+    "by_difficulty": {
+      "easy": 1651,
+      "hard": 68,
+      "medium": 568
+    },
+    "multi_step_share": 0.278,
+    "sha256": "75b0ab3a6d8b18cce820c59a043ff4bb22893925bb3c6a61ce30c2f44eb0a86f"
+  },
+  "roundtrip": {
+    "solver_model": "Qwen/Qwen3.5-9B",
+    "n": 2287,
+    "kept": 1428,
+    "retention": 0.624,
+    "reasons": {
+      "match": 1428,
+      "error:AttributeError": 170,
+      "wrong_values": 167,
+      "error:TypeError": 123,
+      "wrong_row_count": 71,
+      "wrong_columns": 68,
+      "error:ColumnNotFoundError": 57,
+      "error:InvalidOperationError": 46,
+      "wrong_row_order": 38,
+      "error:ShapeError": 32,
+      "error:DuplicateError": 20,
+      "error:ComputeError": 16,
+      "error:ValueError": 14,
+      "error:SchemaError": 10,
+      "error:SyntaxError": 8,
+      "wrong_column_order": 5,
+      "error:AttributeRemovedError": 4,
+      "error:PanicException": 3,
+      "error:IndentationError": 2,
+      "error:StructFieldNotFoundError": 2,
+      "error:NameError": 1,
+      "error:OutOfBoundsError": 1,
+      "error:ArgumentRemovedError": 1
+    }
+  },
+  "all": {
+    "n": 1428,
+    "n_candidates": 847,
+    "n_pages": 532,
+    "by_style": {
+      "concise": 693,
+      "descriptive": 735
+    },
+    "by_source": {
+      "docstring": 1342,
+      "user_guide": 86
+    },
+    "by_category": {
+      "datetime": 89,
+      "group_by": 26,
+      "join": 70,
+      "lazy": 129,
+      "list_struct": 138,
+      "reshape": 34,
+      "select_filter": 726,
+      "string": 118,
+      "window": 98
+    },
+    "by_difficulty": {
+      "easy": 1147,
+      "hard": 21,
+      "medium": 260
+    },
+    "multi_step_share": 0.197
+  },
+  "train": {
+    "n": 1285,
+    "n_candidates": 762,
+    "n_pages": 474,
+    "by_style": {
+      "concise": 621,
+      "descriptive": 664
+    },
+    "by_source": {
+      "docstring": 1202,
+      "user_guide": 83
+    },
+    "by_category": {
+      "datetime": 79,
+      "group_by": 20,
+      "join": 67,
+      "lazy": 119,
+      "list_struct": 122,
+      "reshape": 30,
+      "select_filter": 650,
+      "string": 108,
+      "window": 90
+    },
+    "by_difficulty": {
+      "easy": 1033,
+      "hard": 18,
+      "medium": 234
+    },
+    "multi_step_share": 0.196,
+    "sha256": "f5e0b5f6f83d7c6a718ee668df01cf9d3a603a8f0413aef031c7ba60f9dc20ec"
+  },
+  "dev": {
+    "n": 143,
+    "n_candidates": 85,
+    "n_pages": 58,
+    "by_style": {
+      "concise": 72,
+      "descriptive": 71
+    },
+    "by_source": {
+      "docstring": 140,
+      "user_guide": 3
+    },
+    "by_category": {
+      "datetime": 10,
+      "group_by": 6,
+      "join": 3,
+      "lazy": 10,
+      "list_struct": 16,
+      "reshape": 4,
+      "select_filter": 76,
+      "string": 10,
+      "window": 8
+    },
+    "by_difficulty": {
+      "easy": 114,
+      "hard": 3,
+      "medium": 26
+    },
+    "multi_step_share": 0.203,
+    "sha256": "3a01d2db12c67895790e82a81ae906ec5db40a7f1fa03499b00ec00a9f023a89"
+  },
+  "split": {
+    "grouped_by": "page",
+    "dev_fraction_target": 0.1,
+    "seed": 0
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "writer_model": "Qwen/Qwen3.5-9B",
+  "writer_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "writer_prompt_sha256": "d60f5e6cd5a11863ed3aaa95855bde40bf78bde7ff7c2cb73b3e150b0c58465c",
+  "decoding": "greedy",
+  "max_new_tokens": 400,
+  "n_candidates": 1191,
+  "n_parsed": 1190,
+  "gpu": {
+    "name": "NVIDIA A100-SXM4-80GB",
+    "free_gb": 61.17,
+    "total_gb": 79.25
+  },
+  "pytorch_cuda_alloc_conf_requested": "expandable_segments:True",
+  "pytorch_cuda_alloc_conf_at_end": null,
+  "batch_size_source": "free GPU memory",
+  "batch_sizes_used": [
+    21,
+    22,
+    32
+  ],
+  "this_session": {
+    "n_resumed": 1073,
+    "n_written": 118,
+    "initial_batch_size": 32,
+    "oom_events": [],
+    "final_batch_size": 32,
+    "wall_time_s": 139.2
+  },
+  "generation_time_s_all_sessions": 760.1,
+  "timestamp_utc": "2026-10-13T08:31:51.391898+00:00"
+}
