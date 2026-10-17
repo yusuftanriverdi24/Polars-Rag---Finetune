@@ -412,100 +412,143 @@
     }
   },
   "all": {
-    "n": 1428,
-    "n_candidates": 847,
-    "n_pages": 532,
+    "n": 1202,
+    "n_candidates": 720,
+    "n_pages": 486,
     "by_style": {
-      "concise": 693,
-      "descriptive": 735
+      "concise": 589,
+      "descriptive": 613
     },
     "by_source": {
-      "docstring": 1342,
-      "user_guide": 86
+      "docstring": 1141,
+      "user_guide": 61
     },
     "by_category": {
-      "datetime": 89,
-      "group_by": 26,
-      "join": 70,
-      "lazy": 129,
-      "list_struct": 138,
-      "reshape": 34,
-      "select_filter": 726,
-      "string": 118,
+      "datetime": 82,
+      "group_by": 24,
+      "join": 69,
+      "lazy": 109,
+      "list_struct": 130,
+      "reshape": 33,
+      "select_filter": 542,
+      "string": 115,
       "window": 98
     },
     "by_difficulty": {
-      "easy": 1147,
-      "hard": 21,
-      "medium": 260
+      "easy": 987,
+      "hard": 18,
+      "medium": 197
     },
-    "multi_step_share": 0.197
+    "multi_step_share": 0.179
   },
   "train": {
-    "n": 1285,
-    "n_candidates": 762,
-    "n_pages": 474,
+    "n": 1080,
+    "n_candidates": 645,
+    "n_pages": 437,
     "by_style": {
-      "concise": 621,
-      "descriptive": 664
+      "concise": 529,
+      "descriptive": 551
     },
     "by_source": {
-      "docstring": 1202,
-      "user_guide": 83
+      "docstring": 1031,
+      "user_guide": 49
     },
     "by_category": {
-      "datetime": 79,
-      "group_by": 20,
-      "join": 67,
-      "lazy": 119,
-      "list_struct": 122,
-      "reshape": 30,
-      "select_filter": 650,
-      "string": 108,
-      "window": 90
+      "datetime": 77,
+      "group_by": 24,
+      "join": 65,
+      "lazy": 101,
+      "list_struct": 113,
+      "reshape": 28,
+      "select_filter": 480,
+      "string": 106,
+      "window": 86
     },
     "by_difficulty": {
-      "easy": 1033,
-      "hard": 18,
-      "medium": 234
+      "easy": 886,
+      "hard": 17,
+      "medium": 177
     },
-    "multi_step_share": 0.196,
-    "sha256": "f5e0b5f6f83d7c6a718ee668df01cf9d3a603a8f0413aef031c7ba60f9dc20ec"
+    "multi_step_share": 0.18,
+    "sha256": "86d2565249bad415c9795cd59afe7b73c56db2db2190970c74a7213e25565037"
   },
   "dev": {
-    "n": 143,
-    "n_candidates": 85,
-    "n_pages": 58,
+    "n": 122,
+    "n_candidates": 75,
+    "n_pages": 49,
     "by_style": {
-      "concise": 72,
-      "descriptive": 71
+      "concise": 60,
+      "descriptive": 62
     },
     "by_source": {
-      "docstring": 140,
-      "user_guide": 3
+      "docstring": 110,
+      "user_guide": 12
     },
     "by_category": {
-      "datetime": 10,
-      "group_by": 6,
-      "join": 3,
-      "lazy": 10,
-      "list_struct": 16,
-      "reshape": 4,
-      "select_filter": 76,
-      "string": 10,
-      "window": 8
+      "datetime": 5,
+      "join": 4,
+      "lazy": 8,
+      "list_struct": 17,
+      "reshape": 5,
+      "select_filter": 62,
+      "string": 9,
+      "window": 12
     },
     "by_difficulty": {
-      "easy": 114,
-      "hard": 3,
-      "medium": 26
+      "easy": 101,
+      "hard": 1,
+      "medium": 20
     },
-    "multi_step_share": 0.203,
-    "sha256": "3a01d2db12c67895790e82a81ae906ec5db40a7f1fa03499b00ec00a9f023a89"
+    "multi_step_share": 0.172,
+    "sha256": "b4ddc704f59a25be51c72a62913b507e3dc669103f017da2a44442d51f5557b5"
   },
   "split": {
     "grouped_by": "page",
     "dev_fraction_target": 0.1,
     "seed": 0
+  },
+  "remedy": {
+    "rule": "drop every round-trip kept request with api_mismatch = True (chosen after the audit, not pre-registered)",
+    "n_dropped": 226,
+    "dropped_by_category": {
+      "datetime": 7,
+      "group_by": 2,
+      "join": 1,
+      "lazy": 20,
+      "list_struct": 8,
+      "reshape": 1,
+      "select_filter": 184,
+      "string": 3
+    },
+    "before": {
+      "n": 1428,
+      "multi_step_share": 0.197,
+      "by_category": {
+        "datetime": 89,
+        "group_by": 26,
+        "join": 70,
+        "lazy": 129,
+        "list_struct": 138,
+        "reshape": 34,
+        "select_filter": 726,
+        "string": 118,
+        "window": 98
+      }
+    },
+    "after": {
+      "n": 1202,
+      "multi_step_share": 0.179,
+      "by_category": {
+        "datetime": 82,
+        "group_by": 24,
+        "join": 69,
+        "lazy": 109,
+        "list_struct": 130,
+        "reshape": 33,
+        "select_filter": 542,
+        "string": 115,
+        "window": 98
+      }
+    }
   }
 }

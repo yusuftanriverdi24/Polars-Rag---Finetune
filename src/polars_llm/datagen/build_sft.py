@@ -46,6 +46,7 @@ DEFAULT_BENCH_API_NAMES = Path("results/datagen/benchmark_api_names.json")
 DEFAULT_V1_CHUNKS = Path("data/rag/chunks.jsonl")
 N_CLOSEST_SURVIVING = 20
 DEFAULT_ROUNDTRIP_STATS = Path("results/datagen/roundtrip_stats.json")
+DEFAULT_REMEDY_STATS = Path("results/datagen/remedy_stats.json")  # datagen/remedy.py (post-audit)
 DEV_FRACTION = 0.10
 SEED = 0
 
@@ -170,6 +171,7 @@ def main(argv: list[str] | None = None) -> int:
                              "verified.jsonl, after roundtrip.py) -> train/dev; all: both, no round trip")
     parser.add_argument("--examples", default=None, help="split stage input (default: <out-dir>/verified.jsonl)")
     parser.add_argument("--roundtrip-stats", default=str(DEFAULT_ROUNDTRIP_STATS))
+    parser.add_argument("--remedy-stats", default=str(DEFAULT_REMEDY_STATS))
     args = parser.parse_args(argv)
     out_dir = Path(args.out_dir)
     if args.stage in ("filter", "all"):
@@ -285,6 +287,12 @@ def split_stage(args, examples: list[dict]) -> None:
         report["roundtrip"] = {k: r[k] for k in ("solver_model", "n", "kept", "retention", "reasons")}
     else:
         report.pop("roundtrip", None)
+    rm = Path(args.remedy_stats)
+    if args.stage == "split" and rm.exists():
+        r = json.loads(rm.read_text(encoding="utf-8"))
+        report["remedy"] = {k: r[k] for k in ("rule", "n_dropped", "dropped_by_category", "before", "after")}
+    else:
+        report.pop("remedy", None)
     report.update({
         "all": summarize(examples),
         "train": {**summarize(train), "sha256": train_sha},

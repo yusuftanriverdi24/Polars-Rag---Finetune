@@ -1,0 +1,271 @@
+{
+  "rule": "drop every round-trip kept request with api_mismatch = True (chosen after the audit, not pre-registered)",
+  "n_dropped": 226,
+  "dropped_by_category": {
+    "datetime": 7,
+    "group_by": 2,
+    "join": 1,
+    "lazy": 20,
+    "list_struct": 8,
+    "reshape": 1,
+    "select_filter": 184,
+    "string": 3
+  },
+  "before": {
+    "n": 1428,
+    "multi_step_share": 0.197,
+    "by_category": {
+      "datetime": 89,
+      "group_by": 26,
+      "join": 70,
+      "lazy": 129,
+      "list_struct": 138,
+      "reshape": 34,
+      "select_filter": 726,
+      "string": 118,
+      "window": 98
+    }
+  },
+  "after": {
+    "n": 1202,
+    "multi_step_share": 0.179,
+    "by_category": {
+      "datetime": 82,
+      "group_by": 24,
+      "join": 69,
+      "lazy": 109,
+      "list_struct": 130,
+      "reshape": 33,
+      "select_filter": 542,
+      "string": 115,
+      "window": 98
+    }
+  },
+  "audit": {
+    "seed": 1,
+    "stratified": false,
+    "rule": "manual: label audit_kept; < 3/20 wrong to proceed to notebook 06"
+  },
+  "audit_kept": [
+    {
+      "id": "Expr_bin_contains__e967896f52__concise",
+      "category": "select_filter",
+      "instruction": "Create a new table with columns `name`, `contains_with_lit`, and `contains_with_expr` in that order, where the boolean columns indicate whether the binary `code` contains the literal bytes `\\xff` and the binary `lit` value respectively.",
+      "reference_solution": "def solve(colors: pl.DataFrame) -> pl.DataFrame:\n    return (\n        colors.select(\n            \"name\",\n            pl.col(\"code\").bin.contains(b\"\\xff\").alias(\"contains_with_lit\"),\n            pl.col(\"code\").bin.contains(pl.col(\"lit\")).alias(\"contains_with_expr\"),\n        )\n    )",
+      "solver_code": "import polars as pl\n\ndef solve(colors: pl.DataFrame) -> pl.DataFrame:\n    return colors.select(\n        \"name\",\n        contains_with_lit=pl.col(\"code\").bin.contains(b\"\\xff\"),\n        contains_with_expr=pl.col(\"code\").bin.contains(pl.col(\"lit\"))\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "user_guide_expressions_missing_data_py__30f16c02c7__concise",
+      "category": "select_filter",
+      "instruction": "Take the input table `df` and replace any missing values in the `col2` column with the number 3, keeping the `col1` column unchanged. Return the result with `col1` followed by `col2`.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    fill_literal_df = df.with_columns(\n        pl.col(\"col2\").fill_null(3),\n    )\n    return fill_literal_df",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"col2\").fill_null(3)\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "DataFrame_reverse__65b762e460__concise",
+      "category": "select_filter",
+      "instruction": "Please return the rows from `df` in reverse order, keeping the `key` and `val` columns in that exact sequence.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.reverse()",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.reverse()",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "from_epoch__4d8c257233__concise",
+      "category": "lazy",
+      "instruction": "Convert the `ts` column in `df` from a Unix timestamp in seconds to a datetime format and return a table with only the `ts` column.",
+      "reference_solution": "def solve(df: pl.LazyFrame) -> pl.DataFrame:\n    return df.select(pl.from_epoch(pl.col(\"ts\"), time_unit=\"s\")).collect()",
+      "solver_code": "def solve(df: pl.LazyFrame) -> pl.DataFrame:\n    return df.select(pl.from_epoch(\"ts\", time_unit=\"s\")).collect()",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_arr_join__1ce7f832e0__concise",
+      "category": "join",
+      "instruction": "Create a new column named `join` by combining the elements of the `s` array using the string in the `separator` column, keeping the original `s` and `separator` columns in the result.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(join=pl.col(\"s\").arr.join(pl.col(\"separator\")))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"s\").arr.join(pl.col(\"separator\"), ignore_nulls=True).alias(\"join\")\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "LazyFrame_head__3a678ba750__concise",
+      "category": "lazy",
+      "instruction": "Take the first two rows from the input table `lf` and return them with columns `a` and `b` in that order.",
+      "reference_solution": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.head(2).collect()",
+      "solver_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.head(2).select([\"a\", \"b\"]).collect()",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_dt_replace__f048ec1c70__concise",
+      "category": "datetime",
+      "instruction": "Create a new column named `replaced` by substituting the day value in the `date` column with the corresponding value from the `new_day` column, while keeping the original `date` and `new_day` columns in the same order.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(pl.col(\"date\").dt.replace(day=\"new_day\").alias(\"replaced\"))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        pl.col(\"date\").dt.replace(day=pl.col(\"new_day\")).alias(\"replaced\")\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "LazyFrame_quantile__edc98ec040__concise",
+      "category": "lazy",
+      "instruction": "Calculate the 70th percentile value for each column in the input table `lf` and return a single row with the results in columns `a` and `b`.",
+      "reference_solution": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.quantile(0.7).collect()",
+      "solver_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.select(pl.col(\"a\").quantile(0.7), pl.col(\"b\").quantile(0.7)).collect().rename({\"a\": \"a\", \"b\": \"b\"})",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_str_extract_many__a0c40a2bea__descriptive",
+      "category": "string",
+      "instruction": "For each row in the 'df' table, find every substring within the 'patterns' list that appears inside the 'values' string. Create a new table with a single column named `values` that contains these matching substrings as a list for each row. Ensure the output rows appear in the same order as the input rows.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"values\").str.extract_many(\"patterns\"))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(\n        pl.col(\"values\").str.extract_many(pl.col(\"patterns\"))\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_rolling_min__07337e6f71__descriptive",
+      "category": "window",
+      "instruction": "Take the input table `df` and create a new column called `rolling_min` that holds the minimum value found in column `A` starting from the current row and looking back one row. The first row should show a null value because there is no previous row to compare, while subsequent rows should display the minimum of the current and previous values. The final result should have two columns in this specific order: `A` followed by `rolling_min`, with the rows maintaining their original sequence.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df.with_columns(\n            rolling_min=pl.col(\"A\").rolling_min(window_size=2),\n        )\n    )",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        rolling_min=pl.col(\"A\").rolling_min(window_size=2)\n    ).select(\"A\", \"rolling_min\")",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_bitwise_xor__6bbb4c3b99__concise",
+      "category": "group_by",
+      "instruction": "Group the rows in `df` by the `grouper` column and calculate the bitwise XOR of the `n` values for each group, returning a table with `grouper` and `n` columns in that order.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"grouper\", maintain_order=True).agg(pl.col(\"n\").bitwise_xor())",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.group_by(\"grouper\").agg(pl.col(\"n\").bitwise_xor()).sort(\"grouper\")",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "LazyFrame_fill_null__f7bf5cfad8__descriptive",
+      "category": "lazy",
+      "instruction": "Start with the input table `lf` and ensure that all missing entries in the `a` column are replaced with the number 99, while all missing entries in the `b` column are replaced with 99.0. The final output should be a table containing only the `a` and `b` columns in that specific order, with no rows removed or reordered.",
+      "reference_solution": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return lf.fill_null(99).collect()",
+      "solver_code": "def solve(lf: pl.LazyFrame) -> pl.DataFrame:\n    return (\n        lf\n        .with_columns(\n            a=pl.col(\"a\").fill_null(99),\n            b=pl.col(\"b\").fill_null(99.0)\n        )\n        .select(\"a\", \"b\")\n        .collect()\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "DataFrame_filter__c547989787__concise",
+      "category": "select_filter",
+      "instruction": "Filter the `df` table to keep only rows where the value in the `foo` column is greater than 1, and return the columns `foo`, `bar`, and `ham` in that order.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"foo\") > 1)",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.filter(pl.col(\"foo\") > 1).select([\"foo\", \"bar\", \"ham\"])",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": null,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_str_normalize__d40db13267__descriptive",
+      "category": "string",
+      "instruction": "Start with the existing 'text' column from the input table 'df'. Add a new column named 'nfc' that holds the text normalized to NFC form, and another new column named 'nfkc' that holds the text normalized to NFKC form. The final table should have three columns in this specific order: 'text', 'nfc', and 'nfkc', keeping the original row sequence intact.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    new = df.with_columns(\n        nfc=pl.col(\"text\").str.normalize(\"NFC\"),\n        nfkc=pl.col(\"text\").str.normalize(\"NFKC\"),\n    )\n    return new",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        nfc=pl.col(\"text\").str.normalize(\"NFC\"),\n        nfkc=pl.col(\"text\").str.normalize(\"NFKC\"),\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_dt_convert_time_zone__ae521fed46__descriptive",
+      "category": "datetime",
+      "instruction": "Start with the input table `df` and keep the existing `date` column exactly as it is, preserving its UTC timezone. Add a second column named `London` that represents the same points in time as the original `date` column but adjusted to the Europe/London timezone. The final result should be a table with these two columns in that specific order, showing how the local time shifts between UTC and London time across the months.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return (\n        df.select(\n            [\n                pl.col(\"date\"),\n                pl.col(\"date\")\n                .dt.convert_time_zone(time_zone=\"Europe/London\")\n                .alias(\"London\"),\n            ]\n        )\n    )",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        London=pl.col(\"date\").dt.convert_time_zone(\"Europe/London\")\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "DataFrame_max__3724cfd7fc__descriptive",
+      "category": "select_filter",
+      "instruction": "Please calculate the maximum value for every column in the input table `df` and combine them into one new row. The resulting table should have exactly one row and three columns named `foo`, `bar`, and `ham` in that specific order. For the `foo` and `bar` columns, provide the highest integer found, and for the `ham` column, provide the last string value encountered.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.max()",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(\n        foo=pl.col(\"foo\").max(),\n        bar=pl.col(\"bar\").max(),\n        ham=pl.col(\"ham\").last()\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_dt_month_start__9029c39567__concise",
+      "category": "datetime",
+      "instruction": "Take the `df` table and return a new table with a single column named `dates` containing the first day of each month from the original dates, keeping the original time component.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"dates\").dt.month_start())",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(\n        dates=pl.col(\"dates\").dt.month_start()\n    )",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "min_horizontal__ad3e5c018f__descriptive",
+      "category": "select_filter",
+      "instruction": "Take the input table `df` and create a new column called `min` that holds the minimum value found between the values in column `a` and column `b` for every single row. Ensure that rows where `b` is missing are handled by taking the value from `a` if it is smaller or the only available value. The final result should display the columns in this specific order: `a`, `b`, `c`, and then the newly added `min` column, preserving the original row sequence.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(min=pl.min_horizontal(\"a\", \"b\"))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.with_columns(\n        min=pl.min_horizontal(\"a\", \"b\")\n    ).select([\"a\", \"b\", \"c\", \"min\"])",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_skew__03f4185e7d__descriptive",
+      "category": "select_filter",
+      "instruction": "Take the input table `df` and compute the statistical measure of skewness for the numbers found in the `a` column. The final output should be a table containing exactly one row and one column. This single column must be named `a` and should hold the calculated skewness value as a floating-point number.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"a\").skew())",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"a\").skew().alias(\"a\")).head(1)",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    },
+    {
+      "id": "Expr_quantile__80f876f0fe__concise",
+      "category": "select_filter",
+      "instruction": "From the input table `df`, calculate the 30th percentile of column `a` and return a single-row table with the result in a column named `a`.",
+      "reference_solution": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"a\").quantile(0.3))",
+      "solver_code": "def solve(df: pl.DataFrame) -> pl.DataFrame:\n    return df.select(pl.col(\"a\").quantile(0.3).alias(\"a\")).head(1)",
+      "reason": "match",
+      "detail": "",
+      "api_mismatch": false,
+      "audit_label": null
+    }
+  ]
+}
