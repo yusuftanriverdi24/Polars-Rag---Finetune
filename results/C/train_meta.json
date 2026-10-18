@@ -1,0 +1,147 @@
+{
+  "base_model": "Qwen/Qwen3.5-4B",
+  "adapter_dir": "/content/drive/MyDrive/polars-rag-vs-ft/adapters/qwen35-4b-polars-lora-v1",
+  "lora": {
+    "r": 16,
+    "lora_alpha": 16,
+    "lora_dropout": 0.0,
+    "bias": "none",
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "train_config": {
+    "learning_rate": 0.0002,
+    "lr_scheduler_type": "cosine",
+    "warmup_fraction": 0.03,
+    "num_train_epochs": 2,
+    "per_device_train_batch_size": 4,
+    "gradient_accumulation_steps": 4,
+    "weight_decay": 0.0,
+    "seed": 0,
+    "optim": "adamw_torch",
+    "max_grad_norm": 1.0,
+    "max_seq_length": 2048,
+    "warmup_steps": 5,
+    "total_steps": 136,
+    "effective_batch": 16
+  },
+  "data": {
+    "train": "data/sft/train.jsonl",
+    "dev": "data/sft/dev.jsonl",
+    "train_tokens": {
+      "n": 1080,
+      "dropped_too_long": 0,
+      "template_fallbacks": 0,
+      "max_tokens": 712,
+      "mean_tokens": 334.8,
+      "total_tokens": 361592
+    },
+    "dev_tokens": {
+      "n": 122,
+      "dropped_too_long": 0,
+      "template_fallbacks": 0,
+      "max_tokens": 670,
+      "mean_tokens": 335.7,
+      "total_tokens": 40955
+    }
+  },
+  "wall_time_s": 438.0,
+  "peak_vram_gb": 12.45,
+  "peak_vram_reserved_gb": 12.68,
+  "train_loss_final": 0.13661813538740664,
+  "train_loss_log": [
+    {
+      "step": 10,
+      "epoch": 0.14814814814814814,
+      "loss": 0.3749967098236084
+    },
+    {
+      "step": 20,
+      "epoch": 0.2962962962962963,
+      "loss": 0.23468027114868165
+    },
+    {
+      "step": 30,
+      "epoch": 0.4444444444444444,
+      "loss": 0.1967904806137085
+    },
+    {
+      "step": 40,
+      "epoch": 0.5925925925925926,
+      "loss": 0.16888442039489746
+    },
+    {
+      "step": 50,
+      "epoch": 0.7407407407407407,
+      "loss": 0.16538829803466798
+    },
+    {
+      "step": 60,
+      "epoch": 0.8888888888888888,
+      "loss": 0.12888177633285522
+    },
+    {
+      "step": 70,
+      "epoch": 1.0296296296296297,
+      "loss": 0.10658568143844604
+    },
+    {
+      "step": 80,
+      "epoch": 1.1777777777777778,
+      "loss": 0.095515376329422
+    },
+    {
+      "step": 90,
+      "epoch": 1.325925925925926,
+      "loss": 0.072732013463974
+    },
+    {
+      "step": 100,
+      "epoch": 1.474074074074074,
+      "loss": 0.08553469181060791
+    },
+    {
+      "step": 110,
+      "epoch": 1.6222222222222222,
+      "loss": 0.06647451519966126
+    },
+    {
+      "step": 120,
+      "epoch": 1.7703703703703704,
+      "loss": 0.06928094625473022
+    },
+    {
+      "step": 130,
+      "epoch": 1.9185185185185185,
+      "loss": 0.06094677448272705
+    }
+  ],
+  "dev_loss_by_epoch": [
+    {
+      "epoch": 1.0,
+      "eval_loss": 0.1886943131685257
+    },
+    {
+      "epoch": 2.0,
+      "eval_loss": 0.19023160636425018
+    }
+  ],
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "timestamp_utc": "2026-10-17T14:00:53.277594+00:00",
+  "lib_versions": {
+    "torch": "2.11.0+cu130",
+    "transformers": "5.17.0",
+    "unsloth": "2026.10.3",
+    "peft": "0.21.2",
+    "trl": "0.29.1",
+    "accelerate": "1.15.0",
+    "datasets": "4.8.5"
+  }
+}
