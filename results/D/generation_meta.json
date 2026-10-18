@@ -1,0 +1,88 @@
+{
+  "arm": "D",
+  "model": "Qwen/Qwen3.5-4B",
+  "adapter": "/content/drive/MyDrive/polars-rag-vs-ft/adapters/qwen35-4b-polars-lora-v1",
+  "seed": 0,
+  "max_new_tokens": 768,
+  "batch_size": 8,
+  "max_seq_length": 5632,
+  "max_prompt_tokens": 4368,
+  "enable_thinking": false,
+  "n_tasks": 120,
+  "gpu": "NVIDIA L4",
+  "total_latency_s": 258.426,
+  "timestamp_utc": "2026-10-18T18:18:08.027567+00:00",
+  "lib_versions": {
+    "polars": "2.0.0",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.17.0",
+    "unsloth": "2026.10.3",
+    "peft": "0.21.2",
+    "trl": "0.29.1",
+    "accelerate": "1.15.0",
+    "sentence_transformers": "6.1.0",
+    "lancedb": "0.40.0"
+  },
+  "prompt": {
+    "system_prompt_sha256": "b23cee5d041d5f91d70b7c7ef08c188871d43ba8a568687e764f8aa4539f5a52",
+    "template_sha256": "220286ef6aa46ec318dbbd647dcf6aabf09bc97443df6b327d4c6d1903ea103a",
+    "system_prompt": "You are an expert Python data engineer. Write correct Polars code for Polars version 2.0. `import polars as pl` is already available.\nDo not use pandas.\nReply with exactly one ```python code block that defines the `solve` function with the given signature, and nothing else \u2014 no prose.",
+    "user_template": "{context_block}Write a Polars function for the following task.\n\nTask:\n{instruction}\n\nThe inputs are created by this setup code (your function receives these variables as arguments):\n```python\n{setup_code}\n```\n\nComplete exactly this function:\n```python\n{signature}\n    ...\n```\n\nReturn a single ```python block defining `solve` with that exact signature.",
+    "context_template": "Here is relevant Polars 2.0 documentation. Use it to write correct, up-to-date code:\n\n{context}\n\n----------------------------------------\n\n"
+  },
+  "cost": {
+    "draft_latency_s": 229.389,
+    "retrieval_latency_s": 30.865,
+    "generation_latency_s": 258.426,
+    "end_to_end_latency_s": 518.68,
+    "end_to_end_latency_per_task_s": 4.322
+  },
+  "rag": {
+    "query": "task instruction + zero-shot draft code",
+    "query_mode": "draft",
+    "k": 8,
+    "context_budget_tokens": 4000,
+    "index_dir": "data/rag/index_v2_granite",
+    "index_meta": {
+      "built_at_utc": "2026-10-18T18:12:20.292367+00:00",
+      "chunks_file": "data/rag/chunks_v2.jsonl",
+      "chunks_sha256": "c2bcaf095d71f045ddd659dbf057833d7e8abb9ae76a9eece6a6dd83ce94736e",
+      "n_chunks": 1686,
+      "embedder": "granite",
+      "embed_model": "ibm-granite/granite-embedding-small-english-r2",
+      "embed_revision": "2ab6fa8ea2d674564defd37171ae19079b864b33",
+      "embed_dim": 384,
+      "query_instruction": null,
+      "device": "cuda:0",
+      "vectors_fingerprint": "7e20e240cf974bb25988228ea0870864d3ae74d2e5d649d639c012576a7e9d45",
+      "lancedb_version": "0.40.0",
+      "fts": {
+        "column": "fts_text",
+        "engine": "lancedb-native-bm25"
+      },
+      "vector_search": "exact (flat), cosine on normalised vectors"
+    },
+    "max_context_tokens": 4000,
+    "mean_context_tokens": 3669.3,
+    "retriever_load_s": 14.605,
+    "drafts": {
+      "file": "results/C/generations.jsonl",
+      "model": "Qwen/Qwen3.5-4B",
+      "gpu": "NVIDIA L4",
+      "timestamp_utc": "2026-10-18T18:09:18.033083+00:00"
+    },
+    "retrieval_config": {
+      "file": "results/rag/retrieval_eval_v2.json",
+      "variant": "c",
+      "embedder": "granite",
+      "index_dir": "data/rag/index_v2_granite",
+      "query_mode": "draft",
+      "k": 8,
+      "budget_tokens": 4000,
+      "recall": 0.4619,
+      "recall_non_core": 0.5396,
+      "max_seq_length": 5632,
+      "reason": "highest overall non-core API recall (0.5396) of 18 configs (variants a/b/c x k [5, 8] x budget [2000, 3000, 4000]); ties -> all-names recall, smaller budget, smaller k, instruction query"
+    }
+  }
+}

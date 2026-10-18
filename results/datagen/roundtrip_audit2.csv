@@ -1,4 +1,4 @@
-audit_id,id,sample,api_mismatch,category,multi_step,reason,detail,instruction,setup_code,reference_solution,solver_code,audit_label,claude_label,claude_note
+audit_id,id,sample,api_mismatch,category,multi_step,reason,detail,instruction,setup_code,reference_solution,solver_code,audit_label,claude_label,claude_note,audit_label_source
 A01,Expr_bin_contains__e967896f52__concise,kept_after_remedy,False,select_filter,False,match,,"Create a new table with columns `name`, `contains_with_lit`, and `contains_with_expr` in that order, where the boolean columns indicate whether the binary `code` contains the literal bytes `\xff` and the binary `lit` value respectively.","colors = pl.DataFrame(
     {
         ""name"": [""black"", ""yellow"", ""blue""],
@@ -20,7 +20,7 @@ def solve(colors: pl.DataFrame) -> pl.DataFrame:
         ""name"",
         contains_with_lit=pl.col(""code"").bin.contains(b""\xff""),
         contains_with_expr=pl.col(""code"").bin.contains(pl.col(""lit""))
-    )",,correct,
+    )",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A02,user_guide_expressions_missing_data_py__30f16c02c7__concise,kept_after_remedy,False,select_filter,False,match,,"Take the input table `df` and replace any missing values in the `col2` column with the number 3, keeping the `col1` column unchanged. Return the result with `col1` followed by `col2`.","import polars as pl
 df = pl.DataFrame(
     {
@@ -35,7 +35,7 @@ inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return fill_literal_df","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         pl.col(""col2"").fill_null(3)
-    )",,correct,
+    )",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A03,DataFrame_reverse__65b762e460__concise,kept_after_remedy,False,select_filter,False,match,,"Please return the rows from `df` in reverse order, keeping the `key` and `val` columns in that exact sequence.","df = pl.DataFrame(
     {
         ""key"": [""a"", ""b"", ""c""],
@@ -44,11 +44,11 @@ A03,DataFrame_reverse__65b762e460__concise,kept_after_remedy,False,select_filter
 )
 inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.reverse()","def solve(df: pl.DataFrame) -> pl.DataFrame:
-    return df.reverse()",,correct,
+    return df.reverse()",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A04,from_epoch__4d8c257233__concise,kept_after_remedy,False,lazy,False,match,,Convert the `ts` column in `df` from a Unix timestamp in seconds to a datetime format and return a table with only the `ts` column.,"df = pl.LazyFrame({""ts"": [-609066.723456, 1066445333.8888, 3405071999.987654]})
 inputs = {""df"": df}","def solve(df: pl.LazyFrame) -> pl.DataFrame:
     return df.select(pl.from_epoch(pl.col(""ts""), time_unit=""s"")).collect()","def solve(df: pl.LazyFrame) -> pl.DataFrame:
-    return df.select(pl.from_epoch(""ts"", time_unit=""s"")).collect()",,correct,
+    return df.select(pl.from_epoch(""ts"", time_unit=""s"")).collect()",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A05,Expr_arr_join__1ce7f832e0__concise,kept_after_remedy,False,join,False,match,,"Create a new column named `join` by combining the elements of the `s` array using the string in the `separator` column, keeping the original `s` and `separator` columns in the result.","df = pl.DataFrame(
     {""s"": [[""a"", ""b""], [""x"", ""y""]], ""separator"": [""*"", ""_""]},
     schema={
@@ -60,7 +60,7 @@ inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(join=pl.col(""s"").arr.join(pl.col(""separator"")))","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         pl.col(""s"").arr.join(pl.col(""separator""), ignore_nulls=True).alias(""join"")
-    )",,correct,"request is fine; category 'join' comes from Expr.arr.join (category mapping by method name), not a frame join"
+    )",correct,correct,"request is fine; category 'join' comes from Expr.arr.join (category mapping by method name), not a frame join","AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A06,LazyFrame_head__3a678ba750__concise,kept_after_remedy,False,lazy,False,match,,Take the first two rows from the input table `lf` and return them with columns `a` and `b` in that order.,"lf = pl.LazyFrame(
     {
         ""a"": [1, 2, 3, 4, 5, 6],
@@ -69,7 +69,7 @@ A06,LazyFrame_head__3a678ba750__concise,kept_after_remedy,False,lazy,False,match
 )
 inputs = {""lf"": lf}","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
     return lf.head(2).collect()","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
-    return lf.head(2).select([""a"", ""b""]).collect()",,correct,
+    return lf.head(2).select([""a"", ""b""]).collect()",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A07,Expr_dt_replace__f048ec1c70__concise,kept_after_remedy,False,datetime,False,match,,"Create a new column named `replaced` by substituting the day value in the `date` column with the corresponding value from the `new_day` column, while keeping the original `date` and `new_day` columns in the same order.","from datetime import date
 df = pl.DataFrame(
     {
@@ -81,7 +81,7 @@ inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(pl.col(""date"").dt.replace(day=""new_day"").alias(""replaced""))","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         pl.col(""date"").dt.replace(day=pl.col(""new_day"")).alias(""replaced"")
-    )",,correct,
+    )",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A08,LazyFrame_quantile__edc98ec040__concise,kept_after_remedy,False,lazy,False,match,,Calculate the 70th percentile value for each column in the input table `lf` and return a single row with the results in columns `a` and `b`.,"lf = pl.LazyFrame(
     {
         ""a"": [1, 2, 3, 4],
@@ -90,7 +90,7 @@ A08,LazyFrame_quantile__edc98ec040__concise,kept_after_remedy,False,lazy,False,m
 )
 inputs = {""lf"": lf}","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
     return lf.quantile(0.7).collect()","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
-    return lf.select(pl.col(""a"").quantile(0.7), pl.col(""b"").quantile(0.7)).collect().rename({""a"": ""a"", ""b"": ""b""})",,correct,
+    return lf.select(pl.col(""a"").quantile(0.7), pl.col(""b"").quantile(0.7)).collect().rename({""a"": ""a"", ""b"": ""b""})",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A09,Expr_str_extract_many__a0c40a2bea__descriptive,kept_after_remedy,False,string,False,match,,"For each row in the 'df' table, find every substring within the 'patterns' list that appears inside the 'values' string. Create a new table with a single column named `values` that contains these matching substrings as a list for each row. Ensure the output rows appear in the same order as the input rows.","df = pl.DataFrame(
     {
         ""values"": [""discontent"", ""rhapsody""],
@@ -104,7 +104,7 @@ inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.select(pl.col(""values"").str.extract_many(""patterns""))","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.select(
         pl.col(""values"").str.extract_many(pl.col(""patterns""))
-    )",,correct,
+    )",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A10,Expr_rolling_min__07337e6f71__descriptive,kept_after_remedy,False,window,False,match,,"Take the input table `df` and create a new column called `rolling_min` that holds the minimum value found in column `A` starting from the current row and looking back one row. The first row should show a null value because there is no previous row to compare, while subsequent rows should display the minimum of the current and previous values. The final result should have two columns in this specific order: `A` followed by `rolling_min`, with the rows maintaining their original sequence.","df = pl.DataFrame({""A"": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]})
 inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return (
@@ -114,13 +114,13 @@ inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     )","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         rolling_min=pl.col(""A"").rolling_min(window_size=2)
-    ).select(""A"", ""rolling_min"")",,correct,
+    ).select(""A"", ""rolling_min"")",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A11,Expr_bitwise_xor__6bbb4c3b99__concise,kept_after_remedy,False,group_by,True,match,,"Group the rows in `df` by the `grouper` column and calculate the bitwise XOR of the `n` values for each group, returning a table with `grouper` and `n` columns in that order.","df = pl.DataFrame(
     {""grouper"": [""a"", ""a"", ""a"", ""b"", ""b""], ""n"": [-1, 0, 1, -1, 1]}
 )
 inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.group_by(""grouper"", maintain_order=True).agg(pl.col(""n"").bitwise_xor())","def solve(df: pl.DataFrame) -> pl.DataFrame:
-    return df.group_by(""grouper"").agg(pl.col(""n"").bitwise_xor()).sort(""grouper"")",,correct,row order is not stated; the reference keeps first-appearance order (maintain_order) and the solver's sort happens to match
+    return df.group_by(""grouper"").agg(pl.col(""n"").bitwise_xor()).sort(""grouper"")",correct,correct,row order is not stated; the reference keeps first-appearance order (maintain_order) and the solver's sort happens to match,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A12,LazyFrame_fill_null__f7bf5cfad8__descriptive,kept_after_remedy,False,lazy,False,match,,"Start with the input table `lf` and ensure that all missing entries in the `a` column are replaced with the number 99, while all missing entries in the `b` column are replaced with 99.0. The final output should be a table containing only the `a` and `b` columns in that specific order, with no rows removed or reordered.","lf = pl.LazyFrame(
     {
         ""a"": [1, 2, None, 4],
@@ -137,7 +137,7 @@ inputs = {""lf"": lf}","def solve(lf: pl.LazyFrame) -> pl.DataFrame:
         )
         .select(""a"", ""b"")
         .collect()
-    )",,correct,"'99 for a, 99.0 for b' describes fill_null(99) column by column; the same operation on this two-column input"
+    )",correct,correct,"'99 for a, 99.0 for b' describes fill_null(99) column by column; the same operation on this two-column input","AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A13,DataFrame_filter__c547989787__concise,kept_after_remedy,,select_filter,False,match,,"Filter the `df` table to keep only rows where the value in the `foo` column is greater than 1, and return the columns `foo`, `bar`, and `ham` in that order.","df = pl.DataFrame(
     {
         ""foo"": [1, 2, 3, None, 4, None, 0],
@@ -147,7 +147,7 @@ A13,DataFrame_filter__c547989787__concise,kept_after_remedy,,select_filter,False
 )
 inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.filter(pl.col(""foo"") > 1)","def solve(df: pl.DataFrame) -> pl.DataFrame:
-    return df.filter(pl.col(""foo"") > 1).select([""foo"", ""bar"", ""ham""])",,correct,
+    return df.filter(pl.col(""foo"") > 1).select([""foo"", ""bar"", ""ham""])",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A14,Expr_str_normalize__d40db13267__descriptive,kept_after_remedy,False,string,False,match,,"Start with the existing 'text' column from the input table 'df'. Add a new column named 'nfc' that holds the text normalized to NFC form, and another new column named 'nfkc' that holds the text normalized to NFKC form. The final table should have three columns in this specific order: 'text', 'nfc', and 'nfkc', keeping the original row sequence intact.","df = pl.DataFrame({""text"": [""01²"", ""ＫＡＤＯＫＡＷＡ""]})
 inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     new = df.with_columns(
@@ -158,7 +158,7 @@ inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         nfc=pl.col(""text"").str.normalize(""NFC""),
         nfkc=pl.col(""text"").str.normalize(""NFKC""),
-    )",,correct,
+    )",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A15,Expr_dt_convert_time_zone__ae521fed46__descriptive,kept_after_remedy,False,datetime,False,match,,"Start with the input table `df` and keep the existing `date` column exactly as it is, preserving its UTC timezone. Add a second column named `London` that represents the same points in time as the original `date` column but adjusted to the Europe/London timezone. The final result should be a table with these two columns in that specific order, showing how the local time shifts between UTC and London time across the months.","from datetime import datetime
 df = pl.DataFrame(
     {
@@ -184,7 +184,7 @@ inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     )","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         London=pl.col(""date"").dt.convert_time_zone(""Europe/London"")
-    )",,correct,
+    )",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A16,DataFrame_max__3724cfd7fc__descriptive,kept_after_remedy,False,select_filter,False,match,,"Please calculate the maximum value for every column in the input table `df` and combine them into one new row. The resulting table should have exactly one row and three columns named `foo`, `bar`, and `ham` in that specific order. For the `foo` and `bar` columns, provide the highest integer found, and for the `ham` column, provide the last string value encountered.","df = pl.DataFrame(
     {
         ""foo"": [1, 2, 3],
@@ -198,7 +198,7 @@ inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
         foo=pl.col(""foo"").max(),
         bar=pl.col(""bar"").max(),
         ham=pl.col(""ham"").last()
-    )",,output_equivalent_mismatch,"'for ham, the last string value encountered' describes last(), not max(); on this input the lexicographic max 'c' is also the last value"
+    )",output_equivalent_mismatch,output_equivalent_mismatch,"'for ham, the last string value encountered' describes last(), not max(); on this input the lexicographic max 'c' is also the last value","AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A17,Expr_dt_month_start__9029c39567__concise,kept_after_remedy,False,datetime,False,match,,"Take the `df` table and return a new table with a single column named `dates` containing the first day of each month from the original dates, keeping the original time component.","from datetime import datetime
 df = pl.DataFrame(
     {
@@ -214,7 +214,7 @@ inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.select(pl.col(""dates"").dt.month_start())","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.select(
         dates=pl.col(""dates"").dt.month_start()
-    )",,correct,
+    )",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A18,min_horizontal__ad3e5c018f__descriptive,kept_after_remedy,False,select_filter,False,match,,"Take the input table `df` and create a new column called `min` that holds the minimum value found between the values in column `a` and column `b` for every single row. Ensure that rows where `b` is missing are handled by taking the value from `a` if it is smaller or the only available value. The final result should display the columns in this specific order: `a`, `b`, `c`, and then the newly added `min` column, preserving the original row sequence.","df = pl.DataFrame(
     {
         ""a"": [1, 8, 3],
@@ -226,12 +226,12 @@ inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(min=pl.min_horizontal(""a"", ""b""))","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         min=pl.min_horizontal(""a"", ""b"")
-    ).select([""a"", ""b"", ""c"", ""min""])",,correct,
+    ).select([""a"", ""b"", ""c"", ""min""])",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A19,Expr_skew__03f4185e7d__descriptive,kept_after_remedy,False,select_filter,False,match,,Take the input table `df` and compute the statistical measure of skewness for the numbers found in the `a` column. The final output should be a table containing exactly one row and one column. This single column must be named `a` and should hold the calculated skewness value as a floating-point number.,"df = pl.DataFrame({""a"": [1, 2, 3, 2, 1]})
 inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.select(pl.col(""a"").skew())","def solve(df: pl.DataFrame) -> pl.DataFrame:
-    return df.select(pl.col(""a"").skew().alias(""a"")).head(1)",,correct,
+    return df.select(pl.col(""a"").skew().alias(""a"")).head(1)",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"
 A20,Expr_quantile__80f876f0fe__concise,kept_after_remedy,False,select_filter,False,match,,"From the input table `df`, calculate the 30th percentile of column `a` and return a single-row table with the result in a column named `a`.","df = pl.DataFrame({""a"": [0, 1, 2, 3, 4, 5]})
 inputs = {""df"": df}","def solve(df: pl.DataFrame) -> pl.DataFrame:
     return df.select(pl.col(""a"").quantile(0.3))","def solve(df: pl.DataFrame) -> pl.DataFrame:
-    return df.select(pl.col(""a"").quantile(0.3).alias(""a"")).head(1)",,correct,
+    return df.select(pl.col(""a"").quantile(0.3).alias(""a"")).head(1)",correct,correct,,"AI reviewer (Claude, separate chat), reviewed against request/reference/solver code and accepted by the user; not a human Polars expert"

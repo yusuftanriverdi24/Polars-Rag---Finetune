@@ -1,0 +1,777 @@
+{
+  "runs": 50,
+  "tasks_file": "benchmark/tasks.jsonl",
+  "scores_file": "results/C/scores.json",
+  "reference_varies": [
+    {
+      "id": "group_by_001",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "category",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_003",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "status",
+          "n"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_004",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "category",
+          "price"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_005",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "product",
+          "qty",
+          "revenue"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_006",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "movie",
+          "rating"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_007",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "customer",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_008",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "city",
+          "customers"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_009",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "region",
+          "product",
+          "units"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_010",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "team",
+          "lo",
+          "hi"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_011",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "account",
+          "inflow"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_012",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "category",
+          "share"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_013",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "region",
+          "big",
+          "small"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_014",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "product",
+          "wavg"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "join_011",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "city",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "lazy_001",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "grp",
+          "value"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "lazy_006",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "product",
+          "qty"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "lazy_007",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "order_id",
+          "price"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "string_013",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "user",
+          "tags"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "datetime_011",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "month",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "list_struct_001",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "user",
+          "tags"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "list_struct_013",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "customer",
+          "top2"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "reshape_011",
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "subject",
+          "avg"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    }
+  ],
+  "generations_audited": [
+    "select_filter_014",
+    "group_by_001",
+    "group_by_002",
+    "group_by_004",
+    "group_by_005",
+    "group_by_006",
+    "group_by_007",
+    "group_by_008",
+    "group_by_009",
+    "group_by_010",
+    "group_by_011",
+    "group_by_012",
+    "group_by_013",
+    "join_001",
+    "join_002",
+    "join_003",
+    "join_004",
+    "join_005",
+    "join_006",
+    "join_007",
+    "join_008",
+    "join_009",
+    "join_010",
+    "join_011",
+    "join_013",
+    "window_011",
+    "lazy_001",
+    "lazy_006",
+    "lazy_007",
+    "lazy_008",
+    "lazy_011",
+    "lazy_012",
+    "lazy_013",
+    "string_006",
+    "string_013",
+    "datetime_011",
+    "list_struct_001",
+    "list_struct_013",
+    "reshape_001",
+    "reshape_002",
+    "reshape_003",
+    "reshape_006",
+    "reshape_007",
+    "reshape_008",
+    "reshape_009",
+    "reshape_010",
+    "reshape_011",
+    "reshape_012",
+    "reshape_013"
+  ],
+  "generations_varying": [
+    {
+      "id": "group_by_001",
+      "stored_status": "pass",
+      "passes": 50,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "category",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_007",
+      "stored_status": "pass",
+      "passes": 50,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "customer",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_009",
+      "stored_status": "pass",
+      "passes": 50,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "region",
+          "product",
+          "units"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_010",
+      "stored_status": "pass",
+      "passes": 50,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "team",
+          "lo",
+          "hi"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_011",
+      "stored_status": "wrong_result",
+      "passes": 0,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "account",
+          "delta"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "group_by_012",
+      "stored_status": "wrong_result",
+      "passes": 0,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "category",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "join_011",
+      "stored_status": "pass",
+      "passes": 50,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "city",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "lazy_001",
+      "stored_status": "pass",
+      "passes": 50,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "grp",
+          "value"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "lazy_006",
+      "stored_status": "pass",
+      "passes": 50,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "product",
+          "qty"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "lazy_007",
+      "stored_status": "wrong_result",
+      "passes": 0,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "order_id",
+          "product",
+          "price"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "lazy_011",
+      "stored_status": "pass",
+      "passes": 26,
+      "runs": 50,
+      "flaky": true,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "region",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": false,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "lazy_012",
+      "stored_status": "wrong_result",
+      "passes": 26,
+      "runs": 50,
+      "flaky": true,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "customer",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": false,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "lazy_013",
+      "stored_status": "wrong_result",
+      "passes": 0,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "group",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "string_013",
+      "stored_status": "wrong_result",
+      "passes": 0,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "user",
+          "tags"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "datetime_011",
+      "stored_status": "wrong_result",
+      "passes": 0,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "d",
+          "amount"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    },
+    {
+      "id": "list_struct_013",
+      "stored_status": "wrong_result",
+      "passes": 0,
+      "runs": 50,
+      "flaky": false,
+      "row_order_varies": true,
+      "column_order_varies": false,
+      "content_varies": false,
+      "column_orders_seen": [
+        [
+          "customer",
+          "top2"
+        ]
+      ],
+      "check": {
+        "ignore_row_order": true,
+        "ignore_column_order": false,
+        "ignore_numeric_width": true
+      }
+    }
+  ]
+}
