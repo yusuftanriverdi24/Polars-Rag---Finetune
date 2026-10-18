@@ -68,6 +68,18 @@ def _lib_versions() -> dict:
     return versions
 
 
+def _gpu_name() -> str | None:
+    """Name of the CUDA device the run used (None on CPU or without torch).
+    Latency and bf16 greedy outputs both depend on it, so every run records it."""
+
+    try:
+        import torch
+
+        return torch.cuda.get_device_name(0) if torch.cuda.is_available() else None
+    except Exception:
+        return None
+
+
 def check_prompt_lengths(model, messages_list: list[list[dict]], max_new_tokens: int) -> int | None:
     """Fail loudly if any prompt + max_new_tokens exceeds the model's
     ``max_seq_length`` (the HF wrapper would otherwise truncate silently).
@@ -86,11 +98,16 @@ def check_prompt_lengths(model, messages_list: list[list[dict]], max_new_tokens:
     return longest
 
 
-def check_draft_provenance(drafts_meta: dict, model: str, adapter: str | None) -> None:
+def check_draft_provenance(drafts_meta: dict, model: str, adapter: str | None, gpu: str | None = None) -> None:
     """Drafts must be the same model's own zero-shot answers (no context, same
-    prompt), or the draft-code query would smuggle in outside help."""
+    prompt), or the draft-code query would smuggle in outside help. When both
+    runs record a GPU, it must match too (drafts from another GPU would mix
+    hardware within one arm)."""
 
     problems = []
+    drafts_gpu = drafts_meta.get("gpu")
+    if gpu is not None and drafts_gpu is not None and drafts_gpu != gpu:
+        problems.append(f"gpu {drafts_gpu!r} != {gpu!r}")
     if drafts_meta.get("model") != model:
         problems.append(f"model {drafts_meta.get('model')!r} != {model!r}")
     if drafts_meta.get("adapter") != adapter:
@@ -223,6 +240,7 @@ def run_generation(
         "max_prompt_tokens": longest_prompt,
         "enable_thinking": getattr(model, "enable_thinking", None),
         "n_tasks": len(tasks),
+        "gpu": _gpu_name(),
         "total_latency_s": total_latency,
         "timestamp_utc": _dt.datetime.now(_dt.timezone.utc).isoformat(),
         "lib_versions": _lib_versions(),
@@ -320,7 +338,7 @@ def main(argv: list[str] | None = None) -> int:
 
             drafts_path = Path(args.drafts)
             drafts_meta = json.loads((drafts_path.parent / "generation_meta.json").read_text(encoding="utf-8"))
-            check_draft_provenance(drafts_meta, args.model, args.adapter)
+            check_draft_provenance(drafts_meta, args.model, args.adapter, gpu=_gpu_name())
             drafts = load_drafts(drafts_path)
             draft_latency = {t.id: drafts[t.id]["latency_s"] for t in tasks if t.id in drafts}
         # Retrieve first, so the embedder is freed before the LLM is loaded.
@@ -333,6 +351,7 @@ def main(argv: list[str] | None = None) -> int:
             rag_meta["drafts"] = {
                 "file": str(drafts_path),
                 "model": drafts_meta.get("model"),
+                "gpu": drafts_meta.get("gpu"),
                 "timestamp_utc": drafts_meta.get("timestamp_utc"),
             }
         if retrieval_config is not None:

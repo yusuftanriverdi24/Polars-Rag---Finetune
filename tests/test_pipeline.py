@@ -199,6 +199,27 @@ def test_draft_provenance_check():
             generate_script.check_draft_provenance(bad, "Qwen/Qwen3.5-4B", None)
 
 
+def test_draft_provenance_gpu():
+    import pytest
+
+    from polars_llm.prompts import prompt_fingerprint
+
+    ok = {"model": "Qwen/Qwen3.5-4B", "adapter": None, "prompt": prompt_fingerprint(), "gpu": "NVIDIA L4"}
+    generate_script.check_draft_provenance(ok, "Qwen/Qwen3.5-4B", None, gpu="NVIDIA L4")
+    # Unknown on either side (old runs, CPU) is not a mismatch.
+    generate_script.check_draft_provenance({**ok, "gpu": None}, "Qwen/Qwen3.5-4B", None, gpu="NVIDIA L4")
+    generate_script.check_draft_provenance(ok, "Qwen/Qwen3.5-4B", None, gpu=None)
+    with pytest.raises(ValueError, match="gpu"):
+        generate_script.check_draft_provenance(ok, "Qwen/Qwen3.5-4B", None, gpu="NVIDIA A100-SXM4-80GB")
+
+
+def test_generation_meta_records_gpu(tmp_path):
+    tasks = load_tasks("benchmark/tasks.jsonl")[:2]
+    meta = generate_script.run_generation(tasks, make_reference_mock(tasks), "mock", tmp_path)
+    assert "gpu" in meta
+    assert "gpu" in json.loads((tmp_path / "mock" / "generation_meta.json").read_text(encoding="utf-8"))
+
+
 def test_stored_arm_a_generations_are_valid_drafts():
     meta = json.loads(Path("results/A/generation_meta.json").read_text(encoding="utf-8"))
     generate_script.check_draft_provenance(meta, "Qwen/Qwen3.5-4B", None)
